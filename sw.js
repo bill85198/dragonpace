@@ -1,7 +1,8 @@
 // sw.js  — DragonPace Service Worker
 // 策略：Cache First（核心資源） + Network First（外部字型）
 
-const CACHE_NAME = 'dragonpace-v1';
+// 🚨 這裡將版本號改為 v2，強制瀏覽器清除舊快取並抓取最新的 index.html
+const CACHE_NAME = 'dragonpace-v2'; 
 const CORE_ASSETS = [
   './index.html',
   './manifest.json',
@@ -19,7 +20,7 @@ self.addEventListener('install', event => {
           cache.add(url).catch(e => console.warn(`Cache miss: ${url}`, e))
         )
       );
-    }).then(() => self.skipWaiting())
+    }).then(() => self.skipWaiting()) // 強制立刻接管
   );
 });
 
@@ -32,7 +33,7 @@ self.addEventListener('activate', event => {
           .filter(k => k !== CACHE_NAME)
           .map(k => caches.delete(k))
       )
-    ).then(() => self.clients.claim())
+    ).then(() => self.clients.claim()) // 強制立刻控制所有開啟的頁面
   );
 });
 
