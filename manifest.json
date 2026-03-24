@@ -1,0 +1,44 @@
+{
+  "name": "DragonPace 龍舟訓練",
+  "short_name": "DragonPace",
+  "description": "龍舟隊專用訓練儀錶板：節拍器、GPS 船速、段落記錄",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "zh-TW",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "icons/screenshot.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["sports", "health", "fitness"],
+  "shortcuts": [
+    {
+      "name": "開始訓練",
+      "short_name": "訓練",
+      "description": "直接開啟訓練儀錶板",
+      "url": "./index.html#train",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
