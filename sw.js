@@ -1,7 +1,7 @@
 // sw.js  — DragonPace Service Worker
 // 策略：Cache First（核心資源） + Network First（外部字型）
 
-const CACHE_NAME = 'dragonpace-v3';
+const CACHE_NAME = 'dragonpace-v4';
 const CORE_ASSETS = [
   './index.html',
   './manifest.json',
