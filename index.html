@@ -13,9 +13,9 @@
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="apple-touch-startup-image" href="icons/splash.png">
+
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Noto+Sans+TC:wght@300;400;700&display=swap');
-
 :root{
   --red:#FF2A0A; --red2:#ff5030;
   --gold:#FFB300; --gold2:#ffd040;
@@ -27,19 +27,12 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-
-/* scanline overlay */
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
   background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 4px);}
-
 .bg-fx{position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(ellipse 120% 50% at 50% 0%,rgba(232,40,11,.07) 0%,transparent 55%),
+  background:radial-gradient(ellipse 120% 50% at 50% 0%,rgba(232,40,11,.07) 0%,transparent 55%),
     radial-gradient(ellipse 50% 40% at 100% 100%,rgba(0,212,255,.04) 0%,transparent 50%);}
-
 .app{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;}
-
-/* HEADER */
 header{padding:9px 16px 8px;display:flex;align-items:center;justify-content:space-between;
   background:rgba(5,8,14,.96);backdrop-filter:blur(30px);
   border-bottom:1px solid rgba(232,40,11,.14);position:sticky;top:0;z-index:100;}
@@ -47,8 +40,6 @@ header{padding:9px 16px 8px;display:flex;align-items:center;justify-content:spac
   letter-spacing:4px;text-shadow:0 0 18px rgba(232,40,11,.45);}
 .logo span{color:var(--gold);}
 .hdr-right{display:flex;align-items:center;gap:8px;}
-
-/* 狀態徽章統一類別 */
 .live-badge{display:flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;
   font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1px;transition:all .3s;}
 .badge-ready { background:rgba(0,232,122,.1); border:1px solid rgba(0,232,122,.25); color:var(--green); }
@@ -59,8 +50,6 @@ header{padding:9px 16px 8px;display:flex;align-items:center;justify-content:spac
 .live-dot{width:4px;height:4px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .time-badge{font-family:'Orbitron',monospace;font-size:10px;color:var(--muted2);letter-spacing:1px;}
-
-/* NAV */
 nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);}
 nav button{flex:1;background:none;border:none;color:var(--muted2);padding:9px 0;font-size:8px;cursor:pointer;
   display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .2s;
@@ -68,115 +57,59 @@ nav button{flex:1;background:none;border:none;color:var(--muted2);padding:9px 0;
 nav button svg{width:17px;height:17px;}
 nav button.active{color:var(--red);}
 nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
-
 .page{display:none;flex:1;overflow-y:auto;padding-bottom:16px;}
 .page.active{display:block;}
-
-/* ══ STATUS BAR ══ */
-.status-bar{display:flex;align-items:center;justify-content:space-between;
-  padding:6px 14px;background:var(--bg2);border-bottom:1px solid var(--border);}
+.status-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;background:var(--bg2);border-bottom:1px solid var(--border);}
 .sb-course{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.5px;text-shadow:0 0 10px rgba(255,179,0,.4);}
 .sb-meta{font-size:8px;color:var(--muted2);margin-top:1px;letter-spacing:.3px;}
 .sb-right{display:flex;align-items:center;gap:8px;}
 .sb-time{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;}
-
-/* ══ GAUGE AREA ══ */
 .gauge-area{padding:8px 8px 6px;display:flex;flex-direction:column;gap:7px;}
 .quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-
-/* ══ PANEL (base) ══ */
-.panel{
-  background:linear-gradient(145deg,#091525,#0d1e32);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:8px;
-  position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
-  padding:11px 12px 10px;
-  min-height:105px;
-}
-.panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--pa,rgba(255,255,255,.15));}
-.panel::after{content:'';position:absolute;top:0;right:0;width:12px;height:12px;
-  background:
-    linear-gradient(var(--pa,rgba(255,255,255,.1)) 0,var(--pa,rgba(255,255,255,.1)) 1px,transparent 1px) right 0/7px 1px no-repeat,
-    linear-gradient(var(--pa,rgba(255,255,255,.1)) 0,var(--pa,rgba(255,255,255,.1)) 7px,transparent 7px) right 0/1px 7px no-repeat;}
-
-.p-bpm   {--pa:var(--gold);}
-.p-speed {--pa:var(--cyan);}
-.p-stroke{--pa:var(--green);}
-.p-dist  {--pa:#00c8ff;}
-
-.p-label{font-size:7px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
-  color:#7a9ec0;margin-bottom:8px;display:flex;align-items:center;gap:4px;}
-.p-dot{width:4px;height:4px;border-radius:50%;
-  background:var(--pa,var(--muted2));box-shadow:0 0 6px var(--pa,transparent);flex-shrink:0;}
-
+.panel{background:linear-gradient(145deg,#091525,#0d1e32);border:1px solid rgba(255,255,255,.12);border-radius:8px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:11px 12px 10px;min-height:105px;}
+.panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pa,rgba(255,255,255,.15));}
+.p-bpm {--pa:var(--gold);} .p-speed {--pa:var(--cyan);} .p-stroke{--pa:var(--green);} .p-dist {--pa:#00c8ff;}
+.p-label{font-size:7px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#7a9ec0;margin-bottom:8px;display:flex;align-items:center;gap:4px;}
+.p-dot{width:4px;height:4px;border-radius:50%;background:var(--pa,var(--muted2));box-shadow:0 0 6px var(--pa,transparent);flex-shrink:0;}
 .p-val{font-family:'Orbitron',monospace;font-weight:900;line-height:1;transition:color .12s;}
-.p-bpm   .p-val{font-size:52px;color:var(--gold);text-shadow:0 0 28px rgba(255,179,0,.6),0 2px 0 rgba(0,0,0,.8);}
+.p-bpm .p-val{font-size:52px;color:var(--gold);text-shadow:0 0 28px rgba(255,179,0,.6),0 2px 0 rgba(0,0,0,.8);}
 .p-speed .p-val{font-size:52px;color:var(--cyan);text-shadow:0 0 28px rgba(0,229,255,.6),0 2px 0 rgba(0,0,0,.8);}
-.p-dist  .p-val{font-size:44px;color:#60d8ff;text-shadow:0 0 28px rgba(0,200,255,.55),0 2px 0 rgba(0,0,0,.8);}
+.p-dist .p-val{font-size:44px;color:#60d8ff;text-shadow:0 0 28px rgba(0,200,255,.55),0 2px 0 rgba(0,0,0,.8);}
 .p-stroke .p-val{font-size:52px;color:var(--green);text-shadow:0 0 28px rgba(0,255,122,.55),0 2px 0 rgba(0,0,0,.8);}
-
 .p-val.beat{animation:vbeat .1s cubic-bezier(.05,2,.3,1);}
 @keyframes vbeat{0%{transform:scale(1.06)}100%{transform:scale(1)}}
-
 .p-unit{font-size:8px;color:#8aaccc;letter-spacing:1.5px;margin-top:4px;font-weight:600;}
 .p-sub {font-size:8px;color:var(--muted2);margin-top:3px;}
-
-/* ══ METRONOME PANEL (full width) ══ */
-.panel-metro{
-  flex-direction:row;align-items:stretch;
-  padding:0;min-height:76px;
-  background:linear-gradient(145deg,#091525,#0d1e32);
-}
-.metro-arc{flex-shrink:0;width:76px;height:76px;position:relative;
-  border-right:1px solid var(--border);}
+.panel-metro{flex-direction:row;align-items:stretch;padding:0;min-height:76px;background:linear-gradient(145deg,#091525,#0d1e32);}
+.metro-arc{flex-shrink:0;width:76px;height:76px;position:relative;border-right:1px solid var(--border);}
 .metro-arc svg{width:76px;height:76px;display:block;}
 .arc-bg-r{fill:none;stroke:var(--bg3);stroke-width:6;}
-.arc-fill-r{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;
-  stroke-dasharray:182;stroke-dashoffset:182;
-  transform-origin:50% 50%;transform:rotate(-90deg);
-  filter:drop-shadow(0 0 4px rgba(240,165,0,.55));}
-.metro-arc-center{position:absolute;inset:0;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;}
-.metro-arc-bpm{font-family:'Orbitron',monospace;font-size:17px;font-weight:900;
-  color:var(--gold);text-shadow:0 0 20px rgba(255,179,0,.7),0 2px 0 rgba(0,0,0,.9);line-height:1;}
+.arc-fill-r{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-dasharray:182;stroke-dashoffset:182;transform-origin:50% 50%;transform:rotate(-90deg);filter:drop-shadow(0 0 4px rgba(240,165,0,.55));}
+.metro-arc-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.metro-arc-bpm{font-family:'Orbitron',monospace;font-size:17px;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(255,179,0,.7),0 2px 0 rgba(0,0,0,.9);line-height:1;}
 .metro-arc-lbl{font-size:5px;color:var(--muted2);letter-spacing:2px;margin-top:1px;}
-
 .metro-info{flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px;}
 .metro-lbl{font-size:7px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted2);}
-.metro-val{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;
-  color:var(--gold);text-shadow:0 0 24px rgba(255,179,0,.6),0 2px 0 rgba(0,0,0,.9);line-height:1;}
+.metro-val{font-family:'Orbitron',monospace;font-size:32px;font-weight:900;color:var(--gold);text-shadow:0 0 24px rgba(255,179,0,.6),0 2px 0 rgba(0,0,0,.9);line-height:1;}
 .metro-phase{font-size:8px;color:var(--muted2);margin-top:2px;letter-spacing:.5px;}
-
-.metro-beat{flex-shrink:0;width:40px;border-left:1px solid var(--border);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:8px 0;}
-.beat-bar{width:18px;height:4px;border-radius:2px;background:var(--muted);
-  transition:background .05s,box-shadow .05s,width .05s;}
+.metro-beat{flex-shrink:0;width:40px;border-left:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:8px 0;}
+.beat-bar{width:18px;height:4px;border-radius:2px;background:var(--muted);transition:background .05s,box-shadow .05s,width .05s;}
 .beat-bar.b-on{background:var(--gold);box-shadow:0 0 8px rgba(240,165,0,.65);width:26px;}
 .beat-bar.b-accent{background:var(--red);box-shadow:0 0 10px rgba(232,40,11,.75);width:30px;}
-
-/* ══ ANNOUNCE STRIP ══ */
-.announce-strip{display:flex;align-items:center;gap:8px;
-  background:var(--bg2);border-radius:6px;
-  border:1px solid rgba(0,212,255,.1);
-  padding:7px 11px;min-height:32px;transition:all .2s;}
+.announce-strip{display:flex;align-items:center;gap:8px;background:var(--bg2);border-radius:6px;border:1px solid rgba(0,212,255,.1);padding:7px 11px;min-height:32px;transition:all .2s;}
 .announce-strip.warn{border-color:rgba(240,165,0,.28);background:rgba(240,165,0,.03);}
 .announce-strip.danger{border-color:rgba(232,40,11,.3);background:rgba(232,40,11,.04);}
 .announce-icon{font-size:10px;color:var(--muted2);flex-shrink:0;font-family:'Orbitron',monospace;}
 .announce-text{font-size:11px;font-weight:700;color:var(--cyan);flex:1;letter-spacing:.3px;text-shadow:0 0 12px rgba(0,229,255,.5);}
-.announce-strip.warn   .announce-text{color:var(--gold);text-shadow:0 0 12px rgba(255,179,0,.5);}
+.announce-strip.warn .announce-text{color:var(--gold);text-shadow:0 0 12px rgba(255,179,0,.5);}
 .announce-strip.danger .announce-text{color:var(--red2);}
-
-/* ══ SEGMENT FLOW ══ */
 .seg-flow{background:var(--bg2);border-radius:7px;padding:9px 11px 7px;border:1px solid var(--border);}
 .sf-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .sf-title{font-size:8px;font-weight:700;color:#FFFFFF;letter-spacing:.5px;}
 .sf-frac{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted2);}
 .seg-cards{display:flex;gap:3px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
 .seg-cards::-webkit-scrollbar{display:none;}
-.seg-card{flex-shrink:0;min-width:48px;background:var(--bg3);border-radius:5px;
-  padding:5px 4px;text-align:center;border:1px solid transparent;transition:all .18s;position:relative;}
+.seg-card{flex-shrink:0;min-width:48px;background:var(--bg3);border-radius:5px;padding:5px 4px;text-align:center;border:1px solid transparent;transition:all .18s;position:relative;}
 .seg-card.s-done{opacity:.2;}
 .seg-card.s-active{border-color:rgba(240,165,0,.4);background:rgba(240,165,0,.06);}
 .seg-arrow{flex-shrink:0;display:flex;align-items:center;color:var(--muted);font-size:7px;}
@@ -187,44 +120,22 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .prog-bar{height:5px;background:#1a2e44;border-radius:3px;display:flex;overflow:hidden;margin-top:6px;}
 .prog-seg{height:100%;position:relative;}
 .prog-seg+.prog-seg{border-left:1px solid var(--bg);}
-.prog-fill{height:100%;background:var(--gold);transition:width .18s linear;
-  box-shadow:0 0 8px rgba(255,179,0,.8),0 0 2px rgba(255,179,0,1);}
+.prog-fill{height:100%;background:var(--gold);transition:width .18s linear;box-shadow:0 0 8px rgba(255,179,0,.8),0 0 2px rgba(255,179,0,1);}
 .prog-seg.s-done .prog-fill{width:100%!important;background:rgba(240,165,0,.2);}
 .prog-labels{display:flex;margin-top:2px;}
 .prog-lbl{font-size:6px;color:var(--muted);text-align:center;overflow:hidden;}
-
-/* ══ CONTROLS ══ */
 .ctrl-row{display:grid;grid-template-columns:1fr auto auto;gap:7px;}
-.btn-start{
-  padding:13px;font-size:13px;font-weight:700;
-  font-family:'Orbitron',monospace;letter-spacing:3px;
-  background:transparent;border:1px solid var(--red);color:var(--red);
-  border-radius:6px;cursor:pointer;position:relative;overflow:hidden;
-  transition:all .2s;text-shadow:0 0 12px rgba(232,40,11,.35);
-  box-shadow:inset 0 0 16px rgba(232,40,11,.04),0 0 10px rgba(232,40,11,.08);
-}
-.btn-start::before{content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(232,40,11,.08),transparent);transition:opacity .2s;}
-.btn-start.running{border-color:var(--gold);color:var(--gold);
-  text-shadow:0 0 12px rgba(240,165,0,.35);
-  box-shadow:inset 0 0 16px rgba(240,165,0,.04),0 0 10px rgba(240,165,0,.08);}
-.btn-start.running::before{background:linear-gradient(135deg,rgba(240,165,0,.08),transparent);}
+.btn-start{padding:13px;font-size:13px;font-weight:700;font-family:'Orbitron',monospace;letter-spacing:3px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;text-shadow:0 0 12px rgba(232,40,11,.35);box-shadow:inset 0 0 16px rgba(232,40,11,.04),0 0 10px rgba(232,40,11,.08);}
+.btn-start.running{border-color:var(--gold);color:var(--gold);text-shadow:0 0 12px rgba(240,165,0,.35);box-shadow:inset 0 0 16px rgba(240,165,0,.04),0 0 10px rgba(240,165,0,.08);}
 .btn-start:active{transform:scale(.97);}
-.btn-reset{padding:13px 14px;background:transparent;border:1px solid var(--border);
-  color:var(--muted2);border-radius:6px;cursor:pointer;font-size:15px;transition:all .18s;}
+.btn-reset{padding:13px 14px;background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:6px;cursor:pointer;font-size:15px;transition:all .18s;}
 .btn-reset:active{background:var(--bg3);}
 .btn-end{padding:13px 14px;background:var(--red2);border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:13px;font-weight:bold;transition:all .18s;}
-
-/* ══ OTHER PAGES ══ */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;
-  margin:9px 12px;padding:13px;position:relative;overflow:hidden;}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--red),transparent,var(--gold));}
-.card-title{font-size:8px;font-weight:700;color:var(--muted2);text-transform:uppercase;
-  letter-spacing:2px;margin-bottom:10px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin:9px 12px;padding:13px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),transparent,var(--gold));}
+.card-title{font-size:8px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
 .workout-list{padding:0 12px;}
-.workout-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;
-  padding:10px;margin-bottom:6px;cursor:pointer;transition:all .18s;}
+.workout-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px;cursor:pointer;transition:all .18s;}
 .workout-item:active{transform:scale(.98);}
 .workout-item.selected{border-color:rgba(240,165,0,.4);background:rgba(240,165,0,.04);}
 .wi-header{display:flex;justify-content:space-between;align-items:center;}
@@ -234,31 +145,21 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .wi-edit:active{background:rgba(255,255,255,.1);color:#fff;}
 .wi-segs{display:flex;gap:3px;margin-top:5px;flex-wrap:wrap;}
 .wi-seg{font-size:8px;background:rgba(240,165,0,.08);color:rgba(240,165,0,.7);border-radius:2px;padding:1px 5px;}
-.seg-row{display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;
-  padding:7px 9px;margin-bottom:5px;}
+.seg-row{display:flex;align-items:center;gap:6px;background:var(--bg3);border-radius:6px;padding:7px 9px;margin-bottom:5px;}
 .seg-idx{font-family:'Orbitron',monospace;font-size:10px;color:var(--gold);min-width:16px;}
 .seg-ig{flex:1;display:flex;gap:5px;}
-.seg-input{flex:1;background:var(--bg);border:1px solid rgba(255,255,255,.08);color:var(--text);
-  border-radius:5px;padding:6px 7px;font-size:13px;font-family:'Noto Sans TC',sans-serif;text-align:center;}
+.seg-input{flex:1;background:var(--bg);border:1px solid rgba(255,255,255,.08);color:var(--text);border-radius:5px;padding:6px 7px;font-size:13px;font-family:'Noto Sans TC',sans-serif;text-align:center;}
 .seg-input:focus{outline:none;border-color:rgba(240,165,0,.4);}
 .seg-del{background:none;border:none;color:var(--muted2);font-size:14px;cursor:pointer;padding:3px;}
-.add-seg-btn{width:100%;padding:8px;background:none;border:1px dashed rgba(255,255,255,.08);
-  border-radius:6px;color:var(--muted2);font-size:10px;cursor:pointer;margin-bottom:6px;transition:all .18s;}
+.add-seg-btn{width:100%;padding:8px;background:none;border:1px dashed rgba(255,255,255,.08);border-radius:6px;color:var(--muted2);font-size:10px;cursor:pointer;margin-bottom:6px;transition:all .18s;}
 .add-seg-btn:hover{border-color:rgba(240,165,0,.3);color:var(--gold);}
-.btn-save{width:100%;padding:11px;background:transparent;color:var(--red);border:1px solid var(--red);
-  border-radius:6px;font-size:11px;font-weight:700;font-family:'Orbitron',monospace;
-  letter-spacing:2px;cursor:pointer;margin-bottom:5px;transition:all .2s;}
+.btn-save{width:100%;padding:11px;background:transparent;color:var(--red);border:1px solid var(--red);border-radius:6px;font-size:11px;font-weight:700;font-family:'Orbitron',monospace;letter-spacing:2px;cursor:pointer;margin-bottom:5px;transition:all .2s;}
 .btn-save:active{background:rgba(232,40,11,.08);}
-.btn-load-train{width:100%;padding:9px;background:transparent;color:var(--muted2);
-  border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;
-  font-family:'Noto Sans TC',sans-serif;cursor:pointer;transition:all .2s;}
+.btn-load-train{width:100%;padding:9px;background:transparent;color:var(--muted2);border:1px solid var(--border);border-radius:6px;font-size:11px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;transition:all .2s;}
 .btn-load-train:active{background:var(--bg3);}
-
-.history-item{display:flex;gap:9px;align-items:center;padding:10px;background:var(--bg2);
-  border:1px solid var(--border);border-radius:8px;margin:0 12px 6px; cursor:pointer; transition:all .2s;}
+.history-item{display:flex;gap:9px;align-items:center;padding:10px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;margin:0 12px 6px;cursor:pointer;transition:all .2s;}
 .history-item:active{background:var(--bg3);}
-.hi-date{font-family:'Orbitron',monospace;font-size:9px;color:var(--gold);text-align:center;
-  line-height:1.4;min-width:24px;}
+.hi-date{font-family:'Orbitron',monospace;font-size:9px;color:var(--gold);text-align:center;line-height:1.4;min-width:24px;}
 .hi-body{flex:1;}
 .hi-name{font-weight:700;font-size:11px;}
 .hi-meta{font-size:7px;color:var(--muted2);margin-top:2px;}
@@ -266,29 +167,16 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .hi-stat{font-size:7px;color:var(--muted2);}
 .hi-stat span{color:var(--cyan);font-family:'Orbitron',monospace;font-weight:700;}
 .export-row{display:flex;gap:6px;margin:0 12px 7px;flex-wrap:wrap;}
-.export-btn{flex:1;padding:10px;background:var(--bg3);border:1px solid var(--border);
-  color:var(--cyan);border-radius:5px;font-size:11px;font-weight:bold;cursor:pointer;
-  font-family:'Orbitron',monospace;letter-spacing:1px;transition:all .18s;text-align:center;}
+.export-btn{flex:1;padding:10px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:5px;font-size:11px;font-weight:bold;cursor:pointer;font-family:'Orbitron',monospace;letter-spacing:1px;transition:all .18s;text-align:center;}
 .export-btn:active{background:rgba(0,212,255,.07);border-color:rgba(0,212,255,.2);}
 .btn-danger{background:rgba(232,40,11,.1);border-color:rgba(232,40,11,.3);color:var(--red2);}
-
-.section-header{font-size:7px;font-weight:700;color:var(--muted2);text-transform:uppercase;
-  letter-spacing:2px;padding:11px 12px 3px;}
-
-/* 動態統計列 */
+.section-header{font-size:7px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:2px;padding:11px 12px 3px;}
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:0 12px 10px;}
 .stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center;color:var(--muted2);font-size:7px;letter-spacing:1px;}
 .stat-box b{display:block;font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-top:3px;}
-
-.toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%) translateY(10px);
-  background:rgba(5,8,14,.98);border:1px solid rgba(0,212,255,.2);
-  color:var(--cyan);padding:6px 12px;border-radius:4px;
-  font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;
-  opacity:0;transition:all .2s;z-index:9998;white-space:nowrap;}
+.toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(5,8,14,.98);border:1px solid rgba(0,212,255,.2);color:var(--cyan);padding:6px 12px;border-radius:4px;font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;opacity:0;transition:all .2s;z-index:9998;white-space:nowrap;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-
-/* ══ LAP BOARD ══ */
 .lap-section{background:var(--bg2);border-radius:8px;border:1px solid var(--border);overflow:hidden;}
 .lap-section-hdr{display:flex;align-items:center;gap:7px;padding:8px 12px;background:var(--bg3);cursor:pointer;user-select:none;}
 .lap-hdr-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,179,0,.8);flex-shrink:0;}
@@ -320,8 +208,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 .lap-empty{text-align:center;padding:22px 0;font-size:10px;color:var(--muted2);}
 .lap-empty-icon{font-size:16px;font-family:'Orbitron',monospace;color:var(--muted);margin-bottom:6px;}
 .speed-delta{font-size:8px;font-weight:700;letter-spacing:.5px;}
-
-/* ══ CHART MODAL (HISTORY) ══ */
+/* CHART MODAL */
 .chart-modal{position:fixed;inset:0;background:rgba(5,8,14,.95);backdrop-filter:blur(10px);z-index:10000;display:flex;flex-direction:column;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .chart-modal.show{opacity:1;pointer-events:auto;}
 .chart-hdr{font-family:'Orbitron',monospace;font-size:16px;color:var(--cyan);text-align:center;font-weight:bold;}
@@ -332,7 +219,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 <body>
 <div class="bg-fx"></div>
 <div class="app">
-
 <header>
   <div class="logo">DRAGON<span>PACE</span></div>
   <div class="hdr-right">
@@ -340,7 +226,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
     <div class="time-badge" id="clockBadge">--:--</div>
   </div>
 </header>
-
 <nav>
   <button class="active" onclick="UI.showPage('train',this)">
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>儀錶板
@@ -357,11 +242,9 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 </nav>
 
 <!-- iOS install hint -->
-<div id="iosHint" style="display:none;background:#0a1020;border-bottom:1px solid rgba(255,179,0,.25);
-  padding:8px 14px;text-align:center;font-size:10px;color:#FFB300;">
+<div id="iosHint" style="display:none;background:#0a1020;border-bottom:1px solid rgba(255,179,0,.25);padding:8px 14px;text-align:center;font-size:10px;color:#FFB300;">
   📲 Safari → 分享 → 加入主畫面 即可安裝
-  <button onclick="document.getElementById('iosHint').remove()"
-    style="background:none;border:none;color:#5880a0;margin-left:8px;cursor:pointer;font-size:13px;">✕</button>
+  <button onclick="document.getElementById('iosHint').remove()" style="background:none;border:none;color:#5880a0;margin-left:8px;cursor:pointer;font-size:13px;">✕</button>
 </div>
 
 <!-- TRAIN TAB -->
@@ -375,7 +258,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
       <div class="sb-time" id="elapsedTime">00:00</div>
     </div>
   </div>
-
   <div class="gauge-area">
     <div class="quad-grid">
       <div class="panel p-bpm">
@@ -461,7 +343,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
     </div>
 
     <div class="ctrl-row">
-      <button class="btn-start" id="startBtn" onclick="Engine.toggleTraining()">▶  START</button>
+      <button class="btn-start" id="startBtn" onclick="Engine.toggleTraining()">▶ START</button>
       <button class="btn-reset" id="resetBtn" onclick="Engine.resetTraining()">↺</button>
       <button class="btn-end" id="endBtn" onclick="Engine.finishSession()" style="display:none;">🏁 結束</button>
     </div>
@@ -479,7 +361,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
       <div class="sb-time" id="obsElapsedTime">00:00</div>
     </div>
   </div>
-
   <div class="gauge-area">
     <div class="quad-grid">
       <div class="panel p-bpm">
@@ -505,19 +386,19 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
       </div>
     </div>
 
-    <!-- LIVE CHART PANEL -->
-    <div class="panel" style="margin-top:2px; padding:10px; height:310px; display:flex; flex-direction:column;">
+    <!-- LIVE CHART - 即時滾動版 -->
+    <div class="panel" style="margin-top:2px; padding:10px; height:320px; display:flex; flex-direction:column;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <div class="p-label" style="margin-bottom:0;"><div class="p-dot" style="background:var(--cyan)"></div>即時數據圖表</div>
-        <div style="font-size:8px; color:var(--muted2);">手指滑動查看詳細數值</div>
+        <div style="font-size:8px; color:var(--muted2);">每2秒更新 • 向左滾動</div>
       </div>
-      <div style="flex:1; position:relative; background:#0a1220; border-radius:6px; border:1px solid var(--border);">
+      <div style="flex:1; position:relative; background:#0a1220; border-radius:6px; border:1px solid var(--border); overflow:hidden;">
          <canvas id="liveChart" style="width:100%; height:100%; touch-action:none;"></canvas>
       </div>
     </div>
 
     <div class="ctrl-row" style="margin-top:5px;">
-      <button class="btn-start" id="obsStartBtn" onclick="Engine.toggleTraining()">▶  START</button>
+      <button class="btn-start" id="obsStartBtn" onclick="Engine.toggleTraining()">▶ START</button>
       <button class="btn-reset" id="obsResetBtn" onclick="Engine.resetTraining()">↺</button>
       <button class="btn-end" id="obsEndBtn" onclick="Engine.finishSession()" style="display:none;">🏁 結束</button>
     </div>
@@ -562,7 +443,6 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
   <div id="historyList"></div>
 </div>
 
-<!-- CHART MODAL (HISTORY) -->
 <div class="chart-modal" id="historyModal">
   <div class="chart-hdr" id="hmTitle" style="margin-bottom:8px;">訓練數據</div>
   <div style="display:flex; gap:10px; margin-bottom:12px;">
@@ -577,27 +457,16 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 
 <div class="toast" id="toast"></div>
 
-<!-- ==========================================
-     MVC / STATE-DRIVEN ARCHITECTURE CORE
-=========================================== -->
 <script>
-// ─── 1. STATE (狀態管理模組) ──────────────────
+// ─── 1. STATE ──────────────────
 const State = {
     PRESETS: [
       {id:'pa',name:'漸進頻率訓練 A',tag:'耐力',sets:1,rest:0,segments:[{bpm:40,count:30},{bpm:45,count:30},{bpm:60,count:30}]},
       {id:'pb',name:'比賽起步訓練 B',tag:'爆發',sets:1,rest:0,segments:[{bpm:70,count:3},{bpm:65,count:7},{bpm:50,count:40},{bpm:70,count:20}]},
       {id:'pc',name:'基礎穩頻',tag:'基礎',sets:1,rest:0,segments:[{bpm:38,count:50},{bpm:42,count:50}]}
     ],
-    app: {
-        sessionType: 'WORKOUT',
-        isRunning: false,
-        isFinished: false,
-        editingWorkoutId: null
-    },
-    session: {
-        elapsedSec: 0,
-        trainStartTime: 0,
-    },
+    app: { sessionType: 'WORKOUT', isRunning: false, isFinished: false, editingWorkoutId: null },
+    session: { elapsedSec: 0, trainStartTime: 0 },
     data: {
         totalStrokes: 0,
         simSpeed: 0,
@@ -612,19 +481,11 @@ const State = {
         sensorSpeed: 0,
         speedSource: 'READY'
     },
-    training: {
-        selectedWorkout: null,
-        segIdx: 0,
-        strokeInSeg: 0,
-        builderSegs: [{bpm:40,count:30}]
-    },
-    db: {
-        customWorkouts: [],
-        history: []
-    }
+    training: { selectedWorkout: null, segIdx: 0, strokeInSeg: 0, builderSegs: [{bpm:40,count:30}] },
+    db: { customWorkouts: [], history: [] }
 };
 
-// ─── 2. HARDWARE (硬體控制模組) ───────────────
+// ─── 2. HARDWARE ──────────────────
 const Hardware = {
     audioCtx: null,
     gpsWatchId: null,
@@ -635,15 +496,14 @@ const Hardware = {
     motion: { strokeTimes: [], filteredY: 0, lastY: 0, lastPeakTime: 0, isRising: false, gravity: {x:0, y:0, z:0} },
 
     kalman: {
-        x: 0, P: 1, Q: 0.08, R: 0.6, lastUpdate: 0,
+        x: 0, P: 1, Q: 0.085, R: 0.55, lastUpdate: 0,
         update(measurement, isGps = false) {
             const now = Date.now();
             let dt = (now - this.lastUpdate) / 1000;
             if (dt > 2 || dt <= 0) dt = 0.1;
             this.lastUpdate = now;
-
             this.P = this.P + this.Q * dt;
-            const K = this.P / (this.P + (isGps ? this.R * 1.2 : this.R));
+            const K = this.P / (this.P + (isGps ? this.R * 1.15 : this.R));
             this.x = this.x + K * (measurement - this.x);
             this.P = (1 - K) * this.P;
             return Math.max(0, this.x);
@@ -651,31 +511,30 @@ const Hardware = {
         reset() { this.x = 0; this.P = 1; this.lastUpdate = Date.now(); }
     },
 
-    getCtx() { 
-        if(!this.audioCtx) this.audioCtx = new(window.AudioContext||window.webkitAudioContext)(); 
-        return this.audioCtx; 
+    getCtx() {
+        if(!this.audioCtx) this.audioCtx = new(window.AudioContext||window.webkitAudioContext)();
+        return this.audioCtx;
     },
     toneWhistle(baseFreq, duration, vol) {
         try {
             const c = this.getCtx(); const t = c.currentTime;
             const o1 = c.createOscillator(); o1.type = 'sawtooth';
-            const o2 = c.createOscillator(); o2.type = 'sawtooth'; 
+            const o2 = c.createOscillator(); o2.type = 'sawtooth';
             const gn = c.createGain();
             o1.connect(gn); o2.connect(gn); gn.connect(c.destination);
             o1.frequency.setValueAtTime(baseFreq, t); o2.frequency.setValueAtTime(baseFreq * 1.05, t);
             gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(vol, t + 0.01);
-            gn.gain.setValueAtTime(vol, Math.max(t + 0.01, t + duration - 0.02)); 
+            gn.gain.setValueAtTime(vol, Math.max(t + 0.01, t + duration - 0.02));
             gn.gain.exponentialRampToValueAtTime(0.001, t + duration);
             o1.start(t); o2.start(t); o1.stop(t + duration); o2.stop(t + duration);
         } catch(e) {}
     },
     accentTone() { this.toneWhistle(400, 0.12, 1.0); },
-    beatTone()   { this.toneWhistle(400, 0.12, 1.0); },
-    cdTone()     { this.toneWhistle(400, 0.12, 1.0); },
+    beatTone() { this.toneWhistle(400, 0.12, 1.0); },
+    cdTone() { this.toneWhistle(400, 0.12, 1.0); },
     speak(t) { if('speechSynthesis' in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang='zh-TW'; u.rate=1.15; speechSynthesis.speak(u); } },
     vibrateShort(ms) { if('vibrate' in navigator) navigator.vibrate(ms||30); },
     vibratePattern(pat) { if('vibrate' in navigator) navigator.vibrate(pat); },
-
     wakeLock: null,
     async requestWakeLock() {
         try {
@@ -707,11 +566,12 @@ const Hardware = {
         if(this.gpsWatchId != null) { navigator.geolocation.clearWatch(this.gpsWatchId); this.gpsWatchId = null; }
         this.lastGpsPos = null;
     },
+
     onGpsUpdate(pos) {
         const spd = pos.coords.speed != null ? pos.coords.speed * 3.6 : 0;
         State.data.gpsSpeed = Math.max(0, spd);
         this.lastGpsTime = Date.now();
-        
+
         if(State.app.isRunning && this.lastGpsPos) {
             const R=6371, dLat=(pos.coords.latitude-this.lastGpsPos.latitude)*Math.PI/180, dLon=(pos.coords.longitude-this.lastGpsPos.longitude)*Math.PI/180;
             const a=Math.sin(dLat/2)**2+Math.cos(this.lastGpsPos.latitude*Math.PI/180)*Math.cos(pos.coords.latitude*Math.PI/180)*Math.sin(dLon/2)**2;
@@ -719,10 +579,10 @@ const Hardware = {
             if(d<0.2) State.data.totalDistKm += d;
         }
         if(State.app.isRunning) this.lastGpsPos = pos.coords;
-        
+
         this.updateFusedSpeed();
         UI.updateSpeedDistUI();
-        
+
         State.data.lapSpeedSamples.push(State.data.simSpeed);
         if(State.data.lapSpeedSamples.length > 120) State.data.lapSpeedSamples.shift();
     },
@@ -730,8 +590,9 @@ const Hardware = {
     estimateSensorSpeed() {
         const spm = parseFloat(document.getElementById('actualBpm').textContent) || 0;
         if (spm < 15) return 0;
-        return spm * 0.178 + 1.25; 
+        return spm * 0.178 + 1.25;
     },
+
     updateFusedSpeed() {
         if (!State.app.isRunning) return;
         const now = Date.now();
@@ -765,22 +626,26 @@ const Hardware = {
         if(!State.app.isRunning) return;
         let aig = event.accelerationIncludingGravity;
         if(!aig) return;
+
         const alphaG = 0.8;
         this.motion.gravity.x = alphaG * this.motion.gravity.x + (1 - alphaG) * aig.x;
         this.motion.gravity.y = alphaG * this.motion.gravity.y + (1 - alphaG) * aig.y;
         this.motion.gravity.z = alphaG * this.motion.gravity.z + (1 - alphaG) * aig.z;
-        const accX = aig.x - this.motion.gravity.x, accY = aig.y - this.motion.gravity.y, accZ = aig.z - this.motion.gravity.z;
+
+        const accX = aig.x - this.motion.gravity.x;
+        const accY = aig.y - this.motion.gravity.y;
+        const accZ = aig.z - this.motion.gravity.z;
         const mag = Math.sqrt(accX*accX + accY*accY + accZ*accZ);
-        
+
         this.motion.filteredY = this.motion.filteredY + 0.2 * (mag - this.motion.filteredY);
         const now = performance.now();
-        
+
         if (this.motion.filteredY > this.motion.lastY) {
             this.motion.isRising = true;
-        } else if (this.motion.isRising && (this.motion.lastY - this.motion.filteredY) > 1.2) { 
-            if (now - this.motion.lastPeakTime > 350) { 
+        } else if (this.motion.isRising && (this.motion.lastY - this.motion.filteredY) > 1.2) {
+            if (now - this.motion.lastPeakTime > 350) {
                 this.motion.lastPeakTime = now; this.motion.strokeTimes.push(now);
-                State.data.totalStrokes++; 
+                State.data.totalStrokes++;
                 this.updateObsBPM(now);
                 this.updateFusedSpeed();
                 UI.syncMetricsDisplays();
@@ -794,19 +659,22 @@ const Hardware = {
         if(this.motion.strokeTimes.length >= 3) {
             const elapsed = (this.motion.strokeTimes[this.motion.strokeTimes.length-1] - this.motion.strokeTimes[0]) / 1000;
             const spm = (this.motion.strokeTimes.length - 1) / (elapsed / 60);
-            const bpmEl=document.getElementById('actualBpm');
-            bpmEl.textContent = spm.toFixed(1);
-            bpmEl.classList.remove('beat'); void bpmEl.offsetWidth; bpmEl.classList.add('beat');
+            const bpmEl = document.getElementById('actualBpm');
+            if (bpmEl) {
+                bpmEl.textContent = spm.toFixed(1);
+                bpmEl.classList.remove('beat');
+                void bpmEl.offsetWidth;
+                bpmEl.classList.add('beat');
+            }
             UI.syncMetricsDisplays();
         }
     }
 };
 
-// ─── 3. TIMER (計時與生命週期模組) ────────────
-const Timer = {
+// ─── 3. TIMER ──────────────────
+const Timer = { 
     rafId: null, clockTimer: null, metroTimer: null, obsTimer: null,
     arcBeatStart: 0, arcBeatDur: 750,
-
     startArc(bpm) {
         cancelAnimationFrame(this.rafId);
         this.arcBeatDur = 60000 / bpm; this.arcBeatStart = performance.now();
@@ -823,7 +691,6 @@ const Timer = {
         const el = document.getElementById('arcFill');
         if(el) { el.style.transition = 'none'; el.style.strokeDashoffset = 2 * Math.PI * 39; void el.offsetWidth; el.style.transition = ''; }
     },
-    
     startClock() {
         State.session.trainStartTime = Date.now() - (State.session.elapsedSec * 1000);
         this.clockTimer = setInterval(() => {
@@ -837,7 +704,7 @@ const Timer = {
     stopClock() { clearInterval(this.clockTimer); }
 };
 
-// ─── 4. UI (渲染模組) ─────────────────────────
+// ─── 4. UI（已修正電腦不斷放大問題）────────────────────────
 const UI = {
     lapBoardOpen: true,
 
@@ -845,7 +712,7 @@ const UI = {
         document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
         document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
         document.getElementById('page-'+id).classList.add('active');
-        if(btn)btn.classList.add('active');
+        if(btn) btn.classList.add('active');
     },
 
     showToast(msg) {
@@ -885,6 +752,170 @@ const UI = {
         ['distVal', 'obsDist'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = distStr; });
         ['totalStrokes', 'obsStrokes'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = State.data.totalStrokes; });
     },
+
+    // === 關鍵修正：防止圖表不斷放大 ===
+    drawChartCore(canvasId, data, tooltipIdx = -1) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+
+        const ctx = canvas.getContext('2d', { alpha: true });
+        const container = canvas.parentNode;
+        const rect = container.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        const targetWidth = Math.floor(rect.width * dpr);
+        const targetHeight = Math.floor(rect.height * dpr);
+
+        let needResize = false;
+        if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+            needResize = true;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        const w = rect.width;
+        const h = rect.height;
+        
+        // 保證 Tooltip 和十字線不殘影，每次繪製前都必須清空畫布
+        ctx.clearRect(0, 0, w, h);
+
+        if (!data || data.length < 2) {
+            ctx.fillStyle = '#5880a0';
+            ctx.font = "bold 13px 'Noto Sans TC', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("數據收集中...", w/2, h/2);
+            return;
+        }
+
+        // Live chart uses sliding window of 120 items, history uses full data
+        const displayData = canvasId === 'liveChart' && data.length > 120 ? data.slice(-120) : data;
+
+        const maxT = displayData[displayData.length-1].t;
+        const minT = displayData[0].t;
+        const rangeT = maxT - minT || 1;
+
+        const maxSpm = Math.max(...displayData.map(d => d.spm), 60) * 1.12;
+        const maxSpd = Math.max(...displayData.map(d => d.spd), 12) * 1.12;
+
+        // 背景格線
+        ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 1;
+        for (let i = 1; i < 5; i++) {
+            const y = h * (i / 5);
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        // Y軸左 - 槳頻
+        ctx.strokeStyle = 'rgba(255,179,0,0.65)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(38, 18); ctx.lineTo(38, h-35); ctx.stroke();
+        ctx.fillStyle = '#FFB300'; ctx.font = "bold 10px 'Orbitron', sans-serif"; ctx.textAlign = "right";
+        for (let i = 0; i <= 5; i++) {
+            const val = Math.round(maxSpm * (1 - i/5));
+            const y = 18 + (h - 53) * (i / 5);
+            ctx.fillText(val, 33, y + 4);
+        }
+        ctx.font = "9px 'Noto Sans TC', sans-serif";
+        ctx.fillText("SPM", 40, 26);
+
+        // Y軸右 - 船速
+        ctx.strokeStyle = 'rgba(0,229,255,0.65)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(w-38, 18); ctx.lineTo(w-38, h-35); ctx.stroke();
+        ctx.fillStyle = '#00E5FF'; ctx.textAlign = "left";
+        for (let i = 0; i <= 5; i++) {
+            const val = (maxSpd * (1 - i/5)).toFixed(1);
+            const y = 18 + (h - 53) * (i / 5);
+            ctx.fillText(val, w-33, y + 4);
+        }
+        ctx.font = "9px 'Noto Sans TC', sans-serif";
+        ctx.fillText("km/h", w-75, 26);
+
+        // X軸
+        ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(38, h-35); ctx.lineTo(w-38, h-35); ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = "9px 'Orbitron', sans-serif"; ctx.textAlign = "center";
+        const steps = 5;
+        for (let i = 0; i <= steps; i++) {
+            const x = 38 + (w - 76) * (i / steps);
+            const t = Math.round(minT + rangeT * (i / steps));
+            const min = Math.floor(t / 60);
+            const sec = t % 60;
+            ctx.fillText(min ? `${min}:${sec.toString().padStart(2,'0')}` : `${sec}"`, x, h - 15);
+        }
+
+        // 曲線（即時滾動）
+        const plotLeft = 38, plotRight = w - 38, plotTop = 18, plotHeight = h - 53;
+
+        ctx.strokeStyle = '#FFB300'; ctx.lineWidth = 2.6; ctx.shadowBlur = 8; ctx.shadowColor = '#FFB300';
+        ctx.beginPath();
+        displayData.forEach((d, i) => {
+            const x = plotLeft + (plotRight - plotLeft) * ((d.t - minT) / rangeT);
+            const y = plotTop + plotHeight * (1 - d.spm / maxSpm);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke(); ctx.shadowBlur = 0;
+
+        ctx.strokeStyle = '#00E5FF'; ctx.lineWidth = 2.6; ctx.shadowBlur = 8; ctx.shadowColor = '#00E5FF';
+        ctx.beginPath();
+        displayData.forEach((d, i) => {
+            const x = plotLeft + (plotRight - plotLeft) * ((d.t - minT) / rangeT);
+            const y = plotTop + plotHeight * (1 - d.spd / maxSpd);
+            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke(); ctx.shadowBlur = 0;
+        
+        // Tooltip
+        if (tooltipIdx >= 0 && tooltipIdx < displayData.length) {
+            const d = displayData[tooltipIdx];
+            const x = plotLeft + (plotRight - plotLeft) * ((d.t - minT) / rangeT);
+            const ySpm = plotTop + plotHeight * (1 - d.spm / maxSpm);
+            const ySpd = plotTop + plotHeight * (1 - d.spd / maxSpd);
+
+            ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1; ctx.setLineDash([3, 2]);
+            ctx.beginPath(); ctx.moveTo(x, plotTop); ctx.lineTo(x, h - 35); ctx.stroke(); ctx.setLineDash([]);
+
+            ctx.fillStyle = '#FFB300'; ctx.beginPath(); ctx.arc(x, ySpm, 4.5, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = '#00E5FF'; ctx.beginPath(); ctx.arc(x, ySpd, 4.5, 0, Math.PI*2); ctx.fill();
+
+            let boxX = x + 14; const boxW = 102;
+            if (boxX + boxW > w - 10) boxX = x - boxW - 14;
+            ctx.fillStyle = 'rgba(8,14,28,0.97)'; ctx.strokeStyle = '#00E5FF'; ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.roundRect(boxX, 26, boxW, 62, 6); ctx.fill(); ctx.stroke();
+
+            ctx.fillStyle = '#fff'; ctx.font = "bold 9.5px 'Orbitron', sans-serif";
+            const min = Math.floor(d.t/60); const sec = d.t % 60;
+            ctx.fillText(`TIME ${min}:${sec.toString().padStart(2,'0')}`, boxX+51, 44); // Center text within tooltip
+            ctx.fillStyle = '#FFB300'; ctx.fillText(`SPM ${d.spm.toFixed(1)}`, boxX+51, 60);
+            ctx.fillStyle = '#00E5FF'; ctx.fillText(`SPD ${d.spd.toFixed(1)}`, boxX+51, 76);
+        }
+    },
+
+    attachInteraction(canvasId, getDataFn) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas || canvas.dataset.interactionBound === "true") return;
+        canvas.dataset.interactionBound = "true";
+
+        const handleMove = (e) => {
+            e.preventDefault();
+            const data = getDataFn();
+            const displayData = canvasId === 'liveChart' && data.length > 120 ? data.slice(-120) : data;
+            
+            if (!displayData || displayData.length < 2) return;
+            const rect = canvas.getBoundingClientRect();
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let ratio = (clientX - rect.left - 38) / (rect.width - 76);
+            ratio = Math.max(0, Math.min(1, ratio));
+            UI.drawChartCore(canvasId, data, Math.round(ratio * (displayData.length - 1)));
+        };
+
+        const handleLeave = () => UI.drawChartCore(canvasId, getDataFn(), -1);
+
+        canvas.addEventListener('mousemove', handleMove, { passive: false });
+        canvas.addEventListener('touchmove', handleMove, { passive: false });
+        canvas.addEventListener('mouseleave', handleLeave);
+        canvas.addEventListener('touchend', handleLeave);
+    },
+
     updateSpeedDistUI() {
         const sourceText = State.data.speedSource === 'gps' ? 'GPS' : State.data.speedSource === 'kalman' ? 'Kalman' : 'READY';
         const sourceColor = State.data.speedSource === 'gps' ? '#00FF7A' : State.data.speedSource === 'kalman' ? '#FFB300' : '#5880a0';
@@ -896,14 +927,14 @@ const UI = {
                 el.style.color = sourceColor;
             }
         });
-        
-        const dsEl=document.getElementById('distSpeed');
-        if(dsEl) dsEl.textContent = State.app.isRunning && State.data.simSpeed>0.1?`${State.data.simSpeed.toFixed(1)} km/h`:'— GPS';
-        
+
+        const dsEl = document.getElementById('distSpeed');
+        if (dsEl) dsEl.textContent = State.app.isRunning && State.data.simSpeed > 0.1 ? `${State.data.simSpeed.toFixed(1)} km/h` : '— GPS';
+
         this.syncMetricsDisplays();
         State.data.lastSpeed = State.data.simSpeed;
     },
-    
+
     renderSegUI() {
         if(State.app.sessionType === 'FREE') return;
         const segs = State.training.selectedWorkout?.segments||[];
@@ -973,174 +1004,10 @@ const UI = {
         }).join('');
         list.scrollTop=0;
     },
-
-    drawChartCore(canvasId, data, tooltipIdx = -1) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d', { alpha: true });
-        const container = canvas.parentNode;
-        const rect = container.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-        const targetWidth = Math.floor(rect.width * dpr);
-        const targetHeight = Math.floor(rect.height * dpr);
-
-        let needResize = false;
-        if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
-            needResize = true;
-            canvas.width = targetWidth;
-            canvas.height = targetHeight;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-
-        const w = rect.width;
-        const h = rect.height;
-        
-        if (needResize) {
-            ctx.clearRect(0, 0, w, h);
-        } else {
-            ctx.clearRect(0, 0, w, h);
-        }
-
-        if (!data || data.length < 2) {
-            ctx.fillStyle = '#5880a0';
-            ctx.font = "bold 13px 'Noto Sans TC', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("尚無足夠數據", w/2, h/2 - 10);
-            ctx.font = "11px 'Noto Sans TC', sans-serif";
-            ctx.fillText("開始訓練後會在此顯示槳頻與船速軌跡", w/2, h/2 + 18);
-            return;
-        }
-
-        const maxT = data[data.length - 1].t || 1;
-        const maxSpm = Math.max(...data.map(d => d.spm), 60) * 1.15;
-        const maxSpd = Math.max(...data.map(d => d.spd), 12) * 1.15;
-
-        // 背景格線
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
-        for (let i = 1; i < 5; i++) {
-            const y = h * (i / 5);
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-        }
-
-        // Y軸左 (槳頻)
-        ctx.strokeStyle = 'rgba(255,179,0,0.6)'; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.moveTo(34, 15); ctx.lineTo(34, h - 32); ctx.stroke();
-        ctx.fillStyle = '#FFB300'; ctx.font = "bold 10px 'Orbitron', sans-serif"; ctx.textAlign = "right";
-        for (let i = 0; i <= 5; i++) {
-            const val = Math.round(maxSpm * (1 - i/5));
-            const y = 15 + (h - 47) * (i / 5);
-            ctx.fillText(val.toString(), 29, y + 4);
-            ctx.fillRect(30, y, 8, 1.5);
-        }
-        ctx.font = "9px 'Noto Sans TC', sans-serif";
-        ctx.fillText("槳頻 (SPM)", 36, 24);
-
-        // Y軸右 (船速)
-        ctx.strokeStyle = 'rgba(0,229,255,0.6)'; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.moveTo(w - 34, 15); ctx.lineTo(w - 34, h - 32); ctx.stroke();
-        ctx.fillStyle = '#00E5FF'; ctx.textAlign = "left";
-        for (let i = 0; i <= 5; i++) {
-            const val = (maxSpd * (1 - i/5)).toFixed(1);
-            const y = 15 + (h - 47) * (i / 5);
-            ctx.fillText(val, w - 29, y + 4);
-            ctx.fillRect(w - 38, y, 8, 1.5);
-        }
-        ctx.font = "9px 'Noto Sans TC', sans-serif";
-        ctx.fillText("船速 (km/h)", w - 92, 24);
-
-        // X軸
-        ctx.strokeStyle = 'rgba(255,255,255,0.45)'; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.moveTo(34, h - 32); ctx.lineTo(w - 34, h - 32); ctx.stroke();
-        ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.font = "9px 'Orbitron', sans-serif"; ctx.textAlign = "center";
-        const steps = maxT > 600 ? 6 : maxT > 300 ? 5 : maxT > 120 ? 4 : 3;
-        for (let i = 0; i <= steps; i++) {
-            const ratio = i / steps;
-            const x = 34 + (w - 68) * ratio;
-            const tSec = Math.round(maxT * ratio);
-            const min = Math.floor(tSec / 60);
-            const sec = tSec % 60;
-            const timeStr = min >= 1 ? `${min}:${sec.toString().padStart(2, '0')}` : `${sec}"`;
-            ctx.fillText(timeStr, x, h - 12);
-            ctx.fillRect(x - 1, h - 36, 2, 7);
-        }
-        ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = "9px 'Noto Sans TC', sans-serif"; ctx.fillText("經過時間", w/2, h - 48);
-
-        // 曲線
-        const plotLeft = 34, plotRight = w - 34, plotTop = 15, plotHeight = h - 47;
-        ctx.lineWidth = 2.8; ctx.shadowBlur = 10;
-        ctx.strokeStyle = '#FFB300'; ctx.shadowColor = 'rgba(255,179,0,0.6)';
-        ctx.beginPath();
-        data.forEach((d, i) => {
-            const x = plotLeft + (plotRight - plotLeft) * (d.t / maxT);
-            const y = plotTop + plotHeight * (1 - d.spm / maxSpm);
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        });
-        ctx.stroke(); ctx.shadowBlur = 0;
-
-        ctx.strokeStyle = '#00E5FF'; ctx.shadowColor = 'rgba(0,229,255,0.6)';
-        ctx.beginPath();
-        data.forEach((d, i) => {
-            const x = plotLeft + (plotRight - plotLeft) * (d.t / maxT);
-            const y = plotTop + plotHeight * (1 - d.spd / maxSpd);
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        });
-        ctx.stroke(); ctx.shadowBlur = 0;
-
-        // Tooltip
-        if (tooltipIdx >= 0 && tooltipIdx < data.length) {
-            const d = data[tooltipIdx];
-            const x = plotLeft + (plotRight - plotLeft) * (d.t / maxT);
-            const ySpm = plotTop + plotHeight * (1 - d.spm / maxSpm);
-            const ySpd = plotTop + plotHeight * (1 - d.spd / maxSpd);
-            
-            ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1; ctx.setLineDash([3, 2]);
-            ctx.beginPath(); ctx.moveTo(x, plotTop); ctx.lineTo(x, h - 32); ctx.stroke(); ctx.setLineDash([]);
-            
-            ctx.fillStyle = '#FFB300'; ctx.beginPath(); ctx.arc(x, ySpm, 4.5, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#00E5FF'; ctx.beginPath(); ctx.arc(x, ySpd, 4.5, 0, Math.PI*2); ctx.fill();
-            
-            let boxX = x + 14; const boxW = 102;
-            if (boxX + boxW > w - 10) boxX = x - boxW - 14;
-            ctx.fillStyle = 'rgba(8,14,28,0.97)'; ctx.strokeStyle = '#00E5FF'; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.roundRect(boxX, 26, boxW, 62, 6); ctx.fill(); ctx.stroke();
-            
-            ctx.fillStyle = '#fff'; ctx.font = "bold 9.5px 'Orbitron', sans-serif";
-            const min = Math.floor(d.t/60); const sec = d.t % 60;
-            ctx.fillText(`TIME ${min}:${sec.toString().padStart(2,'0')}`, boxX+10, 44);
-            ctx.fillStyle = '#FFB300'; ctx.fillText(`SPM ${d.spm.toFixed(1)}`, boxX+10, 60);
-            ctx.fillStyle = '#00E5FF'; ctx.fillText(`SPD ${d.spd.toFixed(1)}`, boxX+10, 76);
-        }
-    },
-
-    attachInteraction(canvasId, getDataFn) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas || canvas.dataset.interactionBound === "true") return;
-        canvas.dataset.interactionBound = "true";
-
-        const handleMove = (e) => {
-            e.preventDefault();
-            const data = getDataFn();
-            if (!data || data.length < 2) return;
-            const rect = canvas.getBoundingClientRect();
-            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            let ratio = (clientX - rect.left - 34) / (rect.width - 68);
-            ratio = Math.max(0, Math.min(1, ratio));
-            UI.drawChartCore(canvasId, data, Math.round(ratio * (data.length - 1)));
-        };
-
-        const handleLeave = () => UI.drawChartCore(canvasId, getDataFn(), -1);
-
-        canvas.addEventListener('mousemove', handleMove, { passive: false });
-        canvas.addEventListener('touchmove', handleMove, { passive: false });
-        canvas.addEventListener('mouseleave', handleLeave);
-        canvas.addEventListener('touchend', handleLeave);
-    },
-
     closeHistoryModal() { document.getElementById('historyModal').classList.remove('show'); }
 };
 
-// ─── 5. ENGINE (核心邏輯模組) ──────────────────
+// ─── 5. ENGINE ──────────────────
 const Engine = {
     startLapSegTracking() {
         State.data.lapSegStartTime = performance.now();
@@ -1161,6 +1028,7 @@ const Engine = {
         if(State.app.isFinished) this.resetTraining(); 
         State.app.isRunning ? this.pauseTraining() : await this.startTraining();
     },
+
     async startTraining() {
         if (!State.app.isRunning && !State.app.isFinished && State.session.elapsedSec === 0) {
             const isObsPage = document.getElementById('page-observe').classList.contains('active');
@@ -1171,37 +1039,45 @@ const Engine = {
                 if(!p) UI.showToast('請允許動態感測器以啟用自動計槳');
             }
         }
-        
+
         Hardware.getCtx().resume();
         State.app.isRunning = true;
         Hardware.requestWakeLock();
         if(Hardware.gpsGranted) Hardware.watchGPS(); else Hardware.initGPS();
-        
+
         UI.syncCtrlButtons('⏸ 暫停', false, false);
         Timer.startClock();
-        
+
+        // === 即時圖表：每2秒更新一次，附帶航位推算 ===
         Timer.obsTimer = setInterval(() => {
-            let spm = parseFloat(document.getElementById('actualBpm').textContent) || 0;
-            
+            const spm = parseFloat(document.getElementById('actualBpm').textContent) || 0;
+
             Hardware.updateFusedSpeed();
             UI.updateSpeedDistUI();
 
+            // 航位推算 Dead Reckoning
             const now = Date.now();
             const gpsValid = (now - Hardware.lastGpsTime < Hardware.gpsTimeout);
             if (!gpsValid && State.data.simSpeed > 0) {
-                State.data.totalDistKm += State.data.simSpeed / 3600;
+                State.data.totalDistKm += (State.data.simSpeed / 3600) * 2; // 2 seconds integration
             }
 
-            if (spm > 0 || State.data.simSpeed > 0) State.data.obsData.push({ t: State.session.elapsedSec, spm: spm, spd: State.data.simSpeed });
+            State.data.obsData.push({
+                t: State.session.elapsedSec,
+                spm: spm,
+                spd: State.data.simSpeed
+            });
+
             UI.drawChartCore('liveChart', State.data.obsData);
-        }, 1000);
+        }, 2000);
 
         if (State.app.sessionType === 'FREE') {
             UI.setLiveBadge('REC', 'rec'); UI.setAnnounce('自由記錄中，請開始划槳', 'info');
         } else {
-            UI.setLiveBadge('LIVE', 'live'); this.launchMetro(); Hardware.vibratePattern([40,30,40]); 
+            UI.setLiveBadge('LIVE', 'live'); this.launchMetro(); Hardware.vibratePattern([40,30,40]);
         }
     },
+
     pauseTraining() {
         State.app.isRunning = false; Hardware.releaseWakeLock(); Hardware.vibrateShort(60); 
         UI.syncCtrlButtons('▶ 繼續', false, true); 
@@ -1209,6 +1085,7 @@ const Engine = {
         Timer.stopClock(); clearInterval(Timer.obsTimer);
         if(State.app.sessionType === 'WORKOUT') { clearInterval(Timer.metroTimer); Timer.metroTimer = null; cancelAnimationFrame(Timer.rafId); }
     },
+
     finishSession() {
         State.app.isRunning = false; State.app.isFinished = true;
         Hardware.releaseWakeLock(); Hardware.stopGPS(); Timer.stopClock(); clearInterval(Timer.obsTimer);
@@ -1231,20 +1108,22 @@ const Engine = {
         }
         Engine.db.saveToHistory();
     },
+
     resetTraining() {
         State.app.isRunning=false; State.app.isFinished=false;
         Hardware.kalman.reset(); State.data.speedSource = 'READY';
         clearInterval(Timer.metroTimer); Timer.metroTimer=null; Timer.stopClock(); cancelAnimationFrame(Timer.rafId); Timer.resetArc();
         clearInterval(Timer.obsTimer);
-        
+
         State.training.segIdx=0; State.training.strokeInSeg=0; State.data.totalStrokes=0; State.session.elapsedSec=0; State.data.totalDistKm=0; State.data.simSpeed=0; State.data.lastSpeed=0; Hardware.lastGpsPos=null;
         Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; State.data.obsData=[];
-        
-        UI.syncCtrlButtons('▶  START', false, false);
+
+        UI.syncCtrlButtons('▶ START', false, false);
         UI.setLiveBadge('READY', 'ready');
-        
+
         ['arcBpm','actualBpm'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='--';});
         ['elapsedTime', 'obsElapsedTime'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00:00';});
+
         UI.syncMetricsDisplays(); 
         UI.updateSpeedDistUI();
 
@@ -1256,7 +1135,7 @@ const Engine = {
 
         UI.drawChartCore('liveChart', State.data.obsData);
         document.getElementById('beatPhase').textContent='等待開始';
-        
+
         if(document.getElementById('page-observe').classList.contains('active')) {
             UI.setAnnounce('選擇課表後按開始', 'info');
         } else {
@@ -1277,6 +1156,7 @@ const Engine = {
         this.onBeat();
         Timer.metroTimer = setInterval(()=>this.onBeat(), 60000/seg.bpm);
     },
+
     onBeat() {
         if(!State.app.isRunning || State.app.sessionType === 'FREE') return;
         const seg = State.training.selectedWorkout.segments[State.training.segIdx];
@@ -1305,6 +1185,7 @@ const Engine = {
         
         if(remaining<=0){ clearInterval(Timer.metroTimer); this.onSegEnd(); }
     },
+    
     onSegEnd() {
         const nxt = State.training.segIdx+1;
         const currentBpm = State.training.selectedWorkout.segments[State.training.segIdx].bpm;
@@ -1322,7 +1203,6 @@ const Engine = {
         }
     },
 
-    // -- Database & Builder --
     db: {
         openDB: function(){
             return new Promise((res,rej)=>{
@@ -1487,7 +1367,7 @@ const Engine = {
     }
 };
 
-// ─── 6. APP (入口與綁定模組) ───────────────────
+// ─── 6. APP ──────────────────
 const App = {
     async init() {
         await Engine.db.init();
@@ -1496,18 +1376,17 @@ const App = {
         document.getElementById('courseMetaLabel').textContent=`共 ${State.training.selectedWorkout.segments.length} 段落`;
         Engine.resetTraining();
         Engine.builder.render();
-        
+
         UI.attachInteraction('liveChart', () => State.data.obsData);
-        UI.attachInteraction('historyChart', () => window.currentHistoryData);
+        UI.attachInteraction('historyChart', () => window.currentHistoryData || []);
         Hardware.initGPS();
     },
     switchTab(id, btn) {
         UI.showPage(id, btn);
-        if(id === 'observe') setTimeout(() => UI.drawChartCore('liveChart', State.data.obsData), 50);
+        if(id === 'observe') setTimeout(() => UI.drawChartCore('liveChart', State.data.obsData), 100);
     }
 };
 
-// Initialize App
 document.addEventListener('DOMContentLoaded', () => App.init());
 
 // iOS install hint
