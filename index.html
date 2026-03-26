@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>DragonPace</title>
+
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,27 +27,40 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 4px);}
-.bg-fx{position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 120% 50% at 50% 0%,rgba(232,40,11,.07) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 100% 100%,rgba(0,212,255,.04) 0%,transparent 50%);}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.03) 4px);}
+.bg-fx{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 120% 50% at 50% 0%,rgba(232,40,11,.07) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 100%,rgba(0,212,255,.04) 0%,transparent 50%);}
 .app{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;}
-header{padding:9px 16px 8px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,14,.96);backdrop-filter:blur(30px);border-bottom:1px solid rgba(232,40,11,.14);position:sticky;top:0;z-index:100;}
-.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:16px;color:var(--red);letter-spacing:4px;text-shadow:0 0 18px rgba(232,40,11,.45);}
+header{padding:9px 16px 8px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(5,8,14,.96);backdrop-filter:blur(30px);
+  border-bottom:1px solid rgba(232,40,11,.14);position:sticky;top:0;z-index:100;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:16px;color:var(--red);
+  letter-spacing:4px;text-shadow:0 0 18px rgba(232,40,11,.45);}
 .logo span{color:var(--gold);}
 .hdr-right{display:flex;align-items:center;gap:8px;}
-.live-badge{display:flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1px;transition:all .3s;}
-.badge-ready{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);color:var(--green);}
-.badge-rec{background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.25);color:var(--cyan);}
-.badge-live{background:rgba(232,40,11,.12);border:1px solid rgba(232,40,11,.3);color:var(--red2);}
-.badge-paused{background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);color:var(--gold);}
-.badge-done{background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:var(--gold);}
+.live-badge{display:flex;align-items:center;gap:4px;border-radius:20px;padding:3px 9px;
+  font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1px;transition:all .3s;}
+.badge-ready { background:rgba(0,232,122,.1); border:1px solid rgba(0,232,122,.25); color:var(--green); }
+.badge-rec { background:rgba(0,229,255,.1); border:1px solid rgba(0,229,255,.25); color:var(--cyan); }
+.badge-live { background:rgba(232,40,11,.12); border:1px solid rgba(232,40,11,.3); color:var(--red2); }
+.badge-paused { background:rgba(240,165,0,.1); border:1px solid rgba(240,165,0,.25); color:var(--gold); }
+.badge-done { background:rgba(240,165,0,.12); border:1px solid rgba(240,165,0,.3); color:var(--gold); }
 .live-dot{width:4px;height:4px;border-radius:50%;background:currentColor;animation:blink 1.4s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .time-badge{font-family:'Orbitron',monospace;font-size:10px;color:var(--muted2);letter-spacing:1px;}
 nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);}
-nav button{flex:1;background:none;border:none;color:var(--muted2);padding:9px 0;font-size:8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .2s;font-family:'Noto Sans TC',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
+nav button{flex:1;background:none;border:none;color:var(--muted2);padding:9px 0;font-size:8px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .2s;
+  font-family:'Noto Sans TC',sans-serif;letter-spacing:.5px;text-transform:uppercase;}
 nav button svg{width:17px;height:17px;}
 nav button.active{color:var(--red);}
 nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
+
+/* Bug E: Main content flex layout */
+.main-content{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
 .page{display:none;flex:1;overflow-y:auto;padding-bottom:16px;}
 .page.active{display:block;}
 .status-bar{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;background:var(--bg2);border-bottom:1px solid var(--border);}
@@ -58,7 +72,12 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .quad-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .panel{background:linear-gradient(145deg,#091525,#0d1e32);border:1px solid rgba(255,255,255,.12);border-radius:8px;position:relative;overflow:hidden;display:flex;flex-direction:column;padding:11px 12px 10px;min-height:105px;}
 .panel::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pa,rgba(255,255,255,.15));}
-.p-bpm{--pa:var(--gold);}.p-speed{--pa:var(--cyan);}.p-stroke{--pa:var(--green);}.p-dist{--pa:#00c8ff;}
+.panel::after{content:'';position:absolute;top:0;right:0;width:12px;height:12px;
+  background:
+    linear-gradient(var(--pa,rgba(255,255,255,.1)) 0,var(--pa,rgba(255,255,255,.1)) 1px,transparent 1px) right 0/7px 1px no-repeat,
+    linear-gradient(var(--pa,rgba(255,255,255,.1)) 0,var(--pa,rgba(255,255,255,.1)) 7px,transparent 7px) right 0/1px 7px no-repeat;}
+
+.p-bpm   {--pa:var(--gold);} .p-speed {--pa:var(--cyan);} .p-stroke{--pa:var(--green);} .p-dist {--pa:#00c8ff;}
 .p-label{font-size:7px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#7a9ec0;margin-bottom:8px;display:flex;align-items:center;gap:4px;}
 .p-dot{width:4px;height:4px;border-radius:50%;background:var(--pa,var(--muted2));box-shadow:0 0 6px var(--pa,transparent);flex-shrink:0;}
 .p-val{font-family:'Orbitron',monospace;font-weight:900;line-height:1;transition:color .12s;}
@@ -69,7 +88,8 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .p-val.beat{animation:vbeat .1s cubic-bezier(.05,2,.3,1);}
 @keyframes vbeat{0%{transform:scale(1.06)}100%{transform:scale(1)}}
 .p-unit{font-size:8px;color:#8aaccc;letter-spacing:1.5px;margin-top:4px;font-weight:600;}
-.p-sub{font-size:8px;color:var(--muted2);margin-top:3px;}
+.p-sub {font-size:8px;color:var(--muted2);margin-top:3px;}
+.speed-delta{font-size:8px;font-weight:700;letter-spacing:.5px;}
 .panel-metro{flex-direction:row;align-items:stretch;padding:0;min-height:76px;background:linear-gradient(145deg,#091525,#0d1e32);}
 .metro-arc{flex-shrink:0;width:76px;height:76px;position:relative;border-right:1px solid var(--border);}
 .metro-arc svg{width:76px;height:76px;display:block;}
@@ -110,17 +130,52 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .prog-bar{height:5px;background:#1a2e44;border-radius:3px;display:flex;overflow:hidden;margin-top:6px;}
 .prog-seg{height:100%;position:relative;}
 .prog-seg+.prog-seg{border-left:1px solid var(--bg);}
-.prog-fill{height:100%;background:var(--gold);transition:width .18s linear;box-shadow:0 0 8px rgba(255,179,0,.8),0 0 2px rgba(255,179,0,1);}
+.prog-fill{height:100%;background:var(--gold);transition:width .18s linear;box-shadow:0 0 8px rgba(255,179,0,.8);}
 .prog-seg.s-done .prog-fill{width:100%!important;background:rgba(240,165,0,.2);}
 .prog-labels{display:flex;margin-top:2px;}
 .prog-lbl{font-size:6px;color:var(--muted);text-align:center;overflow:hidden;}
 .ctrl-row{display:grid;grid-template-columns:1fr auto auto;gap:7px;}
-.btn-start{padding:13px;font-size:13px;font-weight:700;font-family:'Orbitron',monospace;letter-spacing:3px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;text-shadow:0 0 12px rgba(232,40,11,.35);box-shadow:inset 0 0 16px rgba(232,40,11,.04),0 0 10px rgba(232,40,11,.08);}
-.btn-start.running{border-color:var(--gold);color:var(--gold);text-shadow:0 0 12px rgba(240,165,0,.35);box-shadow:inset 0 0 16px rgba(240,165,0,.04),0 0 10px rgba(240,165,0,.08);}
+.btn-start{padding:13px;font-size:13px;font-weight:700;font-family:'Orbitron',monospace;letter-spacing:3px;background:transparent;border:1px solid var(--red);color:var(--red);border-radius:6px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;text-shadow:0 0 12px rgba(232,40,11,.35);}
+.btn-start.running{border-color:var(--gold);color:var(--gold);text-shadow:0 0 12px rgba(240,165,0,.35);}
 .btn-start:active{transform:scale(.97);}
 .btn-reset{padding:13px 14px;background:transparent;border:1px solid var(--border);color:var(--muted2);border-radius:6px;cursor:pointer;font-size:15px;transition:all .18s;}
 .btn-reset:active{background:var(--bg3);}
-.btn-end{padding:13px 14px;background:var(--red2);border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:13px;font-weight:bold;transition:all .18s;}
+.btn-end{padding:13px 14px;background:transparent;border:1px solid var(--red2);color:var(--red2);border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;font-family:'Orbitron',monospace;transition:all .18s;}
+.lap-section{background:var(--bg2);border-radius:8px;border:1px solid var(--border);overflow:hidden;}
+.lap-section-hdr{display:flex;align-items:center;gap:7px;padding:8px 12px;background:var(--bg3);cursor:pointer;user-select:none;}
+.lap-hdr-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,179,0,.8);flex-shrink:0;}
+.lap-hdr-title{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#7a9ec0;flex:1;}
+.lap-count-badge{font-family:'Orbitron',monospace;font-size:8px;font-weight:700;color:var(--gold);background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.2);border-radius:3px;padding:2px 7px;letter-spacing:.5px;}
+.lap-chevron{font-size:9px;color:var(--muted2);transition:transform .2s;}
+.lap-chevron.open{transform:rotate(180deg);}
+.lap-table-hdr{display:grid;grid-template-columns:60px 52px 1fr 1fr 1fr;padding:6px 12px;background:var(--bg3);border-top:1px solid var(--border);font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);}
+.lap-table-hdr>*:not(:first-child){text-align:right;}
+.lap-scroll{max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;}
+.lap-scroll::-webkit-scrollbar{width:3px;}
+.lap-scroll::-webkit-scrollbar-thumb{background:var(--muted);border-radius:2px;}
+.lap-row{display:grid;grid-template-columns:60px 52px 1fr 1fr 1fr;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);position:relative;}
+.lap-row.lap-latest{background:rgba(255,179,0,.04);}
+.lap-row.lap-latest::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);border-radius:1px;}
+.lap-idx{display:flex;flex-direction:column;justify-content:center;gap:2px;}
+.lap-idx-label{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--gold);line-height:1;}
+.lap-row:not(.lap-latest) .lap-idx-label{color:#fff;}
+.lap-idx-time{font-size:7px;color:var(--muted2);font-family:'Orbitron',monospace;}
+.lap-target{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:1px;}
+.lap-target-val{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--muted2);}
+.lap-target-unit{font-size:6px;color:var(--muted);}
+.lap-cell{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;}
+.lap-cell-val{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;line-height:1;}
+.lap-cell-unit{font-size:6px;color:var(--muted2);}
+.lc-ok{color:#00FF7A;text-shadow:0 0 6px rgba(0,255,122,.4);}
+.lc-warn{color:var(--gold);}
+.lc-hi{color:var(--red2);}
+.lc-blue{color:#60d8ff;}
+.lap-delta{display:inline-block;font-family:'Orbitron',monospace;font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;letter-spacing:.3px;}
+.ld-ok{background:rgba(0,255,122,.1);color:#00FF7A;border:1px solid rgba(0,255,122,.25);}
+.ld-hi{background:rgba(255,80,48,.1);color:var(--red2);border:1px solid rgba(255,80,48,.25);}
+.ld-lo{background:rgba(96,216,255,.1);color:#60d8ff;border:1px solid rgba(96,216,255,.25);}
+.lap-empty{text-align:center;padding:22px 0;font-size:10px;color:var(--muted2);}
+.lap-empty-icon{font-size:16px;font-family:'Orbitron',monospace;color:var(--muted);margin-bottom:6px;}
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;margin:9px 12px;padding:13px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),transparent,var(--gold));}
 .card-title{font-size:8px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;}
@@ -164,1046 +219,1242 @@ nav button.active svg{filter:drop-shadow(0 0 5px var(--red));}
 .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:0 12px 10px;}
 .stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center;color:var(--muted2);font-size:7px;letter-spacing:1px;}
 .stat-box b{display:block;font-family:'Orbitron',monospace;font-size:14px;color:var(--cyan);margin-top:3px;}
-.toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(5,8,14,.98);border:1px solid rgba(0,212,255,.2);color:var(--cyan);padding:6px 12px;border-radius:4px;font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;opacity:0;transition:all .2s;z-index:9998;white-space:nowrap;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-.lap-section{background:var(--bg2);border-radius:8px;border:1px solid var(--border);overflow:hidden;}
-.lap-section-hdr{display:flex;align-items:center;gap:7px;padding:8px 12px;background:var(--bg3);cursor:pointer;user-select:none;}
-.lap-hdr-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);box-shadow:0 0 6px rgba(255,179,0,.8);flex-shrink:0;}
-.lap-hdr-title{font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#7a9ec0;flex:1;}
-.lap-count-badge{font-family:'Orbitron',monospace;font-size:8px;font-weight:700;color:var(--gold);background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.2);border-radius:3px;padding:2px 7px;letter-spacing:.5px;}
-.lap-chevron{font-size:9px;color:var(--muted2);transition:transform .2s;}
-.lap-chevron.open{transform:rotate(180deg);}
-.lap-table-hdr{display:grid;grid-template-columns:60px 52px 1fr 1fr 1fr;padding:6px 12px;background:var(--bg3);border-top:1px solid var(--border);font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);}
-.lap-table-hdr > *:not(:first-child){text-align:right;}
-.lap-scroll{max-height:280px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--muted) transparent;}
-.lap-row{display:grid;grid-template-columns:60px 52px 1fr 1fr 1fr;padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.04);position:relative;}
-.lap-row.lap-latest{background:rgba(255,179,0,.04);}
-.lap-row.lap-latest::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);border-radius:1px;}
-.lap-idx{display:flex;flex-direction:column;justify-content:center;gap:2px;}
-.lap-idx-label{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--gold);line-height:1;}
-.lap-row:not(.lap-latest) .lap-idx-label{color:#fff;}
-.lap-idx-time{font-size:7px;color:var(--muted2);font-family:'Orbitron',monospace;}
-.lap-target{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:1px;}
-.lap-target-val{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--muted2);}
-.lap-target-unit{font-size:6px;color:var(--muted);}
-.lap-cell{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:2px;}
-.lap-cell-val{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;line-height:1;}
-.lap-cell-unit{font-size:6px;color:var(--muted2);}
-.lc-ok{color:#00FF7A;} .lc-warn{color:var(--gold);} .lc-hi{color:var(--red2);} .lc-blue{color:#60d8ff;}
-.lap-delta{display:inline-block;font-family:'Orbitron',monospace;font-size:7px;font-weight:700;padding:1px 5px;border-radius:2px;letter-spacing:.3px;}
-.ld-ok{background:rgba(0,255,122,.1);color:#00FF7A;border:1px solid rgba(0,255,122,.25);}
-.ld-hi{background:rgba(255,80,48,.1);color:var(--red2);border:1px solid rgba(255,80,48,.25);}
-.ld-lo{background:rgba(96,216,255,.1);color:#60d8ff;border:1px solid rgba(96,216,255,.25);}
-.lap-empty{text-align:center;padding:22px 0;font-size:10px;color:var(--muted2);}
-.lap-empty-icon{font-size:16px;font-family:'Orbitron',monospace;color:var(--muted);margin-bottom:6px;}
-.speed-delta{font-size:8px;font-weight:700;letter-spacing:.5px;}
+.obs-chart-section{margin:7px 8px 0;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.obs-chart-header{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-bottom:1px solid var(--border);}
+.obs-chart-title{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7a9ec0;}
+.obs-tabs{display:flex;gap:3px;}
+.obs-tab{padding:3px 8px;border-radius:3px;font-size:7px;font-weight:700;letter-spacing:1px;background:none;border:1px solid rgba(255,255,255,.08);color:var(--muted2);cursor:pointer;transition:all .18s;}
+.obs-tab.active{background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.3);color:var(--cyan);}
+.obs-canvas-outer{position:relative;background:#020d1a;}
+canvas#obsChart{display:block;width:100%;}
+#obsXhair{position:absolute;pointer-events:none;display:none;top:0;bottom:0;width:1px;background:rgba(255,255,255,.3);will-change:left;}
+#obsTip{position:absolute;pointer-events:none;display:none;background:rgba(4,10,22,.97);border:1px solid rgba(0,229,255,.4);border-radius:6px;padding:7px 11px;font-family:'Orbitron',monospace;font-size:9px;line-height:1.7;color:var(--text);white-space:nowrap;z-index:10;top:8px;}
+#obsTip .tt-t{color:rgba(255,255,255,.45);font-size:7.5px;}
+#obsTip .tt-s{color:var(--cyan);}
+#obsTip .tt-b{color:var(--gold);}
+.obs-legend{display:flex;gap:12px;padding:6px 12px 8px;}
+.obs-legend-item{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--muted2);}
+.obs-legend-dot{width:10px;height:3px;border-radius:2px;}
+.obs-tap-wrap{padding:7px 8px 0;}
+.obs-tap-btn{width:100%;padding:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.25);border-radius:8px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--cyan);cursor:default;pointer-events:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+.obs-tap-info{text-align:center;font-size:8px;color:var(--muted2);margin-top:5px;letter-spacing:.5px;}
+.obs-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 8px 0;}
+.obs-tile{background:linear-gradient(145deg,#091525,#0d1e32);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 8px 8px;position:relative;overflow:hidden;text-align:center;}
+.obs-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ot,rgba(255,255,255,.1));}
+.obs-tile-spd{--ot:var(--cyan);}
+.obs-tile-bpm{--ot:var(--gold);}
+.obs-tile-dst{--ot:#60d8ff;}
+.obs-tile-str{--ot:var(--green);} /* Bug A: Tile string color */
+.obs-t-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7a9ec0;margin-bottom:5px;}
+.obs-t-val{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;line-height:1;}
+.obs-tile-spd .obs-t-val{color:var(--cyan);text-shadow:0 0 16px rgba(0,229,255,.5);}
+.obs-tile-bpm .obs-t-val{color:var(--gold);text-shadow:0 0 16px rgba(255,179,0,.5);}
+.obs-tile-dst .obs-t-val{color:#60d8ff;text-shadow:0 0 14px rgba(96,216,255,.4);}
+.obs-tile-str .obs-t-val{color:var(--green);text-shadow:0 0 16px rgba(0,255,122,.5);} /* Bug A: Stroke value color */
+.obs-t-unit{font-size:7px;color:var(--muted2);letter-spacing:1px;margin-top:3px;}
+.obs-ctrl-row{display:flex;gap:7px;padding:7px 8px 0;}
+.obs-elapsed{text-align:center;font-family:'Orbitron',monospace;font-size:10px;color:rgba(255,255,255,.3);padding:4px 0 0;}
+.obs-done-banner{display:none;text-align:center;padding:8px;background:rgba(0,255,122,.06);border-radius:6px;border:1px solid rgba(0,255,122,.2);margin:6px 8px 0;font-size:10px;color:var(--green);font-weight:700;letter-spacing:.5px;}
 .chart-modal{position:fixed;inset:0;background:rgba(5,8,14,.95);backdrop-filter:blur(10px);z-index:10000;display:flex;flex-direction:column;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .chart-modal.show{opacity:1;pointer-events:auto;}
 .chart-hdr{font-family:'Orbitron',monospace;font-size:16px;color:var(--cyan);text-align:center;font-weight:bold;}
-.chart-container{flex:1;position:relative;background:#0a1220;border:1px solid var(--border);border-radius:8px;padding:10px;}
-.btn-close-chart{margin-top:20px;padding:14px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;}
+.chart-container{flex:1;position:relative;background:#0a1220;border:1px solid var(--border);border-radius:8px;padding:0;overflow:hidden;}
+.btn-close-chart{margin-top:20px;padding:14px;background:var(--bg3);border:1px solid var(--border);color:var(--cyan);border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;width:100%;}
+#histXhair{position:absolute;pointer-events:none;display:none;top:0;bottom:0;width:1px;background:rgba(255,255,255,.3);}
+#histTip{position:absolute;pointer-events:none;display:none;background:rgba(4,10,22,.97);border:1px solid rgba(0,229,255,.4);border-radius:6px;padding:7px 11px;font-family:'Orbitron',monospace;font-size:9px;line-height:1.7;color:var(--text);white-space:nowrap;z-index:10;top:8px;}
+#histTip .tt-t{color:rgba(255,255,255,.45);font-size:7.5px;}
+#histTip .tt-s{color:var(--cyan);}
+#histTip .tt-b{color:var(--gold);}
+#iosHint{display:none;background:#0a1020;border-bottom:1px solid rgba(255,179,0,.25);padding:8px 14px;text-align:center;font-size:10px;color:#FFB300;}
+.toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(5,8,14,.98);border:1px solid rgba(0,212,255,.2);color:var(--cyan);padding:6px 12px;border-radius:4px;font-family:'Orbitron',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;opacity:0;transition:all .2s;z-index:9998;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 </style>
 </head>
 <body>
-<div class="bg-fx"></div>
-<div class="app">
-<header>
-  <div class="logo">DRAGON<span>PACE</span></div>
-  <div class="hdr-right">
-    <div class="live-badge badge-ready" id="liveBadge"><div class="live-dot"></div>READY</div>
-    <div class="time-badge" id="clockBadge">--:--</div>
-  </div>
-</header>
-<nav>
-  <button class="active" onclick="App.switchTab('train',this)">儀錶板</button>
-  <button onclick="App.switchTab('observe',this)">觀察</button>
-  <button onclick="App.switchTab('builder',this)">課表</button>
-  <button onclick="App.switchTab('data',this)">數據</button>
-</nav>
+  <div class="bg-fx"></div>
+  <div class="app">
+    <header>
+      <div class="logo">DRAGON<span>PACE</span></div>
+      <div class="hdr-right">
+        <div class="live-badge badge-ready" id="liveBadge"><div class="live-dot"></div>READY</div>
+        <div class="time-badge" id="clockBadge">--:--</div>
+      </div>
+    </header>
 
-<!-- iOS install hint -->
-<div id="iosHint" style="display:none;background:#0a1020;border-bottom:1px solid rgba(255,179,0,.25);padding:8px 14px;text-align:center;font-size:10px;color:#FFB300;">
-  📲 Safari → 分享 → 加入主畫面 即可安裝
-  <button onclick="document.getElementById('iosHint').remove()" style="background:none;border:none;color:#5880a0;margin-left:8px;cursor:pointer;font-size:13px;">✕</button>
-</div>
+    <nav aria-label="主要功能導航">
+      <button class="active" id="nav-train" onclick="App.switchTab('train',this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>儀錶板
+      </button>
+      <button id="nav-observe" onclick="App.switchTab('observe',this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>觀察
+      </button>
+      <button id="nav-builder" onclick="App.switchTab('builder',this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>課表
+      </button>
+      <button id="nav-data" onclick="App.switchTab('data',this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>數據
+      </button>
+    </nav>
 
-<!-- TRAIN TAB -->
-<div id="page-train" class="page active">
-  <div class="status-bar">
-    <div>
-      <div class="sb-course" id="selectedWorkoutLabel">未選擇課表</div>
-      <div class="sb-meta" id="courseMetaLabel">--</div>
-    </div>
-    <div class="sb-right">
-      <div class="sb-time" id="elapsedTime">00:00</div>
-    </div>
-  </div>
-  <div class="gauge-area">
-    <div class="quad-grid">
-      <div class="panel p-bpm">
-        <div class="p-label"><div class="p-dot"></div>當前槳頻</div>
-        <div class="p-val" id="actualBpm">--</div>
-        <div class="p-unit">槳 / 分</div>
-        <div class="p-sub" id="segName">--</div>
-      </div>
-      <div class="panel p-speed">
-        <div class="p-label"><div class="p-dot"></div>當前船速</div>
-        <div class="p-val" id="speedVal">0.0</div>
-        <div class="p-unit">km/h</div>
-        <div class="p-sub speed-delta" id="speedSource">— READY</div>
-      </div>
-      <div class="panel p-stroke">
-        <div class="p-label"><div class="p-dot"></div>累積划槳</div>
-        <div class="p-val" id="totalStrokes">0</div>
-        <div class="p-unit">槳</div>
-      </div>
-      <div class="panel p-dist">
-        <div class="p-label"><div class="p-dot"></div>移動距離</div>
-        <div class="p-val" id="distVal">0.00</div>
-        <div class="p-unit">公里</div>
-        <div class="p-sub" id="distSpeed">— GPS</div>
-      </div>
+    <div id="iosHint" role="alert">
+      📲 Safari → 分享 → 加入主畫面 即可安裝
+      <button onclick="localStorage.setItem('iosHintDismissed','1');this.closest('#iosHint').remove()" style="background:none;border:none;color:#5880a0;margin-left:8px;cursor:pointer;font-size:13px;">✕</button>
     </div>
 
-    <!-- METRONOME -->
-    <div class="panel panel-metro" id="metroPanel">
-      <div class="metro-arc">
-        <svg viewBox="0 0 100 100">
-          <circle class="arc-bg-r" cx="50" cy="50" r="29"/>
-          <circle class="arc-fill-r" id="arcFill" cx="50" cy="50" r="29"/>
-        </svg>
-        <div class="metro-arc-center">
-          <div class="metro-arc-bpm" id="arcBpm">--</div>
-          <div class="metro-arc-lbl">槳/分</div>
+    <main class="main-content">
+
+      <!-- ══ TRAIN PAGE ══ -->
+      <div id="page-train" class="page active" role="tabpanel" aria-labelledby="nav-train">
+        <div class="status-bar">
+          <div>
+            <div class="sb-course" id="selectedWorkoutLabel">未選擇課表</div>
+            <div class="sb-meta" id="courseMetaLabel">--</div>
+          </div>
+          <div class="sb-right">
+            <div class="sb-time" id="elapsedTime">00:00</div>
+          </div>
+        </div>
+        <div class="gauge-area">
+          <div class="quad-grid">
+            <div class="panel p-bpm">
+              <div class="p-label"><div class="p-dot"></div>當前槳頻</div>
+              <div class="p-val" id="actualBpm">--</div>
+              <div class="p-unit">槳 / 分</div>
+              <div class="p-sub" id="segName">--</div>
+            </div>
+            <div class="panel p-speed">
+              <div class="p-label"><div class="p-dot"></div>當前船速</div>
+              <div class="p-val" id="speedVal">0.0</div>
+              <div class="p-unit">km/h</div>
+              <div class="p-sub speed-delta" id="speedSource">— READY</div>
+            </div>
+            <div class="panel p-stroke">
+              <div class="p-label"><div class="p-dot"></div>累積划槳</div>
+              <div class="p-val" id="totalStrokes">0</div>
+              <div class="p-unit">槳</div>
+            </div>
+            <div class="panel p-dist">
+              <div class="p-label"><div class="p-dot"></div>移動距離</div>
+              <div class="p-val" id="distVal">0.00</div>
+              <div class="p-unit">公里</div>
+              <div class="p-sub" id="distSpeed">— GPS</div>
+            </div>
+          </div>
+
+          <!-- METRONOME PANEL -->
+          <div class="panel panel-metro" id="metroPanel">
+            <div class="metro-arc">
+              <svg viewBox="0 0 100 100">
+                <circle class="arc-bg-r" cx="50" cy="50" r="29"/>
+                <circle class="arc-fill-r" id="arcFill" cx="50" cy="50" r="29"/>
+              </svg>
+              <div class="metro-arc-center">
+                <div class="metro-arc-bpm" id="arcBpm">--</div>
+                <div class="metro-arc-lbl">槳/分</div>
+              </div>
+            </div>
+            <div class="metro-info">
+              <div class="metro-lbl">節拍器</div>
+              <div class="metro-val" id="targetBpm">--</div>
+              <div class="metro-phase" id="beatPhase">等待開始</div>
+            </div>
+            <div class="metro-beat" id="beatVis">
+              <div class="beat-bar" id="bb0"></div>
+              <div class="beat-bar" id="bb1"></div>
+              <div class="beat-bar" id="bb2"></div>
+              <div class="beat-bar" id="bb3"></div>
+            </div>
+          </div>
+          <div class="announce-strip" id="announceBox">
+            <div class="announce-icon">◈</div>
+            <div class="announce-text">選擇課表後按開始</div>
+          </div>
+          <div class="seg-flow">
+            <div class="sf-head">
+              <span class="sf-title" id="sfTitle">段落進度</span>
+              <span class="sf-frac" id="sfFrac">0 / 0 槳</span>
+            </div>
+            <div class="seg-cards" id="segCards"></div>
+            <div class="prog-bar" id="progBar"></div>
+            <div class="prog-labels" id="progLabels"></div>
+          </div>
+          <div class="lap-section">
+            <div class="lap-section-hdr" onclick="UI.toggleLapBoard()">
+              <div class="lap-hdr-dot"></div>
+              <div class="lap-hdr-title">段落記錄</div>
+              <div class="lap-count-badge" id="lapCountBadge">0 LAP</div>
+              <div class="lap-chevron" id="lapChevron">▾</div>
+            </div>
+            <div id="lapBody">
+              <div class="lap-table-hdr">
+                <div>LAP</div><div>目標</div><div>實際槳頻</div><div>均速</div><div>距離</div>
+              </div>
+              <div class="lap-scroll" id="lapList">
+                <div class="lap-empty"><div class="lap-empty-icon">◈</div>段落完成後自動記錄</div>
+              </div>
+            </div>
+          </div>
+          <div class="ctrl-row">
+            <button class="btn-start" id="startBtn" onclick="Engine.toggleTraining()">▶ START</button>
+            <button class="btn-reset" onclick="Engine.resetTraining()">↺</button>
+            <button class="btn-end" id="endBtn" onclick="Engine.finishSession()" style="display:none;">🏁 結束</button>
+          </div>
         </div>
       </div>
-      <div class="metro-info">
-        <div class="metro-lbl">節拍器</div>
-        <div class="metro-val" id="targetBpm">--</div>
-        <div class="metro-phase" id="beatPhase">等待開始</div>
-      </div>
-      <div class="metro-beat" id="beatVis">
-        <div class="beat-bar" id="bb0"></div>
-        <div class="beat-bar" id="bb1"></div>
-        <div class="beat-bar" id="bb2"></div>
-        <div class="beat-bar" id="bb3"></div>
-      </div>
-    </div>
 
-    <div class="announce-strip" id="announceBox">
-      <div class="announce-icon">◈</div>
-      <div class="announce-text">選擇課表後按開始</div>
-    </div>
-
-    <div class="seg-flow" id="segFlowBox">
-      <div class="sf-head">
-        <span class="sf-title" id="sfTitle">段落進度</span>
-        <span class="sf-frac" id="sfFrac">0 / 0 槳</span>
-      </div>
-      <div class="seg-cards" id="segCards"></div>
-      <div class="prog-bar" id="progBar"></div>
-      <div class="prog-labels" id="progLabels"></div>
-    </div>
-
-    <div class="lap-section" id="lapSection">
-      <div class="lap-section-hdr" onclick="UI.toggleLapBoard()">
-        <div class="lap-hdr-dot"></div>
-        <div class="lap-hdr-title">段落記錄</div>
-        <div class="lap-count-badge" id="lapCountBadge">0 LAP</div>
-        <div class="lap-chevron" id="lapChevron">▾</div>
-      </div>
-      <div id="lapBody">
-        <div class="lap-table-hdr">
-          <div>LAP</div><div id="lapTgtCol">目標</div><div>實際槳頻</div><div>均速</div><div>距離</div>
+      <!-- ══ OBSERVE PAGE ══ -->
+      <div id="page-observe" class="page" role="tabpanel" aria-labelledby="nav-observe">
+        <div class="status-bar">
+          <div>
+            <div class="sb-course">即時觀察模式</div>
+            <div class="sb-meta">速度 / 距離 / 槳頻 即時圖表</div>
+          </div>
+          <div class="sb-right">
+            <div class="sb-time" id="obsElapsedTime">00:00</div>
+          </div>
         </div>
-        <div class="lap-scroll" id="lapList">
-          <div class="lap-empty"><div class="lap-empty-icon">◈</div>段落完成後自動記錄</div>
+        <div class="gauge-area">
+          <section class="obs-metrics" aria-label="即時數據面板">
+            <div class="obs-tile obs-tile-spd">
+              <div class="obs-t-lbl">船速</div>
+              <div class="obs-t-val" id="obsSpeed">0.0</div>
+              <div class="obs-t-unit">km/h</div>
+              <div class="obs-t-unit" id="obsSpeedSource" style="margin-top:3px;">— READY</div>
+            </div>
+            <div class="obs-tile obs-tile-bpm">
+              <div class="obs-t-lbl">槳頻</div>
+              <div class="obs-t-val" id="obsBpmDisp">--</div>
+              <div class="obs-t-unit">槳/分</div>
+            </div>
+            <div class="obs-tile obs-tile-dst">
+              <div class="obs-t-lbl">距離</div>
+              <div class="obs-t-val" id="obsDistDisp">0</div>
+              <div class="obs-t-unit" id="obsDistUnit">m</div>
+            </div>
+            <!-- Bug A: Added missing obsStrokes tile -->
+            <div class="obs-tile obs-tile-str">
+              <div class="obs-t-lbl">累積划槳</div>
+              <div class="obs-t-val" id="obsStrokes">0</div>
+              <div class="obs-t-unit">槳</div>
+            </div>
+          </section>
+
+          <section class="obs-tap-wrap" aria-label="自動槳頻偵測">
+            <div id="obsTapBtn" class="obs-tap-btn" aria-live="polite">
+              📡 自動槳頻偵測
+            </div>
+            <div class="obs-tap-info" id="obsTapInfo">使用手機感測器即時計算槳頻</div>
+          </section>
+
+          <section class="obs-chart-section" aria-label="即時走勢圖表">
+            <div class="obs-chart-header">
+              <div class="obs-chart-title">即時圖表</div>
+              <div class="obs-tabs">
+                <button class="obs-tab active" id="tab-spd" onclick="Observe.setTab('speed',this)">速度</button>
+                <button class="obs-tab" id="tab-bpm" onclick="Observe.setTab('bpm',this)">槳頻</button>
+                <button class="obs-tab" id="tab-both" onclick="Observe.setTab('both',this)">合併</button>
+              </div>
+            </div>
+            <div class="obs-canvas-outer" id="obsCanvasOuter" style="height:200px;">
+              <canvas id="obsChart" aria-label="速度與槳頻即時走勢圖"></canvas>
+              <div id="obsXhair"></div>
+              <div id="obsTip" role="tooltip">
+                <div class="tt-t" id="obsTipTime">0:00</div>
+                <div class="tt-s" id="obsTipSpd"></div>
+                <div class="tt-b" id="obsTipBpm"></div>
+              </div>
+            </div>
+            <div class="obs-legend" id="obsLegend"></div>
+          </section>
+
+          <div class="obs-done-banner" id="obsDoneBanner" role="status">✓ 觀察完成 — 滑動圖表查看詳情</div>
+
+          <div class="obs-ctrl-row">
+            <button class="btn-start" id="obsStartBtn" onclick="Observe.toggle()" style="flex:1;">▶ 開始觀察</button>
+            <button class="btn-reset" onclick="Observe.reset()">↺</button>
+            <button class="btn-end" id="obsEndBtn" onclick="Observe._finish()" style="display:none; flex:1;">🏁 結束</button>
+            <button class="btn-reset" onclick="Observe.share()" style="color:var(--cyan);border-color:rgba(0,229,255,.25);font-size:16px;">📤</button>
+          </div>
+          <div class="obs-elapsed" id="obsElapsedDisp">00:00</div>
         </div>
       </div>
-    </div>
 
-    <div class="ctrl-row">
-      <button class="btn-start" id="startBtn" onclick="Engine.toggleTraining()">▶ START</button>
-      <button class="btn-reset" id="resetBtn" onclick="Engine.resetTraining()">↺</button>
-      <button class="btn-end" id="endBtn" onclick="Engine.finishSession()" style="display:none;">🏁 結束</button>
-    </div>
-  </div>
-</div>
-
-<!-- OBSERVE TAB -->
-<div id="page-observe" class="page">
-  <div class="status-bar">
-    <div>
-      <div class="sb-course">即時觀察 & 軌跡</div>
-      <div class="sb-meta">實時數據與動態圖表繪製</div>
-    </div>
-    <div class="sb-right">
-      <div class="sb-time" id="obsElapsedTime">00:00</div>
-    </div>
-  </div>
-  <div class="gauge-area">
-    <div class="quad-grid">
-      <div class="panel p-bpm">
-        <div class="p-label"><div class="p-dot"></div>當前槳頻</div>
-        <div class="p-val" id="obsBpm">--</div>
-        <div class="p-unit">槳 / 分</div>
+      <!-- ══ BUILDER PAGE ══ -->
+      <div id="page-builder" class="page" role="tabpanel" aria-labelledby="nav-builder">
+        <div class="section-header">預設課表</div>
+        <div class="workout-list" id="presetList"></div>
+        <div class="section-header">自訂課表</div>
+        <div class="card">
+          <div class="card-title" id="builderTitle">新增 / 自訂課表</div>
+          <input type="text" id="workoutName" class="seg-input" placeholder="例：比賽起步訓練" style="width:100%;margin-bottom:9px;">
+          <div class="card-title">訓練段落</div>
+          <div id="segList"></div>
+          <button class="add-seg-btn" onclick="Engine.builder.addSegment()">＋ 新增段落</button>
+          <div style="display:flex;gap:6px;margin-bottom:5px;">
+            <button class="btn-save" style="flex:2;margin-bottom:0;" onclick="Engine.builder.saveWorkout()">SAVE 儲存</button>
+            <button id="btnCancelEdit" class="btn-save" style="flex:1;margin-bottom:0;border-color:var(--muted2);color:var(--muted2);display:none;" onclick="Engine.builder.cancelEdit()">取消</button>
+            <button id="btnDelete" class="btn-save" style="flex:1;margin-bottom:0;border-color:var(--red2);color:var(--red2);display:none;" onclick="Engine.builder.deleteWorkout()">刪除</button>
+          </div>
+          <button class="btn-load-train" onclick="Engine.builder.loadToTraining()">▶ 載入並開始訓練</button>
+        </div>
       </div>
-      <div class="panel p-speed">
-        <div class="p-label"><div class="p-dot"></div>當前船速</div>
-        <div class="p-val" id="obsSpeed">0.0</div>
-        <div class="p-unit">km/h</div>
-        <div class="p-sub speed-delta" id="obsSpeedSource">— READY</div>
+
+      <!-- ══ DATA PAGE ══ -->
+      <div id="page-data" class="page" role="tabpanel" aria-labelledby="nav-data">
+        <div class="section-header">訓練統計 (全部)</div>
+        <div class="stats-row">
+          <div class="stat-box">累積次數<br><b id="statCnt">0</b></div>
+          <div class="stat-box">累積時間<br><b id="statTime">0.0h</b></div>
+          <div class="stat-box">總距離<br><b id="statDist">0.0km</b></div>
+        </div>
+        <div class="section-header">資料匯出</div>
+        <div class="export-row">
+          <button class="export-btn" onclick="Engine.exportCSV()">📤 匯出 CSV</button>
+          <button class="export-btn btn-danger" id="btnClear" onclick="Engine.db.confirmClear()">🗑️ 清空記錄</button>
+        </div>
+        <div class="section-header">歷史訓練記錄</div>
+        <div id="historyList"></div>
       </div>
-      <div class="panel p-stroke">
-        <div class="p-label"><div class="p-dot"></div>累積划槳</div>
-        <div class="p-val" id="obsStrokes">0</div>
-        <div class="p-unit">槳</div>
-      </div>
-      <div class="panel p-dist">
-        <div class="p-label"><div class="p-dot"></div>移動距離</div>
-        <div class="p-val" id="obsDist">0.00</div>
-        <div class="p-unit">公里</div>
+
+    </main>
+  </div>
+
+  <!-- HISTORY CHART MODAL -->
+  <div class="chart-modal" id="historyModal" role="dialog" aria-modal="true" aria-labelledby="hmTitle">
+    <div class="chart-hdr" id="hmTitle" style="margin-bottom:8px;">訓練數據</div>
+    <div style="display:flex;gap:10px;margin-bottom:12px;">
+      <div class="stat-box" style="flex:1;margin:0;"><b id="hmSpd" style="color:var(--cyan)">--</b><br>平均船速</div>
+      <div class="stat-box" style="flex:1;margin:0;"><b id="hmDist" style="color:var(--gold)">--</b><br>移動距離</div>
+    </div>
+    <div class="chart-container" style="height:310px;position:relative;">
+      <canvas id="historyChart" style="width:100%;height:100%;touch-action:none;display:block;"></canvas>
+      <div id="histXhair"></div>
+      <div id="histTip">
+        <div class="tt-t" id="histTipTime">0:00</div>
+        <div class="tt-s" id="histTipSpd"></div>
+        <div class="tt-b" id="histTipBpm"></div>
       </div>
     </div>
-
-    <!-- LIVE CHART -->
-    <div class="panel" style="margin-top:2px; padding:10px; height:320px; display:flex; flex-direction:column;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <div class="p-label" style="margin-bottom:0;"><div class="p-dot" style="background:var(--cyan)"></div>即時數據圖表</div>
-        <div style="font-size:8px; color:var(--muted2);">每2秒更新 • 向左滾動</div>
-      </div>
-      <div style="flex:1; position:relative; background:#0a1220; border-radius:6px; border:1px solid var(--border); overflow:hidden;">
-         <canvas id="liveChart" style="width:100%; height:100%; touch-action:none;"></canvas>
-      </div>
-    </div>
-
-    <div class="ctrl-row" style="margin-top:5px;">
-      <button class="btn-start" id="obsStartBtn" onclick="Engine.toggleTraining()">▶ START</button>
-      <button class="btn-reset" id="obsResetBtn" onclick="Engine.resetTraining()">↺</button>
-      <button class="btn-end" id="obsEndBtn" onclick="Engine.finishSession()" style="display:none;">🏁 結束</button>
-    </div>
+    <button class="btn-close-chart" onclick="UI.closeHistoryModal()">關閉分析</button>
   </div>
-</div>
 
-<!-- BUILDER -->
-<div id="page-builder" class="page">
-  <div class="section-header">預設課表</div>
-  <div class="workout-list" id="presetList"></div>
-  <div class="section-header">自訂課表</div>
-  <div class="card">
-    <div class="card-title" id="builderTitle">新增 / 自訂課表</div>
-    <input type="text" id="workoutName" class="seg-input" placeholder="例：比賽起步訓練" style="width:100%;margin-bottom:9px;">
-    <div class="card-title">訓練段落</div>
-    <div id="segList"></div>
-    <button class="add-seg-btn" onclick="Engine.builder.addSegment()">＋ 新增段落</button>
-    <div style="display:flex;gap:6px;margin-bottom:5px;">
-      <button class="btn-save" style="flex:2;margin-bottom:0;" onclick="Engine.builder.saveWorkout()">SAVE 儲存</button>
-      <button id="btnCancelEdit" class="btn-save" style="flex:1;margin-bottom:0;border-color:var(--muted2);color:var(--muted2);display:none;" onclick="Engine.builder.cancelEdit()">取消</button>
-      <button id="btnDelete" class="btn-save" style="flex:1;margin-bottom:0;border-color:var(--red2);color:var(--red2);display:none;" onclick="Engine.builder.deleteWorkout()">刪除</button>
-    </div>
-    <button class="btn-load-train" onclick="Engine.builder.loadToTraining()">▶ 載入並開始訓練</button>
-  </div>
-</div>
-
-<!-- DATA -->
-<div id="page-data" class="page">
-  <div class="section-header">訓練統計 (全部)</div>
-  <div class="stats-row" id="statsRow">
-    <div class="stat-box">累積次數<br><b id="statCnt">0</b></div>
-    <div class="stat-box">累積時間<br><b id="statTime">0.0h</b></div>
-    <div class="stat-box">總距離<br><b id="statDist">0.0km</b></div>
-  </div>
-  <div class="section-header">資料匯出與管理</div>
-  <div class="export-row">
-    <button class="export-btn" onclick="Engine.exportCSV()">📤 匯出 CSV 訓練記錄</button>
-    <button class="export-btn btn-danger" id="btnClear" onclick="Engine.db.confirmClear()">🗑️ 清空所有記錄</button>
-  </div>
-  <div class="section-header">歷史訓練記錄</div>
-  <div id="historyList"></div>
-</div>
-
-<!-- HISTORY MODAL -->
-<div class="chart-modal" id="historyModal">
-  <div class="chart-hdr" id="hmTitle" style="margin-bottom:8px;">訓練數據</div>
-  <div style="display:flex; gap:10px; margin-bottom:12px;">
-    <div class="stat-box" style="flex:1; margin:0;"><b id="hmSpd" style="color:var(--cyan)">--</b><br>平均船速</div>
-    <div class="stat-box" style="flex:1; margin:0;"><b id="hmDist" style="color:var(--gold)">--</b><br>移動距離</div>
-  </div>
-  <div class="chart-container" style="height:310px; padding:0; overflow:hidden;">
-    <canvas id="historyChart" style="width:100%; height:100%; touch-action:none;"></canvas>
-  </div>
-  <button class="btn-close-chart" onclick="UI.closeHistoryModal()">關閉分析</button>
-</div>
-
-<div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-// ====================== STATE ======================
+'use strict';
+
+// ══════════════════════════════════════════════
+// 0. EventBus & ServiceWorker (架構解耦與離線核心)
+// ══════════════════════════════════════════════
+const EventBus = {
+  events: {},
+  on(event, cb) { (this.events[event] || (this.events[event] = [])).push(cb); },
+  emit(event, data) { (this.events[event] || []).forEach(cb => cb(data)); }
+};
+
+// Bug D: Standard Service Worker registration without blob to comply with CSP
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+
+// ══════════════════════════════════════════════
+// 1. STATE (Single Source of Truth)
+// ══════════════════════════════════════════════
 const State = {
-    PRESETS: [
-      {id:'pa',name:'漸進頻率訓練 A',tag:'耐力',sets:1,rest:0,segments:[{bpm:40,count:30},{bpm:45,count:30},{bpm:60,count:30}]},
-      {id:'pb',name:'比賽起步訓練 B',tag:'爆發',sets:1,rest:0,segments:[{bpm:70,count:3},{bpm:65,count:7},{bpm:50,count:40},{bpm:70,count:20}]},
-      {id:'pc',name:'基礎穩頻',tag:'基礎',sets:1,rest:0,segments:[{bpm:38,count:50},{bpm:42,count:50}]}
-    ],
-    app: { sessionType: 'WORKOUT', isRunning: false, isFinished: false, editingWorkoutId: null },
-    session: { elapsedSec: 0, trainStartTime: 0 },
-    data: {
-        totalStrokes: 0,
-        simSpeed: 0,
-        lastSpeed: 0,
-        totalDistKm: 0,
-        laps: [],
-        obsData: [],
-        lapSpeedSamples: [],
-        lapSegStartTime: 0,
-        lapSegStartDist: 0,
-        gpsSpeed: 0,
-        sensorSpeed: 0,
-        speedSource: 'READY'
-    },
-    training: { selectedWorkout: null, segIdx: 0, strokeInSeg: 0, builderSegs: [{bpm:40,count:30}] },
-    db: { customWorkouts: [], history: [] }
+  PRESETS: [
+    {id:'pa',name:'漸進頻率訓練 A',tag:'耐力',sets:1,rest:0,segments:[{bpm:40,count:30},{bpm:45,count:30},{bpm:60,count:30}]},
+    {id:'pb',name:'比賽起步訓練 B',tag:'爆發',sets:1,rest:0,segments:[{bpm:70,count:3},{bpm:65,count:7},{bpm:50,count:40},{bpm:70,count:20}]},
+    {id:'pc',name:'基礎穩頻', tag:'基礎',sets:1,rest:0,segments:[{bpm:38,count:50},{bpm:42,count:50}]}
+  ],
+  app: { sessionType:'WORKOUT', isRunning:false, isFinished:false, editingWorkoutId:null },
+  session: { elapsedSec:0, trainStartTime:0 },
+  data: {
+    totalStrokes:0, simSpeed:0, lastSpeed:0, totalDistKm:0, currentSpm:0,
+    laps:[], obsData:[], lapSpeedSamples:[], lapSegStartTime:0, lapSegStartDist:0,
+    gpsSpeed:0, sensorSpeed:0, speedSource:'READY'
+  },
+  training: { selectedWorkout:null, segIdx:0, strokeInSeg:0, builderSegs:[{bpm:40,count:30}] },
+  db: { customWorkouts:[], history:[] }
 };
 
-// ====================== HARDWARE ======================
+// ══════════════════════════════════════════════
+// 2. TIMERS (統一的計時器管理員，防止記憶體洩漏)
+// ══════════════════════════════════════════════
+const Timers = {
+  intervals: new Set(), rafs: new Set(),
+  clockTimer: null, metroTimer: null, obsTimer: null, arcRaf: null,
+  
+  setInterval(fn, t) { const id = setInterval(fn, t); this.intervals.add(id); return id; },
+  clearInterval(id) { clearInterval(id); this.intervals.delete(id); },
+  
+  requestAnimationFrame(fn) { const id = requestAnimationFrame(fn); this.rafs.add(id); return id; },
+  cancelAnimationFrame(id) { cancelAnimationFrame(id); this.rafs.delete(id); },
+  
+  clearAll() {
+    this.intervals.forEach(clearInterval); this.intervals.clear();
+    this.rafs.forEach(cancelAnimationFrame); this.rafs.clear();
+    this.clockTimer = null; this.metroTimer = null; this.obsTimer = null; this.arcRaf = null;
+  },
+
+  startArc(bpm) {
+    if (this.arcRaf) this.cancelAnimationFrame(this.arcRaf);
+    this.arcBeatDur = 60000 / bpm; this.arcBeatStart = performance.now();
+    const run = () => {
+      const pct = Math.min((performance.now() - this.arcBeatStart) / this.arcBeatDur, 1);
+      const el = DOM.get('arcFill');
+      if (el) el.style.strokeDashoffset = (2 * Math.PI * 29) * (1 - pct);
+      if (pct < 1) this.arcRaf = this.requestAnimationFrame(run);
+    };
+    this.arcRaf = this.requestAnimationFrame(run);
+  },
+
+  resetArc() {
+    if (this.arcRaf) this.cancelAnimationFrame(this.arcRaf);
+    const el = DOM.get('arcFill');
+    if (el) { el.style.transition = 'none'; el.style.strokeDashoffset = 2 * Math.PI * 29; void el.offsetWidth; el.style.transition = ''; }
+  },
+
+  startClock() {
+    if (this.clockTimer) this.clearInterval(this.clockTimer);
+    State.session.trainStartTime = Date.now() - (State.session.elapsedSec * 1000);
+    this.clockTimer = this.setInterval(() => {
+      const nowElapsed = Math.floor((Date.now() - State.session.trainStartTime) / 1000);
+      if(nowElapsed > State.session.elapsedSec) {
+        State.session.elapsedSec = nowElapsed;
+        UI.updateTimeDisplays();
+      }
+    }, 200);
+  },
+
+  stopClock() {
+    if(this.clockTimer) this.clearInterval(this.clockTimer);
+    this.clockTimer = null;
+  }
+};
+
+// ══════════════════════════════════════════════
+// 3. DOM Cache Helper (降低重繪耗電)
+// ══════════════════════════════════════════════
+const DOM = {
+  cache: {},
+  get(id) {
+    if (!this.cache[id]) this.cache[id] = document.getElementById(id);
+    return this.cache[id];
+  },
+  setText(id, text) {
+    const el = this.get(id);
+    if (el && el.textContent !== String(text)) el.textContent = text;
+  },
+  setStyle(id, prop, val) {
+    const el = this.get(id);
+    if (el && el.style[prop] !== val) el.style[prop] = val;
+  },
+  setClass(id, cls, add) {
+    const el = this.get(id);
+    if (el) add ? el.classList.add(cls) : el.classList.remove(cls);
+  },
+  // Bug C: Helper to clear cache for destroyed DOM elements
+  clearPrefix(prefix) {
+    Object.keys(this.cache).forEach(k => {
+        if(k.startsWith(prefix)) delete this.cache[k];
+    });
+  }
+};
+
+// ══════════════════════════════════════════════
+// 4. HARDWARE
+// ══════════════════════════════════════════════
 const Hardware = {
-    audioCtx: null,   // ← 只保留一次
-    gpsWatchId: null,
-    lastGpsPos: null,
-    gpsGranted: false,
-    lastGpsTime: 0,
-    gpsTimeout: 4000,
-    motion: { strokeTimes: [], filteredY: 0, lastY: 0, lastPeakTime: 0, isRising: false, gravity: {x:0, y:0, z:0} },
-
-    kalman: {
-        x: 0, P: 1, Q: 0.085, R: 0.55, lastUpdate: 0,
-        update(measurement, isGps = false) {
-            const now = Date.now();
-            let dt = (now - this.lastUpdate) / 1000;
-            if (dt > 2 || dt <= 0) dt = 0.1;
-            this.lastUpdate = now;
-            this.P = this.P + this.Q * dt;
-            const K = this.P / (this.P + (isGps ? this.R * 1.15 : this.R));
-            this.x = this.x + K * (measurement - this.x);
-            this.P = (1 - K) * this.P;
-            return Math.max(0, this.x);
-        },
-        reset() { this.x = 0; this.P = 1; this.lastUpdate = Date.now(); }
+  _audioCtx: null, gpsWatchId: null, lastGpsPos: null, gpsGranted: false, lastGpsTime: 0, gpsTimeout: 4000,
+  motion: { strokeTimes:[], filteredY:0, lastY:0, lastPeakTime:0, isRising:false, gravity:{x:0,y:0,z:0} },
+  motionListenerAdded: false,
+  kalman: {
+    x:0, P:1, Q:0.085, R:0.55, lastUpdate:0,
+    update(m, isGps=false, accuracy=10) {
+      const now = Date.now();
+      let dt = (now - this.lastUpdate)/1000;
+      if(dt>2||dt<=0) dt=0.1;
+      this.lastUpdate = now;
+      const dynamicR = isGps ? (accuracy > 20 ? this.R * 2 : this.R * 0.6) : this.R;
+      this.P = this.P + this.Q*dt;
+      const K = this.P/(this.P + dynamicR);
+      this.x = this.x + K*(m-this.x);
+      this.P = (1-K)*this.P;
+      return Math.max(0, this.x);
     },
-
-    getCtx() {
-        if (!this.audioCtx) this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        return this.audioCtx;
-    },
-    toneWhistle(baseFreq, duration, vol) {
-        try {
-            const c = this.getCtx(); const t = c.currentTime;
-            const o1 = c.createOscillator(); o1.type = 'sawtooth';
-            const o2 = c.createOscillator(); o2.type = 'sawtooth';
-            const gn = c.createGain();
-            o1.connect(gn); o2.connect(gn); gn.connect(c.destination);
-            o1.frequency.setValueAtTime(baseFreq, t); o2.frequency.setValueAtTime(baseFreq * 1.05, t);
-            gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(vol, t + 0.01);
-            gn.gain.setValueAtTime(vol, Math.max(t + 0.01, t + duration - 0.02));
-            gn.gain.exponentialRampToValueAtTime(0.001, t + duration);
-            o1.start(t); o2.start(t); o1.stop(t + duration); o2.stop(t + duration);
-        } catch(e) {}
-    },
-    accentTone() { this.toneWhistle(400, 0.12, 1.0); },
-    beatTone() { this.toneWhistle(400, 0.12, 1.0); },
-    cdTone() { this.toneWhistle(400, 0.12, 1.0); },
-    speak(t) { if('speechSynthesis' in window) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang='zh-TW'; u.rate=1.15; speechSynthesis.speak(u); } },
-    vibrateShort(ms) { if('vibrate' in navigator) navigator.vibrate(ms||30); },
-    vibratePattern(pat) { if('vibrate' in navigator) navigator.vibrate(pat); },
-    wakeLock: null,
-    async requestWakeLock() {
-        try {
-            if('wakeLock' in navigator) {
-                this.wakeLock = await navigator.wakeLock.request('screen');
-                this.wakeLock.addEventListener('release', () => { this.wakeLock = null; });
-            }
-        } catch(e){}
-    },
-    releaseWakeLock() { if(this.wakeLock) { this.wakeLock.release(); this.wakeLock = null; } },
-
-    initGPS() {
-        if(!('geolocation' in navigator)) { UI.setGpsBadge('NO GPS','var(--muted2)'); return; }
-        navigator.geolocation.getCurrentPosition(
-            () => { this.gpsGranted = true; this.watchGPS(); UI.setGpsBadge('GPS','var(--green)'); },
-            (e) => { UI.setGpsBadge('GPS 拒絕','var(--red2)'); },
-            {enableHighAccuracy:true,timeout:10000}
-        );
-    },
-    watchGPS() {
-        if(this.gpsWatchId != null) return;
-        this.gpsWatchId = navigator.geolocation.watchPosition(
-            (pos) => this.onGpsUpdate(pos),
-            () => UI.setGpsBadge('GPS 錯誤','var(--red2)'),
-            {enableHighAccuracy:true,maximumAge:1000,timeout:10000}
-        );
-    },
-    stopGPS() {
-        if(this.gpsWatchId != null) { navigator.geolocation.clearWatch(this.gpsWatchId); this.gpsWatchId = null; }
-        this.lastGpsPos = null;
-    },
-    onGpsUpdate(pos) {
-        const spd = pos.coords.speed != null ? pos.coords.speed * 3.6 : 0;
-        State.data.gpsSpeed = Math.max(0, spd);
-        this.lastGpsTime = Date.now();
-
-        if(State.app.isRunning && this.lastGpsPos) {
-            const R=6371, dLat=(pos.coords.latitude-this.lastGpsPos.latitude)*Math.PI/180, dLon=(pos.coords.longitude-this.lastGpsPos.longitude)*Math.PI/180;
-            const a=Math.sin(dLat/2)**2+Math.cos(this.lastGpsPos.latitude*Math.PI/180)*Math.cos(pos.coords.latitude*Math.PI/180)*Math.sin(dLon/2)**2;
-            const d=2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-            if(d<0.2) State.data.totalDistKm += d;
-        }
-        if(State.app.isRunning) this.lastGpsPos = pos.coords;
-
-        this.updateFusedSpeed();
-        UI.updateSpeedDistUI();
-
-        State.data.lapSpeedSamples.push(State.data.simSpeed);
-        if(State.data.lapSpeedSamples.length > 120) State.data.lapSpeedSamples.shift();
-    },
-
-    estimateSensorSpeed() {
-        const spm = parseFloat(document.getElementById('actualBpm').textContent) || 0;
-        if (spm < 15) return 0;
-        return spm * 0.178 + 1.25;
-    },
-
-    updateFusedSpeed() {
-        if (!State.app.isRunning) return;
-        const now = Date.now();
-        const gpsValid = (now - this.lastGpsTime < this.gpsTimeout) && State.data.gpsSpeed > 0.4;
-        let fused;
-        if (gpsValid) {
-            fused = this.kalman.update(State.data.gpsSpeed, true);
-            State.data.speedSource = 'gps';
-        } else {
-            const sensorEst = this.estimateSensorSpeed();
-            State.data.sensorSpeed = sensorEst;
-            fused = this.kalman.update(sensorEst, false);
-            State.data.speedSource = 'kalman';
-        }
-        State.data.simSpeed = fused;
-    },
-
-    async requestMotionPermission() {
-        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
-            try {
-                const perm = await DeviceMotionEvent.requestPermission();
-                if (perm === 'granted') { window.addEventListener('devicemotion', (e)=>this.handleMotion(e)); return true; }
-                return false;
-            } catch (e) { return false; }
-        } else {
-            window.addEventListener('devicemotion', (e)=>this.handleMotion(e)); return true;
-        }
-    },
-
-    handleMotion(event) {
-        if(!State.app.isRunning) return;
-        let aig = event.accelerationIncludingGravity;
-        if(!aig) return;
-
-        const alphaG = 0.8;
-        this.motion.gravity.x = alphaG * this.motion.gravity.x + (1 - alphaG) * aig.x;
-        this.motion.gravity.y = alphaG * this.motion.gravity.y + (1 - alphaG) * aig.y;
-        this.motion.gravity.z = alphaG * this.motion.gravity.z + (1 - alphaG) * aig.z;
-
-        const accX = aig.x - this.motion.gravity.x;
-        const accY = aig.y - this.motion.gravity.y;
-        const accZ = aig.z - this.motion.gravity.z;
-        const mag = Math.sqrt(accX*accX + accY*accY + accZ*accZ);
-
-        this.motion.filteredY = this.motion.filteredY + 0.2 * (mag - this.motion.filteredY);
-        const now = performance.now();
-
-        if (this.motion.filteredY > this.motion.lastY) {
-            this.motion.isRising = true;
-        } else if (this.motion.isRising && (this.motion.lastY - this.motion.filteredY) > 1.2) {
-            if (now - this.motion.lastPeakTime > 350) {
-                this.motion.lastPeakTime = now;
-                this.motion.strokeTimes.push(now);
-                State.data.totalStrokes++;
-                this.updateObsBPM(now);
-                this.updateFusedSpeed();
-                UI.syncMetricsDisplays();
-            }
-            this.motion.isRising = false;
-        }
-        this.motion.lastY = this.motion.filteredY;
-    },
-
-    updateObsBPM(now) {
-        this.motion.strokeTimes = this.motion.strokeTimes.filter(t => now - t < 12000);
-        if(this.motion.strokeTimes.length >= 3) {
-            const elapsed = (this.motion.strokeTimes[this.motion.strokeTimes.length-1] - this.motion.strokeTimes[0]) / 1000;
-            const spm = (this.motion.strokeTimes.length - 1) / (elapsed / 60);
-            const bpmEl = document.getElementById('actualBpm');
-            if (bpmEl) {
-                bpmEl.textContent = spm.toFixed(1);
-                bpmEl.classList.remove('beat');
-                void bpmEl.offsetWidth;
-                bpmEl.classList.add('beat');
-            }
-            UI.syncMetricsDisplays();
-        }
+    reset(){ this.x=0; this.P=1; this.lastUpdate=Date.now(); }
+  },
+  getCtx() {
+    if(!this._audioCtx) this._audioCtx = new(window.AudioContext||window.webkitAudioContext)();
+    if(this._audioCtx.state==='suspended') this._audioCtx.resume();
+    return this._audioCtx;
+  },
+  toneWhistle(baseFreq, duration, vol) {
+    try {
+      const c=this.getCtx(), t=c.currentTime;
+      const o1=c.createOscillator(), o2=c.createOscillator();
+      const gn=c.createGain();
+      o1.type='sawtooth'; o2.type='sawtooth';
+      o1.connect(gn); o2.connect(gn); gn.connect(c.destination);
+      o1.frequency.setValueAtTime(baseFreq,t); o2.frequency.setValueAtTime(baseFreq*1.03,t);
+      gn.gain.setValueAtTime(0,t); gn.gain.linearRampToValueAtTime(vol,t+0.01);
+      gn.gain.setValueAtTime(vol,Math.max(t+0.01,t+duration-0.025)); gn.gain.exponentialRampToValueAtTime(0.001,t+duration);
+      o1.start(t); o2.start(t); o1.stop(t+duration); o2.stop(t+duration);
+    } catch(e) {}
+  },
+  accentTone() { this.toneWhistle(420, 0.12, 1.0); }, beatTone() { this.toneWhistle(420, 0.10, 0.75); }, cdTone(n) { this.toneWhistle([0,500,440,380][n]||400, 0.13, 1.0); },
+  speak(t) { if('speechSynthesis' in window) { speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang='zh-TW'; u.rate=1.15; speechSynthesis.speak(u); } },
+  vibrateShort(ms) { if('vibrate' in navigator) navigator.vibrate(ms||30); }, vibratePattern(p) { if('vibrate' in navigator) navigator.vibrate(p); },
+  
+  _wakeLock: null,
+  async requestWakeLock() { try { if('wakeLock' in navigator) { this._wakeLock=await navigator.wakeLock.request('screen'); this._wakeLock.addEventListener('release',()=>{ this._wakeLock=null; }); } } catch(e) {} },
+  releaseWakeLock() { if(this._wakeLock){ this._wakeLock.release(); this._wakeLock=null; } },
+  
+  initGPS() {
+    if(!('geolocation' in navigator)) { UI.setGpsBadge('NO GPS','var(--muted2)'); return; }
+    navigator.geolocation.getCurrentPosition(()=>{ this.gpsGranted=true; this.watchGPS(); UI.setGpsBadge('GPS','var(--green)'); },()=>{ UI.setGpsBadge('GPS 拒絕','var(--red2)'); State.data.speedSource='MANUAL'; EventBus.emit('METRICS_UPDATED'); },{enableHighAccuracy:true,timeout:10000});
+  },
+  watchGPS() {
+    if(this.gpsWatchId!=null) return;
+    this.gpsWatchId=navigator.geolocation.watchPosition(p=>this.onGpsUpdate(p),()=>UI.setGpsBadge('GPS 錯誤','var(--red2)'),{enableHighAccuracy:true,maximumAge:1000,timeout:10000});
+  },
+  stopGPS() { if(this.gpsWatchId!=null){ navigator.geolocation.clearWatch(this.gpsWatchId); this.gpsWatchId=null; } this.lastGpsPos=null; },
+  
+  onGpsUpdate(pos) {
+    State.data.gpsSpeed = Math.max(0, pos.coords.speed!=null ? pos.coords.speed*3.6 : 0);
+    this.lastGpsTime = Date.now();
+    const isActive = State.app.isRunning || Observe.running;
+    if(isActive && this.lastGpsPos) {
+      const R=6371, dLat=(pos.coords.latitude-this.lastGpsPos.latitude)*Math.PI/180, dLon=(pos.coords.longitude-this.lastGpsPos.longitude)*Math.PI/180;
+      const a=Math.sin(dLat/2)**2+Math.cos(this.lastGpsPos.latitude*Math.PI/180)*Math.cos(pos.coords.latitude*Math.PI/180)*Math.sin(dLon/2)**2;
+      const d=2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+      if(d<0.2) State.data.totalDistKm+=d;
     }
-};
-
-// ====================== TIMER ======================
-const Timer = {
-    rafId: null, clockTimer: null, metroTimer: null, obsTimer: null,
-    arcBeatStart: 0, arcBeatDur: 750,
-    startArc(bpm) {
-        cancelAnimationFrame(this.rafId);
-        this.arcBeatDur = 60000 / bpm; this.arcBeatStart = performance.now();
-        const run = () => {
-            const pct = Math.min((performance.now() - this.arcBeatStart) / this.arcBeatDur, 1);
-            const el = document.getElementById('arcFill');
-            if(el) el.style.strokeDashoffset = (2 * Math.PI * 39) * (1 - pct);
-            if(pct < 1) this.rafId = requestAnimationFrame(run);
-        };
-        this.rafId = requestAnimationFrame(run);
-    },
-    resetArc() {
-        cancelAnimationFrame(this.rafId);
-        const el = document.getElementById('arcFill');
-        if(el) { el.style.transition = 'none'; el.style.strokeDashoffset = 2 * Math.PI * 39; void el.offsetWidth; el.style.transition = ''; }
-    },
-    startClock() {
-        State.session.trainStartTime = Date.now() - (State.session.elapsedSec * 1000);
-        this.clockTimer = setInterval(() => {
-            const nowElapsed = Math.floor((Date.now() - State.session.trainStartTime) / 1000);
-            if(nowElapsed > State.session.elapsedSec) {
-                State.session.elapsedSec = nowElapsed;
-                UI.updateTimeDisplays();
-            }
-        }, 200);
-    },
-    stopClock() { clearInterval(this.clockTimer); }
-};
-
-// ====================== UI ======================
-const UI = {
-    lapBoardOpen: true,
-
-    showPage(id, btn) {
-        document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-        document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-        document.getElementById('page-'+id).classList.add('active');
-        if(btn) btn.classList.add('active');
-    },
-
-    showToast(msg) {
-        const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-        setTimeout(()=>t.classList.remove('show'),2200);
-    },
-
-    setLiveBadge(text, state) {
-        const b = document.getElementById('liveBadge');
-        if (b) {
-            b.className = `live-badge badge-${state}`;
-            b.innerHTML = `<div class="live-dot"></div>${text}`;
-        }
-    },
-
-    setAnnounce(text, type='info') {
-        const box = document.getElementById('announceBox'); if(!box) return;
-        let icon = '◈';
-        if(type === 'warn') icon = '⚡'; if(type === 'danger') icon = '🔥';
-        let cleanText = text.replace(/^[⚡🏆✅⏳]\s*/, '');
-        box.innerHTML = `<div class="announce-icon">${icon}</div><div class="announce-text">${cleanText}</div>`;
-        box.className = `announce-strip ${type}`;
-    },
-
-    setGpsBadge(text, color) {
-        const dsEl = document.getElementById('distSpeed');
-        if (dsEl) dsEl.textContent = text;
-    },
-
-    syncCtrlButtons(startText, showReset, showEnd) {
-        ['startBtn', 'obsStartBtn'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = startText; });
-        ['resetBtn', 'obsResetBtn'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = showReset ? 'block' : 'none'; });
-        ['endBtn', 'obsEndBtn'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display = showEnd ? 'block' : 'none'; });
-    },
-
-    updateTimeDisplays() {
-        const timeStr = String(Math.floor(State.session.elapsedSec/60)).padStart(2,'0')+':'+String(State.session.elapsedSec%60).padStart(2,'0');
-        ['elapsedTime', 'obsElapsedTime'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=timeStr; });
-    },
-
-    syncMetricsDisplays() {
-        const spm = parseFloat(document.getElementById('actualBpm').textContent) || 0;
-        ['obsBpm'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = spm>0?spm.toFixed(1):'--'; });
-        ['speedVal', 'obsSpeed'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = State.data.simSpeed.toFixed(1); });
-        const distStr = State.data.totalDistKm>=1?State.data.totalDistKm.toFixed(2):(State.data.totalDistKm*1000).toFixed(0)+'m';
-        ['distVal', 'obsDist'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = distStr; });
-        ['totalStrokes', 'obsStrokes'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = State.data.totalStrokes; });
-    },
-
-    // ==================== 即時滾動圖表 (最終修正版) ====================
-    drawChartCore(canvasId, data, tooltipIdx = -1) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d', { alpha: true });
-        const container = canvas.parentNode;
-        const rect = container.getBoundingClientRect();
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-        const targetW = Math.floor(rect.width * dpr);
-        const targetH = Math.floor(rect.height * dpr);
-
-        if (canvas.width !== targetW || canvas.height !== targetH) {
-            canvas.width = targetW;
-            canvas.height = targetH;
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-
-        const w = rect.width;
-        const h = rect.height;
-        ctx.clearRect(0, 0, w, h);
-
-        if (!data || data.length < 5) {
-            ctx.fillStyle = '#5880a0';
-            ctx.font = "bold 13px 'Noto Sans TC', sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText("數據收集中...", w/2, h/2);
-            return;
-        }
-
-        const displayData = (canvasId === 'liveChart' && data.length > 120) ? data.slice(-120) : data;
-        const maxT = displayData[displayData.length-1].t;
-        const minT = displayData[0].t;
-        const rangeT = maxT - minT || 1;
-
-        const maxSpm = Math.max(...displayData.map(d => d.spm), 60) * 1.12;
-        const maxSpd = Math.max(...displayData.map(d => d.spd), 12) * 1.12;
-
-        // 背景格線
-        ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 1;
-        for (let i = 1; i < 5; i++) {
-            const y = h * (i / 5);
-            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-        }
-
-        // Y軸左 - SPM
-        ctx.strokeStyle = 'rgba(255,179,0,0.65)'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(38, 18); ctx.lineTo(38, h-35); ctx.stroke();
-        ctx.fillStyle = '#FFB300'; ctx.font = "bold 10px 'Orbitron', sans-serif"; ctx.textAlign = "right";
-        for (let i = 0; i <= 5; i++) {
-            const val = Math.round(maxSpm * (1 - i/5));
-            const y = 18 + (h - 53) * (i / 5);
-            ctx.fillText(val, 33, y + 4);
-        }
-        ctx.fillText("SPM", 40, 26);
-
-        // Y軸右 - km/h
-        ctx.strokeStyle = 'rgba(0,229,255,0.65)'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(w-38, 18); ctx.lineTo(w-38, h-35); ctx.stroke();
-        ctx.fillStyle = '#00E5FF'; ctx.textAlign = "left";
-        for (let i = 0; i <= 5; i++) {
-            const val = (maxSpd * (1 - i/5)).toFixed(1);
-            const y = 18 + (h - 53) * (i / 5);
-            ctx.fillText(val, w-33, y + 4);
-        }
-        ctx.fillText("km/h", w-75, 26);
-
-        // X軸
-        ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(38, h-35); ctx.lineTo(w-38, h-35); ctx.stroke();
-
-        ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = "9px 'Orbitron', sans-serif"; ctx.textAlign = "center";
-        for (let i = 0; i <= 5; i++) {
-            const x = 38 + (w - 76) * (i / 5);
-            const t = Math.round(minT + rangeT * (i / 5));
-            const min = Math.floor(t / 60);
-            const sec = t % 60;
-            ctx.fillText(min ? `${min}:${sec.toString().padStart(2,'0')}` : `${sec}"`, x, h - 15);
-        }
-
-        // 曲線
-        const plotLeft = 38, plotRight = w - 38, plotTop = 18, plotHeight = h - 53;
-
-        ctx.strokeStyle = '#FFB300'; ctx.lineWidth = 2.6; ctx.shadowBlur = 8; ctx.shadowColor = '#FFB300';
-        ctx.beginPath();
-        displayData.forEach((d, i) => {
-            const x = plotLeft + (plotRight - plotLeft) * ((d.t - minT) / rangeT);
-            const y = plotTop + plotHeight * (1 - d.spm / maxSpm);
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        });
-        ctx.stroke(); ctx.shadowBlur = 0;
-
-        ctx.strokeStyle = '#00E5FF'; ctx.lineWidth = 2.6; ctx.shadowBlur = 8; ctx.shadowColor = '#00E5FF';
-        ctx.beginPath();
-        displayData.forEach((d, i) => {
-            const x = plotLeft + (plotRight - plotLeft) * ((d.t - minT) / rangeT);
-            const y = plotTop + plotHeight * (1 - d.spd / maxSpd);
-            i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-        });
-        ctx.stroke(); ctx.shadowBlur = 0;
-
-        // Tooltip
-        if (tooltipIdx >= 0 && tooltipIdx < displayData.length) {
-            const d = displayData[tooltipIdx];
-            const x = plotLeft + (plotRight - plotLeft) * ((d.t - minT) / rangeT);
-            const ySpm = plotTop + plotHeight * (1 - d.spm / maxSpm);
-            const ySpd = plotTop + plotHeight * (1 - d.spd / maxSpd);
-
-            ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1; ctx.setLineDash([3,2]);
-            ctx.beginPath(); ctx.moveTo(x, plotTop); ctx.lineTo(x, h-35); ctx.stroke(); ctx.setLineDash([]);
-
-            ctx.fillStyle = '#FFB300'; ctx.beginPath(); ctx.arc(x, ySpm, 4.5, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#00E5FF'; ctx.beginPath(); ctx.arc(x, ySpd, 4.5, 0, Math.PI*2); ctx.fill();
-
-            let boxX = x + 14; const boxW = 102;
-            if (boxX + boxW > w - 10) boxX = x - boxW - 14;
-
-            ctx.fillStyle = 'rgba(8,14,28,0.97)'; ctx.strokeStyle = '#00E5FF'; ctx.lineWidth = 1.5;
-            ctx.beginPath(); ctx.roundRect(boxX, 26, boxW, 62, 6); ctx.fill(); ctx.stroke();
-
-            ctx.fillStyle = '#fff'; ctx.font = "bold 9.5px 'Orbitron', sans-serif";
-            const min = Math.floor(d.t/60); const sec = d.t % 60;
-            ctx.fillText(`TIME ${min}:${sec.toString().padStart(2,'0')}`, boxX+10, 44);
-            ctx.fillStyle = '#FFB300'; ctx.fillText(`SPM ${d.spm.toFixed(1)}`, boxX+10, 60);
-            ctx.fillStyle = '#00E5FF'; ctx.fillText(`SPD ${d.spd.toFixed(1)}`, boxX+10, 76);
-        }
-    },
-
-    attachInteraction(canvasId, getDataFn) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas || canvas.dataset.interactionBound === "true") return;
-        canvas.dataset.interactionBound = "true";
-
-        const handleMove = (e) => {
-            e.preventDefault();
-            const data = getDataFn();
-            if (!data || data.length < 5) return;
-            const rect = canvas.getBoundingClientRect();
-            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            let ratio = (clientX - rect.left - 38) / (rect.width - 76);
-            ratio = Math.max(0, Math.min(1, ratio));
-            UI.drawChartCore(canvasId, data, Math.round(ratio * (data.length - 1)));
-        };
-
-        const handleLeave = () => UI.drawChartCore(canvasId, getDataFn(), -1);
-
-        canvas.addEventListener('mousemove', handleMove, { passive: false });
-        canvas.addEventListener('touchmove', handleMove, { passive: false });
-        canvas.addEventListener('mouseleave', handleLeave);
-        canvas.addEventListener('touchend', handleLeave);
-    },
-
-    updateSpeedDistUI() {
-        const sourceText = State.data.speedSource === 'gps' ? 'GPS' : State.data.speedSource === 'kalman' ? 'Kalman' : 'READY';
-        const sourceColor = State.data.speedSource === 'gps' ? '#00FF7A' : State.data.speedSource === 'kalman' ? '#FFB300' : '#5880a0';
-
-        ['speedSource', 'obsSpeedSource'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.textContent = `— ${sourceText}`;
-                el.style.color = sourceColor;
-            }
-        });
-
-        const dsEl = document.getElementById('distSpeed');
-        if (dsEl) dsEl.textContent = State.app.isRunning && State.data.simSpeed > 0.1 ? `${State.data.simSpeed.toFixed(1)} km/h` : '— GPS';
-
-        this.syncMetricsDisplays();
-        State.data.lastSpeed = State.data.simSpeed;
-    },
-
-    renderSegUI() { /* 你的原 renderSegUI 保持不變 */ 
-        if(State.app.sessionType === 'FREE') return;
-        const segs = State.training.selectedWorkout?.segments||[];
-        const total = segs.reduce((a,s)=>a+s.count,0);
-        let html='', pb='', pl='';
-       
-        segs.forEach((s,i)=>{
-            if(i>0)html+=`<div class="seg-arrow">▸</div>`;
-            const cls='seg-card'+(i<State.training.segIdx?' s-done':i===State.training.segIdx?' s-active':'');
-            html+=`<div class="${cls}" id="sc${i}" style="position:relative;">
-            ${i<State.training.segIdx?'<span class="sc-check">✓</span>':''}
-            <div class="sc-bpm">${s.bpm}</div><div class="sc-cnt">${s.count}槳</div></div>`;
-           
-            const flex=(s.count/total*100).toFixed(2);
-            let fill = i<State.training.segIdx ? 100 : i===State.training.segIdx ? (State.training.strokeInSeg/s.count*100) : 0;
-            pb+=`<div class="prog-seg${i<State.training.segIdx?' s-done':''}" style="flex:${flex}" id="ps${i}"><div class="prog-fill" id="pf${i}" style="width:${fill}%"></div></div>`;
-            pl+=`<div class="prog-lbl" style="flex:${flex}">${s.bpm}</div>`;
-        });
-       
-        document.getElementById('segCards').innerHTML=html; document.getElementById('progBar').innerHTML=pb; document.getElementById('progLabels').innerHTML=pl;
-        const seg=segs[State.training.segIdx];
-        document.getElementById('sfTitle').textContent=seg?`第${State.training.segIdx+1}段 · ${seg.bpm} 槳/分`:'段落進度';
-        document.getElementById('sfFrac').textContent=seg?`${State.training.strokeInSeg} / ${seg.count} 槳`:'0/0';
-        if(seg){ document.getElementById('targetBpm').textContent=seg.bpm; document.getElementById('segName').textContent=`第${State.training.segIdx+1}段`; }
-    },
-    updateSegProgress() { /* 保持不變 */ },
-    setBpmDisplays(bpm) { /* 保持不變 */ },
-    toggleLapBoard() { /* 保持不變 */ },
-    renderLapBoard() { /* 保持不變 */ },
-    closeHistoryModal() { document.getElementById('historyModal').classList.remove('show'); }
-};
-
-// ====================== ENGINE ======================
-const Engine = {
-    startLapSegTracking() {
-        State.data.lapSegStartTime = performance.now();
-        State.data.lapSegStartDist = State.data.totalDistKm;
-        State.data.lapSpeedSamples = [];
-    },
-    recordLap(segI) {
-        const seg = State.training.selectedWorkout.segments[segI];
-        const durationSec = (performance.now() - State.data.lapSegStartTime)/1000;
-        const dist = State.data.totalDistKm - State.data.lapSegStartDist;
-        const actualBpm = durationSec>0 ? (seg.count/durationSec*60) : 0;
-        const avgSpd = State.data.lapSpeedSamples.length ? State.data.lapSpeedSamples.reduce((a,b)=>a+b,0)/State.data.lapSpeedSamples.length : 0;
-        State.data.laps.push({ label:`段落${segI+1}`, targetBpm:seg.bpm, actualBpm, avgSpd, dist, durationSec, delta: actualBpm-seg.bpm });
-        UI.renderLapBoard();
-    },
-
-    async toggleTraining() {
-        if(State.app.isFinished) this.resetTraining();
-        State.app.isRunning ? this.pauseTraining() : await this.startTraining();
-    },
-
-    async startTraining() {
-        if (!State.app.isRunning && !State.app.isFinished && State.session.elapsedSec === 0) {
-            const isObsPage = document.getElementById('page-observe').classList.contains('active');
-            State.app.sessionType = isObsPage ? 'FREE' : 'WORKOUT';
-            if(State.app.sessionType === 'WORKOUT' && !State.training.selectedWorkout) return UI.showToast('請先選擇課表');
-            if(State.app.sessionType === 'FREE') {
-                const p = await Hardware.requestMotionPermission();
-                if(!p) UI.showToast('請允許動態感測器以啟用自動計槳');
-            }
-        }
-
-        Hardware.getCtx().resume();
-        State.app.isRunning = true;
-        Hardware.requestWakeLock();
-        if(Hardware.gpsGranted) Hardware.watchGPS(); else Hardware.initGPS();
-
-        UI.syncCtrlButtons('⏸ 暫停', false, false);
-        Timer.startClock();
-
-        // 即時圖表：每2秒更新
-        Timer.obsTimer = setInterval(() => {
-            const spm = parseFloat(document.getElementById('actualBpm').textContent) || 0;
-
-            Hardware.updateFusedSpeed();
-            UI.updateSpeedDistUI();
-
-            const now = Date.now();
-            const gpsValid = (now - Hardware.lastGpsTime < Hardware.gpsTimeout);
-            if (!gpsValid && State.data.simSpeed > 0) {
-                State.data.totalDistKm += (State.data.simSpeed / 3600) * 2;
-            }
-
-            State.data.obsData.push({
-                t: State.session.elapsedSec,
-                spm: spm,
-                spd: State.data.simSpeed
-            });
-
-            if (State.data.obsData.length > 300) State.data.obsData.shift(); // 保留10分鐘
-
-            UI.drawChartCore('liveChart', State.data.obsData);
-        }, 2000);
-
-        if (State.app.sessionType === 'FREE') {
-            UI.setLiveBadge('REC', 'rec'); UI.setAnnounce('自由記錄中，請開始划槳', 'info');
-        } else {
-            UI.setLiveBadge('LIVE', 'live'); this.launchMetro(); Hardware.vibratePattern([40,30,40]);
-        }
-    },
-
-    pauseTraining() {
-        State.app.isRunning = false; Hardware.releaseWakeLock(); Hardware.vibrateShort(60);
-        UI.syncCtrlButtons('▶ 繼續', false, true);
-        UI.setLiveBadge('PAUSED', 'paused');
-        Timer.stopClock(); clearInterval(Timer.obsTimer);
-        if(State.app.sessionType === 'WORKOUT') { clearInterval(Timer.metroTimer); Timer.metroTimer = null; cancelAnimationFrame(Timer.rafId); }
-    },
-
-    finishSession() {
-        State.app.isRunning = false; State.app.isFinished = true;
-        Hardware.releaseWakeLock(); Hardware.stopGPS(); Timer.stopClock(); clearInterval(Timer.obsTimer);
-        
-        UI.syncCtrlButtons('▶ 重啟', true, false);
-        UI.setLiveBadge('DONE', 'done'); UI.setAnnounce('訓練結束', 'info');
-        Hardware.vibratePattern([80,40,80,40,200]);
-        
-        if (State.app.sessionType === 'FREE') {
-            if(State.data.obsData.length === 0 && State.session.elapsedSec > 2) {
-                for(let i=1; i<=State.session.elapsedSec; i++) State.data.obsData.push({ t: i, spm: 60 + Math.random()*10, spd: 10 + Math.random()*2 });
-            }
-            State.data.laps.push({
-                label: '自由記錄', targetBpm: '--',
-                actualBpm: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spm,0)/State.data.obsData.length) : 0,
-                avgSpd: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spd,0)/State.data.obsData.length) : 0,
-                dist: State.data.totalDistKm, durationSec: State.session.elapsedSec, delta: 0
-            });
-            UI.renderLapBoard();
-        }
-        Engine.db.saveToHistory();
-    },
-
-    resetTraining() {
-        State.app.isRunning=false; State.app.isFinished=false;
-        Hardware.kalman.reset(); State.data.speedSource = 'READY';
-        clearInterval(Timer.metroTimer); Timer.metroTimer=null; Timer.stopClock(); cancelAnimationFrame(Timer.rafId); Timer.resetArc();
-        clearInterval(Timer.obsTimer);
-
-        State.training.segIdx=0; State.training.strokeInSeg=0; State.data.totalStrokes=0; State.session.elapsedSec=0; State.data.totalDistKm=0; State.data.simSpeed=0; State.data.lastSpeed=0; Hardware.lastGpsPos=null;
-        Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; State.data.obsData=[];
-
-        UI.syncCtrlButtons('▶ START', false, false);
-        UI.setLiveBadge('READY', 'ready');
-
-        ['arcBpm','actualBpm'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='--';});
-        ['elapsedTime', 'obsElapsedTime'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00:00';});
-
-        UI.syncMetricsDisplays();
-        UI.updateSpeedDistUI();
-
-        const liveCanvas = document.getElementById('liveChart');
-        if (liveCanvas) { liveCanvas.width = 0; liveCanvas.height = 0; }
-        const historyCanvas = document.getElementById('historyChart');
-        if (historyCanvas) { historyCanvas.width = 0; historyCanvas.height = 0; }
-
-        UI.drawChartCore('liveChart', State.data.obsData);
-        document.getElementById('beatPhase').textContent='等待開始';
-
-        if(document.getElementById('page-observe').classList.contains('active')) {
-            UI.setAnnounce('選擇課表後按開始', 'info');
-        } else {
-            const s0=State.training.selectedWorkout?.segments[0];
-            if(s0){ document.getElementById('targetBpm').textContent=s0.bpm; document.getElementById('arcBpm').textContent=s0.bpm; document.getElementById('segName').textContent='第1段'; }
-            UI.renderSegUI(); UI.setAnnounce('選擇課表後按開始', 'info');
-        }
-        State.data.laps=[]; State.data.lapSpeedSamples=[]; UI.renderLapBoard();
-    },
-
-    launchMetro() {
-        const seg = State.training.selectedWorkout.segments[State.training.segIdx];
-        this.startLapSegTracking();
-        UI.setBpmDisplays(seg.bpm);
-        document.getElementById('segName').textContent=`第${State.training.segIdx+1}段`;
-        document.getElementById('targetBpm').textContent=seg.bpm;
-        UI.renderSegUI(); Timer.resetArc();
-        this.onBeat();
-        Timer.metroTimer = setInterval(()=>this.onBeat(), 60000/seg.bpm);
-    },
-
-    onBeat() {
-        if(!State.app.isRunning || State.app.sessionType === 'FREE') return;
-        const seg = State.training.selectedWorkout.segments[State.training.segIdx];
-        State.training.strokeInSeg++; State.data.totalStrokes++;
-        const remaining = seg.count - State.training.strokeInSeg;
-
-        Timer.startArc(seg.bpm);
-        const bpmEl=document.getElementById('actualBpm'); if(bpmEl){bpmEl.classList.remove('beat');void bpmEl.offsetWidth;bpmEl.classList.add('beat');}
-
-        UI.updateSegProgress(); UI.syncMetricsDisplays();
-
-        const ph=document.getElementById('beatPhase');
-        if(ph){ const phase=(State.training.strokeInSeg-1)%4; ph.textContent=['強拍 ●','●○','●○○','●○○○'][phase]; }
-
-        if(remaining<=3&&remaining>=1){ Hardware.cdTone(); Hardware.vibrateShort(80); }
-        else if((State.training.strokeInSeg-1)%4===0){ Hardware.accentTone(); Hardware.vibrateShort(60); }
-        else{ Hardware.beatTone(); Hardware.vibrateShort(30); }
-
-        const nxt = State.training.segIdx+1, hasNxt = nxt<State.training.selectedWorkout.segments.length;
-        if(remaining===4){
-            if(hasNxt){ UI.setAnnounce(`準備切換 → ${State.training.selectedWorkout.segments[nxt].bpm} 槳/分`, 'warn'); } 
-            else { UI.setAnnounce('最後4槳，衝刺！', 'warn'); Hardware.speak('最後4槳，衝刺！'); }
-        } else if(remaining>0 && remaining!==4){
-            UI.setAnnounce(`${seg.bpm} 槳/分 — 第${State.training.segIdx+1}段`, 'info');
-        }
-        
-        if(remaining<=0){ clearInterval(Timer.metroTimer); this.onSegEnd(); }
-    },
+    if(isActive) this.lastGpsPos=pos.coords;
+    this.updateFusedSpeed(pos.coords.accuracy || 10);
+    EventBus.emit('METRICS_UPDATED');
+    State.data.lapSpeedSamples.push(State.data.simSpeed);
+    if(State.data.lapSpeedSamples.length>120) State.data.lapSpeedSamples.shift();
+  },
+  estimateSensorSpeed() { return State.data.currentSpm < 15 ? 0 : State.data.currentSpm*0.178+1.25; },
+  updateFusedSpeed(accuracy=10) {
+    if(!State.app.isRunning && !Observe.running) return;
+    const now=Date.now();
+    const gpsValid=(now-this.lastGpsTime<this.gpsTimeout)&&State.data.gpsSpeed>0.4;
+    State.data.simSpeed = gpsValid ? this.kalman.update(State.data.gpsSpeed,true,accuracy) : this.kalman.update(this.estimateSensorSpeed(),false);
+    State.data.speedSource = gpsValid ? 'gps' : 'kalman';
+  },
+  
+  async requestMotionPermission() {
+    if (this.motionListenerAdded) return true;
+    if(typeof DeviceMotionEvent!=='undefined' && typeof DeviceMotionEvent.requestPermission==='function') {
+      try {
+        const p=await DeviceMotionEvent.requestPermission();
+        if(p==='granted'){ window.addEventListener('devicemotion',e=>this.handleMotion(e)); this.motionListenerAdded = true; return true; }
+        return false;
+      } catch(e){ return false; }
+    } else {
+      window.addEventListener('devicemotion',e=>this.handleMotion(e)); this.motionListenerAdded = true; return true;
+    }
+  },
+  handleMotion(event) {
+    if(!State.app.isRunning && !Observe.running) return;
+    const aig=event.accelerationIncludingGravity; if(!aig) return;
+    const alpha=0.8;
+    this.motion.gravity.x=alpha*this.motion.gravity.x+(1-alpha)*aig.x;
+    this.motion.gravity.y=alpha*this.motion.gravity.y+(1-alpha)*aig.y;
+    this.motion.gravity.z=alpha*this.motion.gravity.z+(1-alpha)*aig.z;
+    const ax=aig.x-this.motion.gravity.x, ay=aig.y-this.motion.gravity.y, az=aig.z-this.motion.gravity.z;
+    const mag=Math.sqrt(ax*ax+ay*ay+az*az);
+    this.motion.filteredY=this.motion.filteredY+0.2*(mag-this.motion.filteredY);
+    const now=performance.now();
     
-    onSegEnd() {
-        const nxt = State.training.segIdx+1;
-        const currentBpm = State.training.selectedWorkout.segments[State.training.segIdx].bpm;
-        this.recordLap(State.training.segIdx);
-        if(nxt < State.training.selectedWorkout.segments.length){
-            State.training.segIdx = nxt; State.training.strokeInSeg = 0;
-            const seg = State.training.selectedWorkout.segments[State.training.segIdx];
-            UI.setAnnounce(`切換：${seg.bpm} 槳/分，${seg.count} 槳`, 'info');
-            UI.setBpmDisplays(seg.bpm);
-            document.getElementById('targetBpm').textContent=seg.bpm; document.getElementById('segName').textContent=`第${State.training.segIdx+1}段`;
-            UI.renderSegUI(); Timer.resetArc();
-            setTimeout(()=>{if(State.app.isRunning) this.launchMetro();}, 60000 / currentBpm);
-        } else {
-            this.finishSession();
+    if(this.motion.filteredY>this.motion.lastY){ this.motion.isRising=true; }
+    else if(this.motion.isRising&&(this.motion.lastY-this.motion.filteredY)>1.2) {
+      if(now-this.motion.lastPeakTime>350) {
+        this.motion.lastPeakTime=now;
+        this.motion.strokeTimes.push(now);
+        
+        if(State.app.isRunning || Observe.running) State.data.totalStrokes++;
+        
+        this.motion.strokeTimes = this.motion.strokeTimes.filter(t=>now-t<12000);
+        if(this.motion.strokeTimes.length>=3) {
+          const elapsed=(this.motion.strokeTimes[this.motion.strokeTimes.length-1]-this.motion.strokeTimes[0])/1000;
+          State.data.currentSpm = (this.motion.strokeTimes.length-1)/(elapsed/60);
+          EventBus.emit('SPM_BEAT');
         }
-    },
-
-    db: { /* 你的 db 部分保持不變 */ 
-        openDB: function(){ /* ... */ },
-        getAllWorkouts() { return [...State.PRESETS.filter(p => !State.db.customWorkouts.some(c => c.id === p.id)), ...State.db.customWorkouts]; },
-        async init() { /* ... */ },
-        renderPresets() { /* ... */ },
-        selectWorkout(id) { /* ... */ },
-        renderHistory() { /* ... */ },
-        async saveToHistory() { /* ... */ },
-        openHistoryModal(id) { /* ... */ },
-        async confirmClear() { /* ... */ }
-    },
-
-    builder: { /* 你的 builder 部分保持不變 */ 
-        render() { /* ... */ },
-        addSegment(){ /* ... */ },
-        removeSegment(i){ /* ... */ },
-        editWorkout(e, id) { /* ... */ },
-        cancelEdit() { /* ... */ },
-        deleteWorkout() { /* ... */ },
-        saveWorkout() { /* ... */ },
-        loadToTraining() { /* ... */ }
-    },
-
-    async exportCSV(){ /* ... 保持不變 */ }
-};
-
-// ====================== APP ======================
-const App = {
-    async init() {
-        await Engine.db.init();
-        State.training.selectedWorkout = State.PRESETS[0];
-        document.getElementById('selectedWorkoutLabel').textContent=State.training.selectedWorkout.name;
-        document.getElementById('courseMetaLabel').textContent=`共 ${State.training.selectedWorkout.segments.length} 段落`;
-        Engine.resetTraining();
-        Engine.builder.render();
-       
-        UI.attachInteraction('liveChart', () => State.data.obsData);
-        UI.attachInteraction('historyChart', () => window.currentHistoryData || []);
-        Hardware.initGPS();
-    },
-    switchTab(id, btn) {
-        UI.showPage(id, btn);
-        if(id === 'observe') setTimeout(() => UI.drawChartCore('liveChart', State.data.obsData), 100);
+        this.updateFusedSpeed();
+      }
+      this.motion.isRising=false;
     }
+    this.motion.lastY=this.motion.filteredY;
+  }
 };
 
-document.addEventListener('DOMContentLoaded', () => App.init());
+['touchstart','click'].forEach(ev=>document.addEventListener(ev,()=>{ try{ Hardware.getCtx(); }catch(e){} },{once:true,passive:true}));
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&State.app.isRunning) Hardware.requestWakeLock(); });
 
-// iOS install hint
+// ══════════════════════════════════════════════
+// 5. UI (DOM Render Layer)
+// ══════════════════════════════════════════════
+const UI = {
+  lapBoardOpen: true,
+  showPage(id,btn) {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    DOM.setClass('page-'+id, 'active', true);
+    if(btn) btn.classList.add('active');
+  },
+  showToast(msg) {
+    DOM.setText('toast', msg); DOM.setClass('toast', 'show', true);
+    setTimeout(()=>DOM.setClass('toast', 'show', false), 2200);
+  },
+  setLiveBadge(text,state) {
+    const b = DOM.get('liveBadge'); if(!b) return;
+    b.className=`live-badge badge-${state}`;
+    b.innerHTML=`<div class="live-dot"></div>${text}`;
+  },
+  setAnnounce(text,type='info') {
+    const box = DOM.get('announceBox'); if(!box) return;
+    const icons={info:'◈',warn:'⚡',danger:'🔥'};
+    box.className=`announce-strip${type!=='info'?' '+type:''}`;
+    box.innerHTML=`<div class="announce-icon">${icons[type]||'◈'}</div><div class="announce-text">${text}</div>`;
+  },
+  setGpsBadge(text,color) {
+    DOM.setText('speedSource', '— '+text);
+    DOM.setText('obsSpeedSource', '— '+text);
+    if (color) {
+      DOM.setStyle('speedSource', 'color', color);
+      DOM.setStyle('obsSpeedSource', 'color', color);
+    }
+  },
+  updateTimeDisplays() {
+    const s=State.session.elapsedSec;
+    const ts=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+    DOM.setText('elapsedTime', ts); DOM.setText('obsElapsedTime', ts);
+  },
+  syncMetricsDisplays() {
+    Timers.requestAnimationFrame(()=>{
+      const spdText = State.data.simSpeed.toFixed(1);
+      DOM.setText('speedVal', spdText);
+      DOM.setText('obsSpeed', spdText);
+
+      if (State.app.sessionType === 'FREE' || Observe.running) {
+          DOM.setText('actualBpm', State.data.currentSpm.toFixed(1));
+      }
+
+      const isKm = State.data.totalDistKm >= 1;
+      const distNumStr = isKm ? State.data.totalDistKm.toFixed(2) : (State.data.totalDistKm * 1000).toFixed(0);
+      const distUnitStr = isKm ? 'km' : 'm';
+      
+      DOM.setText('distVal', distNumStr + distUnitStr);
+      DOM.setText('obsDistDisp', distNumStr);
+      DOM.setText('obsDistUnit', distUnitStr);
+
+      DOM.setText('totalStrokes', State.data.totalStrokes);
+      DOM.setText('obsStrokes', State.data.totalStrokes);
+      
+      const src = State.data.speedSource;
+      const srcText = src === 'gps' ? 'GPS' : src === 'kalman' ? 'Kalman' : src === 'MANUAL' ? 'MANUAL' : 'READY';
+      const srcColor = src === 'gps' ? '#00FF7A' : src === 'kalman' ? '#FFB300' : '#5880a0';
+      
+      DOM.setText('speedSource', '— ' + srcText); 
+      DOM.setStyle('speedSource', 'color', srcColor);
+      DOM.setText('obsSpeedSource', '— ' + srcText); 
+      DOM.setStyle('obsSpeedSource', 'color', srcColor);
+
+      DOM.setText('distSpeed', State.app.isRunning && State.data.simSpeed > 0.1 ? `${spdText} km/h` : '— GPS');
+    });
+  },
+  renderSegUI() {
+    if(State.app.sessionType==='FREE') return;
+    const segs=State.training.selectedWorkout?.segments||[];
+    const total=segs.reduce((a,s)=>a+s.count,0);
+    const fragCards = document.createDocumentFragment();
+    let pb='',pl='';
+    
+    // Bug C: Cleanup destroyed DOM references
+    DOM.clearPrefix('sc'); DOM.clearPrefix('pf');
+    
+    segs.forEach((s,i)=>{
+      if(i>0) { const a=document.createElement('div'); a.className='seg-arrow'; a.textContent='▸'; fragCards.appendChild(a); }
+      const cls='seg-card'+(i<State.training.segIdx?' s-done':i===State.training.segIdx?' s-active':'');
+      const c=document.createElement('div'); c.className=cls; c.id=`sc${i}`;
+      c.innerHTML=`<span class="sc-check" style="display:${i<State.training.segIdx?'block':'none'}">✓</span><div class="sc-bpm">${s.bpm}</div><div class="sc-cnt">${s.count}槳</div>`;
+      fragCards.appendChild(c);
+      
+      const flex=(s.count/total*100).toFixed(2);
+      const fill=i<State.training.segIdx?100:i===State.training.segIdx?(State.training.strokeInSeg/s.count*100):0;
+      pb+=`<div class="prog-seg${i<State.training.segIdx?' s-done':''}" style="flex:${flex}"><div class="prog-fill" id="pf${i}" style="width:${fill}%"></div></div>`;
+      pl+=`<div class="prog-lbl" style="flex:${flex}">${s.bpm}</div>`;
+    });
+    
+    const sc = DOM.get('segCards'); sc.innerHTML=''; sc.appendChild(fragCards);
+    DOM.get('progBar').innerHTML=pb; DOM.get('progLabels').innerHTML=pl;
+    const seg=segs[State.training.segIdx];
+    DOM.setText('sfTitle', seg?`第${State.training.segIdx+1}段 · ${seg.bpm} 槳/分`:'段落進度');
+    DOM.setText('sfFrac', seg?`${State.training.strokeInSeg} / ${seg.count} 槳`:'0/0');
+    if(seg){ DOM.setText('targetBpm', seg.bpm); DOM.setText('segName', `第${State.training.segIdx+1}段`); }
+  },
+  updateSegProgress() {
+    if(State.app.sessionType==='FREE') return;
+    const seg=State.training.selectedWorkout?.segments[State.training.segIdx]; if(!seg) return;
+    // Bug C: Grab directly to avoid cache holding unmounted element
+    const pf = document.getElementById(`pf${State.training.segIdx}`);
+    if(pf) pf.style.width = (State.training.strokeInSeg/seg.count*100)+'%';
+    DOM.setText('sfFrac', `${State.training.strokeInSeg} / ${seg.count} 槳`);
+    DOM.setText('sfTitle', `第${State.training.segIdx+1}段 · ${seg.bpm} 槳/分`);
+  },
+  setBpmDisplays(bpm) { DOM.setText('arcBpm', bpm); DOM.setText('actualBpm', bpm); DOM.setText('targetBpm', bpm); },
+  updateBeatBars(phase) {
+    for(let i=0;i<4;i++) {
+        const bar = document.getElementById('bb'+i);
+        if(bar) bar.className = 'beat-bar'+(i===phase?(phase===0?' b-accent':' b-on'):'');
+    }
+  },
+  toggleLapBoard() {
+    this.lapBoardOpen=!this.lapBoardOpen;
+    DOM.setStyle('lapBody', 'display', this.lapBoardOpen?'block':'none');
+    DOM.setText('lapChevron', this.lapBoardOpen?'▾':'▸');
+  },
+  renderLapBoard() {
+    DOM.setText('lapCountBadge', `${State.data.laps.length} LAP`);
+    const list=DOM.get('lapList'); if(!list) return;
+    if(!State.data.laps.length){ list.innerHTML='<div class="lap-empty"><div class="lap-empty-icon">◈</div>段落完成後自動記錄</div>'; return; }
+    
+    const frag = document.createDocumentFragment();
+    [...State.data.laps].reverse().forEach((lap,ri)=>{
+      const isLatest=ri===0, d=lap.delta;
+      const isFree=State.app.sessionType==='FREE';
+      const vc=isFree?'lc-ok':(Math.abs(d)<=1?'lc-ok':Math.abs(d)<=3?'lc-warn':'lc-hi');
+      const dc=Math.abs(d)<=1?'ld-ok':d>0?'ld-hi':'ld-lo';
+      const ds=Math.abs(d)<0.5?'✓':d>0?`+${d.toFixed(1)}`:`${d.toFixed(1)}`;
+      const dist=lap.dist>=1?`${lap.dist.toFixed(2)}km`:`${(lap.dist*1000).toFixed(0)}m`;
+      const t=lap.durationSec, ts=t>=60?`${Math.floor(t/60)}'${String(Math.round(t%60)).padStart(2,'0')}"`:Math.round(t)+'"';
+      
+      const row = document.createElement('div'); row.className=`lap-row${isLatest?' lap-latest':''}`;
+      row.innerHTML=`
+        <div class="lap-idx"><div class="lap-idx-label">${lap.label}</div><div class="lap-idx-time">${ts}</div></div>
+        ${isFree?'<div class="lap-target"><div class="lap-target-val">—</div></div>':`<div class="lap-target"><div class="lap-target-val">${lap.targetBpm}</div><div class="lap-target-unit">槳/分</div></div>`}
+        <div class="lap-cell"><div class="lap-cell-val ${vc}">${lap.actualBpm.toFixed(1)}</div><div class="lap-cell-unit">槳/分</div>${isFree?'':`<span class="lap-delta ${dc}">${ds}</span>`}</div>
+        <div class="lap-cell"><div class="lap-cell-val lc-blue">${lap.avgSpd.toFixed(1)}</div><div class="lap-cell-unit">km/h</div></div>
+        <div class="lap-cell"><div class="lap-cell-val lc-blue">${dist}</div></div>`;
+      frag.appendChild(row);
+    });
+    list.innerHTML=''; list.appendChild(frag); list.scrollTop=0;
+  },
+  
+  // === Canvas 防重繪與限流 ===
+  drawChart(canvasId, data, hoverIdx=-1, tab='both') {
+    const canvas=DOM.get(canvasId); if(!canvas) return;
+    const ctx=canvas.getContext('2d',{alpha:true});
+    const container=canvas.parentNode;
+    const rect=container.getBoundingClientRect();
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const W=Math.floor(rect.width), H=Math.floor(rect.height);
+    if(!W||!H) return;
+    
+    const tw=Math.floor(W*dpr), th=Math.floor(H*dpr);
+    if(canvas.width!==tw||canvas.height!==th){ canvas.width=tw; canvas.height=th; ctx.setTransform(dpr,0,0,dpr,0,0); }
+    ctx.clearRect(0,0,W,H);
+    
+    if(!data||data.length<2){
+      ctx.fillStyle='#5880a0'; ctx.font="13px 'Noto Sans TC',sans-serif";
+      ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('數據收集中...',W/2,H/2); return;
+    }
+    const ML=42, MR=42, MT=18, MB=30; const PW=W-ML-MR, PH=H-MT-MB;
+    if(PW<10||PH<10) return;
+    const maxSpm=Math.max(...data.map(d=>d.spm||0),60)*1.15;
+    const maxSpd=Math.max(...data.map(d=>d.spd||0),5)*1.15;
+    const minT=data[0].t, maxT=data[data.length-1].t, rangeT=maxT-minT||1;
+    const toX=t=>ML+(t-minT)/rangeT*PW; const toYSpm=v=>MT+PH*(1-(v||0)/maxSpm); const toYSpd=v=>MT+PH*(1-(v||0)/maxSpd);
+    
+    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1;
+    for(let i=0;i<=4;i++){ const y=MT+PH*(i/4); ctx.beginPath(); ctx.moveTo(ML,y); ctx.lineTo(ML+PW,y); ctx.stroke(); }
+
+    if(tab==='both'||tab==='bpm') {
+        ctx.strokeStyle='rgba(255,179,0,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML,MT); ctx.lineTo(ML,MT+PH); ctx.stroke();
+        ctx.fillStyle='#FFB300'; ctx.font=`bold 8.5px 'Orbitron',monospace`; ctx.textAlign='right';
+        for(let i=0;i<=4;i++){ ctx.fillText(Math.round(maxSpm*(1-i/4)),ML-4,MT+PH*(i/4)+3); }
+        ctx.save(); ctx.translate(11,MT+PH/2); ctx.rotate(-Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(255,179,0,.7)'; ctx.textAlign='center'; ctx.fillText('槳/分',0,0); ctx.restore();
+    }
+    if(tab==='both'||tab==='speed') {
+        ctx.strokeStyle='rgba(0,229,255,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML+PW,MT); ctx.lineTo(ML+PW,MT+PH); ctx.stroke();
+        ctx.fillStyle='#00E5FF'; ctx.font=`bold 8.5px 'Orbitron',monospace`; ctx.textAlign='left';
+        for(let i=0;i<=4;i++){ ctx.fillText((maxSpd*(1-i/4)).toFixed(1),ML+PW+4,MT+PH*(i/4)+3); }
+        ctx.save(); ctx.translate(W-9,MT+PH/2); ctx.rotate(Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(0,229,255,.7)'; ctx.textAlign='center'; ctx.fillText('km/h',0,0); ctx.restore();
+    }
+
+    ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(ML,MT+PH); ctx.lineTo(ML+PW,MT+PH); ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,.55)'; ctx.font=`8px 'Orbitron',monospace`; ctx.textAlign='center';
+    const steps=Math.min(6,data.length);
+    for(let i=0;i<=steps;i++){
+      const t=Math.round(minT+rangeT*(i/steps)); const m=Math.floor(t/60), s=t%60;
+      ctx.fillText(m?`${m}:${String(s).padStart(2,'0')}`:`${s}"`,ML+PW*(i/steps),MT+PH+14);
+    }
+    ctx.fillStyle='rgba(255,255,255,.25)'; ctx.font=`7.5px 'Noto Sans TC',sans-serif`; ctx.textAlign='center'; ctx.fillText('時間',ML+PW/2,MT+PH+26);
+
+    if(tab==='both'||tab==='bpm') {
+        ctx.strokeStyle='#FFB300'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.shadowBlur=7; ctx.shadowColor='#FFB300';
+        ctx.beginPath(); data.forEach((d,i)=>{ const x=toX(d.t),y=toYSpm(d.spm); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }); ctx.stroke(); ctx.shadowBlur=0;
+    }
+    if(tab==='both'||tab==='speed') {
+        ctx.strokeStyle='#00E5FF'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.shadowBlur=7; ctx.shadowColor='#00E5FF';
+        ctx.beginPath(); data.forEach((d,i)=>{ const x=toX(d.t),y=toYSpd(d.spd); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }); ctx.stroke(); ctx.shadowBlur=0;
+    }
+
+    if(hoverIdx>=0&&hoverIdx<data.length){
+      const d=data[hoverIdx], x=toX(d.t), ySpm=toYSpm(d.spm), ySpd=toYSpd(d.spd);
+      ctx.strokeStyle='rgba(255,255,255,.4)'; ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x,MT); ctx.lineTo(x,MT+PH); ctx.stroke(); ctx.setLineDash([]);
+      
+      if(tab==='both'||tab==='bpm') { ctx.fillStyle='#FFB300'; ctx.beginPath(); ctx.arc(x,ySpm,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,ySpm,4.5,0,Math.PI*2); ctx.stroke(); }
+      if(tab==='both'||tab==='speed') { ctx.fillStyle='#00E5FF'; ctx.beginPath(); ctx.arc(x,ySpd,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,ySpd,4.5,0,Math.PI*2); ctx.stroke(); }
+      
+      const boxW=110, boxH = tab==='both'?66:46; let bx=x+14; if(bx+boxW>W-4) bx=x-boxW-14;
+      let by=MT; if(tab==='both') by=Math.min(Math.max(MT,Math.min(ySpm,ySpd)-8),MT+PH-boxH); else if(tab==='bpm') by=Math.min(Math.max(MT,ySpm-8),MT+PH-boxH); else by=Math.min(Math.max(MT,ySpd-8),MT+PH-boxH);
+      ctx.fillStyle='rgba(4,10,22,.97)'; ctx.strokeStyle='rgba(0,229,255,.4)'; ctx.lineWidth=1.5; ctx.beginPath();
+      if(ctx.roundRect) ctx.roundRect(bx,by,boxW,boxH,5); else ctx.rect(bx,by,boxW,boxH);
+      ctx.fill(); ctx.stroke();
+      
+      const m=Math.floor(d.t/60), s=d.t%60; ctx.textAlign='left';
+      ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.fillText(`${m}:${String(s).padStart(2,'0')}`,bx+8,by+16);
+      let ny=35;
+      if(tab==='both'||tab==='bpm') { ctx.fillStyle='#FFB300'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`SPM ${(d.spm||0).toFixed(1)}`,bx+8,by+ny); ny+=20; }
+      if(tab==='both'||tab==='speed') { ctx.fillStyle='#00E5FF'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`SPD ${(d.spd||0).toFixed(1)}`,bx+8,by+ny); }
+    }
+  },
+  // Bug F: Fixed Tab option parameter added
+  attachChartInteraction(canvasId, getDataFn, xhairId, fixedTab) {
+    const canvas=DOM.get(canvasId); if(!canvas||canvas.dataset.ib==='1') return;
+    canvas.dataset.ib='1'; let lastDraw=0;
+    const compute=(clientX)=>{
+      const now=Date.now(); if(now-lastDraw<16) return; lastDraw=now;
+      const data=getDataFn(); 
+      const currentTab = fixedTab || Observe.tab || 'both';
+      if(!data||data.length<2){ this.drawChart(canvasId,data,-1,currentTab); return; }
+      const rect=canvas.getBoundingClientRect(), ML=42, PW=rect.width-84;
+      const ratio=Math.max(0,Math.min(1,(clientX-rect.left-ML)/PW));
+      const idx=Math.min(Math.max(0,Math.round(ratio*(data.length-1))),data.length-1);
+      this.drawChart(canvasId,data,idx,currentTab);
+    };
+    const clear=()=>{ 
+        const data=getDataFn(); 
+        const currentTab = fixedTab || Observe.tab || 'both';
+        this.drawChart(canvasId,data,-1,currentTab); 
+    };
+    canvas.addEventListener('mousemove',e=>compute(e.clientX),{passive:true});
+    canvas.addEventListener('mouseleave',clear);
+    canvas.addEventListener('touchmove',e=>{ e.preventDefault(); compute(e.touches[0].clientX); },{passive:false});
+    canvas.addEventListener('touchend',()=>{ },{passive:true});
+  },
+  closeHistoryModal() { DOM.setClass('historyModal', 'show', false); }
+};
+
+// ══════════════════════════════════════════════
+// 6. ENGINE
+// ══════════════════════════════════════════════
+const Engine = {
+  startLapSegTracking() { State.data.lapSegStartTime=performance.now(); State.data.lapSegStartDist=State.data.totalDistKm; State.data.lapSpeedSamples=[]; },
+  recordLap(segI) {
+    const seg=State.training.selectedWorkout.segments[segI];
+    const dur=(performance.now()-State.data.lapSegStartTime)/1000;
+    const actualBpm=dur>0?(seg.count/dur*60):0;
+    const avgSpd=State.data.lapSpeedSamples.length?State.data.lapSpeedSamples.reduce((a,b)=>a+b)/State.data.lapSpeedSamples.length:0;
+    State.data.laps.push({label:`段落${segI+1}`,targetBpm:seg.bpm,actualBpm,avgSpd,dist:State.data.totalDistKm-State.data.lapSegStartDist,durationSec:dur,delta:actualBpm-seg.bpm});
+    UI.renderLapBoard();
+  },
+  async toggleTraining() { if(State.app.isFinished) this.resetTraining(); State.app.isRunning?this.pauseTraining():await this.startTraining(); },
+  async startTraining() {
+    if(!State.app.isRunning&&!State.app.isFinished&&State.session.elapsedSec===0){
+      State.app.sessionType='WORKOUT';
+      if(!State.training.selectedWorkout) return UI.showToast('請先選擇課表');
+    }
+    Hardware.getCtx().resume(); State.app.isRunning=true;
+    await Hardware.requestWakeLock();
+    if(Hardware.gpsGranted) Hardware.watchGPS(); else Hardware.initGPS();
+    
+    const startBtn = DOM.get('startBtn'); if(startBtn){ startBtn.textContent='⏸ 暫停'; startBtn.classList.add('running'); }
+    DOM.setStyle('endBtn', 'display', 'block');
+    
+    Timers.startClock();
+    Timers.obsTimer=Timers.setInterval(()=>{
+      if(!State.app.isRunning) return;
+      Hardware.updateFusedSpeed(); EventBus.emit('METRICS_UPDATED');
+      if(Date.now()-Hardware.lastGpsTime>Hardware.gpsTimeout&&State.data.simSpeed>0) State.data.totalDistKm+=(State.data.simSpeed/3600)*2;
+      State.data.obsData.push({t:State.session.elapsedSec, spm: State.data.currentSpm, spd:State.data.simSpeed});
+    },2000);
+    
+    UI.setLiveBadge('LIVE','live'); this.launchMetro(); Hardware.vibratePattern([40,30,40]);
+  },
+  // Bug B: Do not clear obsTimer in pauseTraining, only clear Metro related timers.
+  pauseTraining() {
+    State.app.isRunning=false; Hardware.releaseWakeLock(); Hardware.vibrateShort(60);
+    const startBtn = DOM.get('startBtn'); if(startBtn){ startBtn.textContent='▶ 繼續'; startBtn.classList.remove('running'); }
+    UI.setLiveBadge('PAUSED','paused');
+    UI.setAnnounce('已暫停', 'warn');
+    Timers.stopClock(); 
+    if (Timers.metroTimer) { Timers.clearInterval(Timers.metroTimer); Timers.metroTimer = null; }
+    if (Timers.arcRaf) { Timers.cancelAnimationFrame(Timers.arcRaf); Timers.arcRaf = null; }
+  },
+  finishSession() {
+    State.app.isRunning=false; State.app.isFinished=true;
+    Hardware.releaseWakeLock(); Hardware.stopGPS(); Timers.stopClock(); Timers.clearAll();
+    const startBtn = DOM.get('startBtn'); if(startBtn){ startBtn.textContent='▶ 重啟'; startBtn.classList.remove('running'); }
+    DOM.setStyle('endBtn', 'display', 'none');
+    UI.setLiveBadge('DONE','done'); UI.setAnnounce('訓練結束','info'); Hardware.vibratePattern([80,40,80,40,200]);
+    this.db.saveToHistory();
+  },
+  resetTraining() {
+    State.app.isRunning=false; State.app.isFinished=false;
+    Hardware.kalman.reset(); State.data.speedSource='READY';
+    Timers.stopClock(); Timers.clearAll(); Timers.resetArc();
+    State.training.segIdx=0; State.training.strokeInSeg=0; State.data.totalStrokes=0; State.session.elapsedSec=0; State.data.currentSpm=0; State.data.totalDistKm=0; State.data.simSpeed=0; State.data.lastSpeed=0;
+    Hardware.lastGpsPos=null; Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; State.data.obsData=[];
+    
+    // Bug C: Cleanup destroyed DOM references from cache
+    DOM.clearPrefix('pf'); DOM.clearPrefix('sc'); DOM.clearPrefix('bb');
+
+    const startBtn = DOM.get('startBtn'); if(startBtn){ startBtn.textContent='▶ START'; startBtn.classList.remove('running'); }
+    DOM.setStyle('endBtn', 'display', 'none');
+    UI.setLiveBadge('READY','ready');
+    DOM.setText('arcBpm','--'); DOM.setText('actualBpm','--'); DOM.setText('elapsedTime','00:00');
+    
+    EventBus.emit('METRICS_UPDATED');
+    DOM.setText('beatPhase','等待開始');
+    
+    const s0=State.training.selectedWorkout?.segments[0];
+    if(s0){ DOM.setText('targetBpm',s0.bpm); DOM.setText('arcBpm',s0.bpm); DOM.setText('segName','第1段'); }
+    UI.renderSegUI(); UI.setAnnounce('選擇課表後按開始', 'info');
+    State.data.laps=[]; State.data.lapSpeedSamples=[]; UI.renderLapBoard();
+    
+    // Bug A: Fix liveChart referencing error
+    const obsCanvas = DOM.get('obsChart'); if (obsCanvas) { obsCanvas.width = 0; obsCanvas.height = 0; }
+    const historyCanvas = DOM.get('historyChart'); if (historyCanvas) { historyCanvas.width = 0; historyCanvas.height = 0; }
+  },
+  launchMetro() {
+    const seg=State.training.selectedWorkout.segments[State.training.segIdx];
+    this.startLapSegTracking(); UI.setBpmDisplays(seg.bpm); DOM.setText('segName',`第${State.training.segIdx+1}段`);
+    UI.renderSegUI(); Timers.resetArc();
+    setTimeout(()=>{ if(State.app.isRunning) this.onBeat(); },0);
+    Timers.metroTimer=Timers.setInterval(()=>this.onBeat(),60000/seg.bpm);
+  },
+  onBeat() {
+    if(!State.app.isRunning||State.app.sessionType==='FREE') return;
+    const seg=State.training.selectedWorkout.segments[State.training.segIdx];
+    State.training.strokeInSeg++; State.data.totalStrokes++;
+    const remaining=seg.count-State.training.strokeInSeg;
+    Timers.startArc(seg.bpm);
+    const bpmEl=DOM.get('actualBpm'); if(bpmEl){ bpmEl.classList.remove('beat'); void bpmEl.offsetWidth; bpmEl.classList.add('beat'); }
+    UI.updateSegProgress(); EventBus.emit('METRICS_UPDATED');
+    const phase=(State.training.strokeInSeg-1)%4;
+    DOM.setText('beatPhase',['強拍 ●','●○','●○○','●○○○'][phase]);
+    UI.updateBeatBars(phase);
+    if(remaining<=3&&remaining>=1){ Hardware.cdTone(remaining); Hardware.vibrateShort(80); }
+    else if(phase===0){ Hardware.accentTone(); Hardware.vibrateShort(60); }
+    else{ Hardware.beatTone(); Hardware.vibrateShort(30); }
+    const nxt=State.training.segIdx+1, hasNxt=nxt<State.training.selectedWorkout.segments.length;
+    if(remaining===4){
+      if(hasNxt) UI.setAnnounce(`準備切換 → ${State.training.selectedWorkout.segments[nxt].bpm} 槳/分`,'warn');
+      else { UI.setAnnounce('最後 4 槳，衝刺！','warn'); Hardware.speak('最後4槳，衝刺！'); }
+    } else if(remaining>0&&remaining!==4) {
+      UI.setAnnounce(`${seg.bpm} 槳/分 — 第${State.training.segIdx+1}段`,'info');
+    }
+    if(remaining<=0){ Timers.clearInterval(Timers.metroTimer); this.onSegEnd(); }
+  },
+  onSegEnd() {
+    this.recordLap(State.training.segIdx);
+    const nxt=State.training.segIdx+1;
+    if(nxt<State.training.selectedWorkout.segments.length){
+      State.training.segIdx=nxt; State.training.strokeInSeg=0;
+      const seg=State.training.selectedWorkout.segments[State.training.segIdx];
+      UI.setAnnounce(`切換：${seg.bpm} 槳/分，${seg.count} 槳`,'info');
+      UI.setBpmDisplays(seg.bpm); UI.renderSegUI(); Timers.resetArc();
+      const prevBpm=State.training.selectedWorkout.segments[State.training.segIdx-1].bpm;
+      setTimeout(()=>{ if(State.app.isRunning) this.launchMetro(); },60000/prevBpm);
+    } else { this.finishSession(); }
+  },
+  db: {
+    idb: null,
+    async openDB() {
+      return new Promise((res,rej)=>{
+        const req=indexedDB.open('DragonPaceDB',2);
+        req.onupgradeneeded=e=>{
+          const d=e.target.result;
+          if(!d.objectStoreNames.contains('workouts')) d.createObjectStore('workouts',{keyPath:'id'});
+          if(!d.objectStoreNames.contains('sessions')) d.createObjectStore('sessions',{keyPath:'id',autoIncrement:true});
+        };
+        req.onsuccess=e=>{ this.idb=e.target.result; res(this.idb); }; req.onerror=rej;
+      });
+    },
+    getAllWorkouts() { return [...State.PRESETS.filter(p=>!State.db.customWorkouts.some(c=>c.id===p.id)),...State.db.customWorkouts]; },
+    async init() {
+      await this.openDB();
+      const r1=this.idb.transaction('workouts','readonly').objectStore('workouts').getAll();
+      r1.onsuccess=e=>{ State.db.customWorkouts=e.target.result||[]; this.renderPresets(); };
+      const r2=this.idb.transaction('sessions','readonly').objectStore('sessions').getAll();
+      r2.onsuccess=e=>{ State.db.history=(e.target.result||[]).reverse(); this.renderHistory(); };
+    },
+    renderPresets() {
+      const frag = document.createDocumentFragment();
+      this.getAllWorkouts().forEach(w=>{
+        const div = document.createElement('div'); div.className=`workout-item${State.training.selectedWorkout?.id===w.id?' selected':''}`;
+        div.onclick = () => Engine.db.selectWorkout(w.id);
+        div.innerHTML=`<div class="wi-header"><div style="display:flex;align-items:center;gap:6px;"><span class="wi-name">${w.name}</span><span class="wi-tag">${w.tag||'自訂'}</span></div><div class="wi-edit" onclick="Engine.builder.editWorkout(event,'${w.id}')">⚙️</div></div><div style="font-size:9px;color:var(--muted2);margin-top:2px;">共 ${w.segments.length} 段落</div><div class="wi-segs">${w.segments.map(s=>`<span class="wi-seg">${s.bpm}♩×${s.count}</span>`).join('')}</div>`;
+        frag.appendChild(div);
+      });
+      const pl = DOM.get('presetList'); pl.innerHTML=''; pl.appendChild(frag);
+    },
+    selectWorkout(id) {
+      const w=this.getAllWorkouts().find(x=>x.id===id); if(!w) return;
+      State.training.selectedWorkout=w;
+      DOM.setText('selectedWorkoutLabel', w.name); DOM.setText('courseMetaLabel', `共 ${w.segments.length} 段落`);
+      Engine.resetTraining(); UI.showToast('已載入：'+w.name); this.renderPresets();
+    },
+    renderHistory() {
+      const real=State.db.history.filter(h=>h.timestamp); let totalDist=0, totalSec=0;
+      real.forEach(h=>{ totalDist+=parseFloat(h.dist||0); const p=(h.duration||'00:00').split(':').map(Number); if(p.length===2) totalSec+=p[0]*60+p[1]; else if(p.length===3) totalSec+=p[0]*3600+p[1]*60+p[2]; });
+      DOM.setText('statCnt', real.length); DOM.setText('statTime', (totalSec/3600).toFixed(1)+'h'); DOM.setText('statDist', totalDist.toFixed(1)+'km');
+      
+      const hl=DOM.get('historyList');
+      if(!real.length){ hl.innerHTML='<div style="text-align:center;padding:20px;font-size:10px;color:var(--muted2);">尚無訓練記錄</div>'; return; }
+      const frag = document.createDocumentFragment();
+      real.forEach(h=>{
+        const div=document.createElement('div'); div.className='history-item'; div.onclick=()=>Engine.db.openHistoryModal(h.id);
+        div.innerHTML=`<div class="hi-date">${(h.date||'').split('/')[1]||'--'}<br><span style="font-size:7px;">${(h.date||'').split('/')[0]||''}月</span></div><div class="hi-body"><div class="hi-name">${h.name||''}</div><div class="hi-meta">共 ${h.laps?.length||1} 段 · ${h.duration||'--:--'}</div><div class="hi-stats"><div class="hi-stat">槳數 <span>${h.strokes||0}</span></div><div class="hi-stat">距離 <span>${h.dist||0}km</span></div></div></div>`;
+        frag.appendChild(div);
+      });
+      hl.innerHTML=''; hl.appendChild(frag);
+    },
+    async saveToHistory() {
+      const s={ date:`${new Date().getMonth()+1}/${new Date().getDate()}`, name:State.app.sessionType==='FREE'?'自由記錄':State.training.selectedWorkout.name, duration:DOM.get('elapsedTime').textContent, strokes:State.data.totalStrokes, dist:State.data.totalDistKm.toFixed(2), sets:1, timestamp:Date.now(), laps:[...State.data.laps], obsData:[...State.data.obsData] };
+      const tx=this.idb.transaction('sessions','readwrite'); const req=tx.objectStore('sessions').add(s);
+      req.onsuccess=()=>{ State.db.history.unshift({...s,id:req.result}); this.renderHistory(); };
+    },
+    openHistoryModal(id) {
+      const session=State.db.history.find(x=>x.id===id); if(!session) return;
+      DOM.setText('hmTitle', session.name);
+      const od=session.obsData||[]; const avgSpd=od.length?od.reduce((a,b)=>a+b.spd,0)/od.length:0;
+      DOM.setText('hmSpd', avgSpd.toFixed(1)+' km/h'); DOM.setText('hmDist', session.dist+' km');
+      window._histData=od; DOM.setClass('historyModal', 'show', true);
+      Timers.requestAnimationFrame(()=>{ UI.drawChart('historyChart',window._histData,-1, 'both'); UI.attachChartInteraction('historyChart',()=>window._histData||[],'histXhair','both'); });
+    },
+    async confirmClear() {
+      const btn=DOM.get('btnClear');
+      if(btn.textContent.includes('確認')){
+        this.idb.transaction('sessions','readwrite').objectStore('sessions').clear();
+        State.db.history.length=0; this.renderHistory(); btn.textContent='🗑️ 清空記錄'; UI.showToast('✅ 記錄已清空');
+      } else { btn.textContent='⚠️ 確認清空？'; setTimeout(()=>{ btn.textContent='🗑️ 清空記錄'; },3000); }
+    }
+  },
+  builder: {
+    render() {
+      const frag = document.createDocumentFragment();
+      State.training.builderSegs.forEach((s,i)=>{
+        const div = document.createElement('div'); div.className='seg-row';
+        div.innerHTML=`<div class="seg-idx">${i+1}</div><div class="seg-ig"><input type="number" class="seg-input" placeholder="槳頻" value="${s.bpm}" oninput="State.training.builderSegs[${i}].bpm=parseInt(this.value)||0" min="20" max="120"><input type="number" class="seg-input" placeholder="槳數" value="${s.count}" oninput="State.training.builderSegs[${i}].count=parseInt(this.value)||0" min="1" max="500"></div><button class="seg-del" onclick="Engine.builder.removeSegment(${i})">✕</button>`;
+        frag.appendChild(div);
+      });
+      const sl = DOM.get('segList'); sl.innerHTML=''; sl.appendChild(frag);
+    },
+    addSegment(){ State.training.builderSegs.push({bpm:50,count:30}); this.render(); },
+    removeSegment(i){ if(State.training.builderSegs.length<=1){UI.showToast('至少一個段落');return;} State.training.builderSegs.splice(i,1); this.render(); },
+    editWorkout(e,id){
+      e.stopPropagation(); const w=Engine.db.getAllWorkouts().find(x=>x.id===id); if(!w) return;
+      State.app.editingWorkoutId=w.id; DOM.setText('builderTitle', '⚙️ 編輯：'+w.name); DOM.get('workoutName').value=w.name;
+      State.training.builderSegs=JSON.parse(JSON.stringify(w.segments)); this.render();
+      DOM.setStyle('btnCancelEdit','display','block'); DOM.setStyle('btnDelete','display','block'); DOM.setText('btnDelete', String(id).startsWith('c')?'刪除':'恢復預設');
+      DOM.get('workoutName').scrollIntoView({behavior:'smooth',block:'center'});
+    },
+    cancelEdit(){
+      State.app.editingWorkoutId=null; DOM.setText('builderTitle', '新增 / 自訂課表'); DOM.get('workoutName').value='';
+      State.training.builderSegs=[{bpm:40,count:30}]; this.render();
+      DOM.setStyle('btnCancelEdit','display','none'); DOM.setStyle('btnDelete','display','none');
+    },
+    deleteWorkout(){
+      if(!State.app.editingWorkoutId) return;
+      State.db.customWorkouts=State.db.customWorkouts.filter(x=>x.id!==State.app.editingWorkoutId);
+      Engine.db.idb.transaction('workouts','readwrite').objectStore('workouts').delete(State.app.editingWorkoutId);
+      UI.showToast('✅ 已移除'); if(State.training.selectedWorkout?.id===State.app.editingWorkoutId) Engine.db.selectWorkout(Engine.db.getAllWorkouts()[0].id);
+      this.cancelEdit(); Engine.db.renderPresets();
+    },
+    saveWorkout(){
+      const name=DOM.get('workoutName').value.trim()||'自訂課表';
+      if(State.training.builderSegs.some(s=>!s.bpm||!s.count)){UI.showToast('請填寫所有欄位');return;}
+      const tid=State.app.editingWorkoutId||('c'+Date.now()); const orig=Engine.db.getAllWorkouts().find(x=>x.id===tid);
+      const w={id:tid,name,tag:orig?.tag||'自訂',sets:1,rest:0,segments:[...State.training.builderSegs.map(s=>({...s}))]};
+      const idx=State.db.customWorkouts.findIndex(x=>x.id===tid); if(idx>=0) State.db.customWorkouts[idx]=w; else State.db.customWorkouts.push(w);
+      Engine.db.idb.transaction('workouts','readwrite').objectStore('workouts').put(w);
+      Engine.db.renderPresets(); if(State.training.selectedWorkout?.id===tid) Engine.db.selectWorkout(tid);
+      UI.showToast('✅ 已儲存：'+name); this.cancelEdit();
+    },
+    loadToTraining(){
+      if(!State.training.builderSegs.length||State.training.builderSegs.some(s=>!s.bpm||!s.count)){UI.showToast('請先完成設定');return;}
+      const w={id:'t'+Date.now(),name:DOM.get('workoutName').value.trim()||'自訂課表',tag:'自訂',sets:1,rest:0,segments:[...State.training.builderSegs.map(s=>({...s}))]};
+      Engine.db.selectWorkout('__none__'); State.training.selectedWorkout=w;
+      DOM.setText('selectedWorkoutLabel', w.name); DOM.setText('courseMetaLabel', `共 ${w.segments.length} 段落`);
+      Engine.resetTraining(); document.querySelectorAll('nav button')[0].click(); UI.showToast('▶ 已載入，按開始！');
+    }
+  },
+  async exportCSV(){
+    const d=State.data; if(!d.laps.length&&!d.obsData.length){UI.showToast('無資料可匯出');return;}
+    let rows=[];
+    if(State.app.sessionType==='FREE'){ rows.push('時間(秒),實際BPM,均速km/h'); d.obsData.forEach(o=>rows.push(`${o.t},${o.spm.toFixed(1)},${o.spd.toFixed(1)}`)); } 
+    else {
+      rows.push('LAP,目標BPM,實際BPM,均速km/h,距離,時長s');
+      d.laps.forEach(l=>{ const dist=l.dist>=1?`${l.dist.toFixed(2)}km`:`${(l.dist*1000).toFixed(0)}m`; rows.push(`"${l.label}",${l.targetBpm},${l.actualBpm.toFixed(1)},${l.avgSpd.toFixed(1)},"${dist}",${l.durationSec.toFixed(1)}`); });
+    }
+    const blob=new Blob(['\uFEFF'+rows.join('\n')],{type:'text/csv;charset=utf-8'}); const fn=`DragonPace_${new Date().toISOString().slice(0,10)}.csv`;
+    try {
+      const f=new File([blob],fn,{type:'text/csv'});
+      if(navigator.share&&navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({title:'DragonPace 訓練記錄',files:[f]}); UI.showToast('✅ 匯出成功'); return; }
+    } catch(e){}
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fn; a.click(); UI.showToast('✅ CSV 已下載');
+  }
+};
+
+// ══════════════════════════════════════════════
+// 7. OBSERVE MODULE (自由觀察)
+// ══════════════════════════════════════════════
+const Observe = {
+  running: false, elapsed: 0, tab: 'speed', finished: false,
+  async toggle() { this.running ? this._pause() : await this._start(); },
+  async _start() {
+    this.running=true; this.finished=false; State.app.sessionType = 'FREE';
+    const perm = await Hardware.requestMotionPermission(); if (!perm) UI.showToast('⚠️ 自動槳頻需要「動態感測器」權限');
+    await Hardware.requestWakeLock(); if(!Hardware.gpsGranted) Hardware.initGPS();
+    DOM.setStyle('obsDoneBanner','display','none');
+    const btn=DOM.get('obsStartBtn'); if(btn){ btn.textContent='⏸ 暫停'; btn.classList.add('running'); }
+    
+    let wallStart=Date.now(), base=this.elapsed;
+    Timers.obsTimer=Timers.setInterval(()=>{
+      this.elapsed=base+Math.round((Date.now()-wallStart)/1000);
+      DOM.setText('obsElapsedDisp', _fmt(this.elapsed));
+      Hardware.updateFusedSpeed(); EventBus.emit('METRICS_UPDATED');
+      if(Date.now() - Hardware.lastGpsTime > Hardware.gpsTimeout && State.data.simSpeed > 0) State.data.totalDistKm += (State.data.simSpeed / 3600);
+      State.data.obsData.push({t:this.elapsed, spm: parseFloat(State.data.currentSpm.toFixed(1)), spd: parseFloat(State.data.simSpeed.toFixed(2))});
+      this._drawLive();
+    },1000);
+    Hardware.vibratePattern([40,30,40]);
+  },
+  _pause() {
+    this.running=false; Hardware.releaseWakeLock(); Timers.clearInterval(Timers.obsTimer);
+    const btn=DOM.get('obsStartBtn'); if(btn){ btn.textContent='▶ 繼續'; btn.classList.remove('running'); }
+    DOM.setStyle('obsEndBtn','display','block');
+  },
+  
+  // Imp 1: Handle Free mode finish specifically
+  _finish() {
+    this.finished = true;
+    this._pause();
+    DOM.setStyle('obsDoneBanner', 'display', 'block');
+    DOM.setStyle('obsEndBtn', 'display', 'none');
+    
+    State.data.laps.push({
+        label: '自由記錄', targetBpm: '--', 
+        actualBpm: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spm,0)/State.data.obsData.length) : 0,
+        avgSpd: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spd,0)/State.data.obsData.length) : 0,
+        dist: State.data.totalDistKm, durationSec: this.elapsed, delta: 0
+    });
+    Engine.db.saveToHistory();
+    Timers.requestAnimationFrame(()=>{ this._drawLive(); });
+  },
+  
+  _reset() {
+    this._pause(); this.elapsed=0; this.finished=false;
+    State.data.totalDistKm = 0; State.data.simSpeed = 0; State.data.currentSpm = 0; State.data.totalStrokes = 0; State.data.obsData = [];
+    Hardware.kalman.reset(); State.data.speedSource = 'READY';
+    
+    DOM.setText('obsSpeed', '0.0'); DOM.setText('obsBpmDisp', '--'); DOM.setText('obsDistDisp', '0'); DOM.setText('obsDistUnit', 'm'); DOM.setText('obsStrokes', '0'); DOM.setText('obsTapInfo', '使用手機感測器即時計算槳頻'); DOM.setText('obsElapsedDisp', '00:00'); DOM.setText('obsSpeedSource', '— READY');
+    DOM.setStyle('obsSpeedSource','color','#5880a0'); DOM.setStyle('obsDoneBanner','display','none');
+    
+    // Imp 4: Initialize chart legend text properly
+    const leg=DOM.get('obsLegend');
+    if(leg) leg.innerHTML = '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>';
+    
+    const btn=DOM.get('obsStartBtn'); if(btn){ btn.textContent='▶ 開始觀察'; btn.classList.remove('running'); }
+    DOM.setStyle('obsEndBtn','display','none');
+    
+    const liveCanvas = DOM.get('obsChart'); if (liveCanvas) { liveCanvas.width = 0; liveCanvas.height = 0; }
+    this._drawLive();
+  },
+  reset() { this._reset(); },
+  _onAutomaticStroke(now) {
+      DOM.setText('obsBpmDisp', Math.round(State.data.currentSpm));
+      const bEl = DOM.get('obsBpmDisp'); if(bEl) { bEl.classList.remove('beat'); void bEl.offsetWidth; bEl.classList.add('beat'); }
+      DOM.setText('obsTapInfo', `自動偵測：${Math.round(State.data.currentSpm)} 槳/分`);
+  },
+  setTab(tab, el) {
+    this.tab=tab; document.querySelectorAll('.obs-tab').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active');
+    const leg=DOM.get('obsLegend');
+    const m={ speed:'<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>', bpm: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div>', both: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div><div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>' };
+    if(leg) leg.innerHTML=m[tab]||m.speed; this._drawLive();
+  },
+  _drawLive() {
+    const data=State.data.obsData; if(!data) return;
+    const disp=(!this.finished&&data.length>120)?data.slice(-120):data;
+    UI.drawChart('obsChart', disp, -1, this.tab);
+    UI.attachChartInteraction('obsChart',()=>{ const d=State.data.obsData; return (!this.finished&&d.length>120)?d.slice(-120):d; },'obsXhair', undefined);
+  },
+  
+  // Imp 2: Decoupled share functionality specifically for the observe data
+  async share() {
+    const d = State.data.obsData;
+    if(!d || !d.length){ UI.showToast('無觀察數據可匯出'); return; }
+    let rows = ['時間(秒),實際BPM,均速km/h'];
+    d.forEach(o => rows.push(`${o.t},${o.spm.toFixed(1)},${o.spd.toFixed(1)}`));
+    const blob = new Blob(['\uFEFF' + rows.join('\n')], {type:'text/csv;charset=utf-8'});
+    const fn = `DragonPace_觀察_${new Date().toISOString().slice(0,10)}.csv`;
+    try {
+        const f = new File([blob], fn, {type:'text/csv'});
+        if(navigator.share && navigator.canShare && navigator.canShare({files:[f]})){
+            await navigator.share({title:'DragonPace 觀察數據', files:[f]}); 
+            UI.showToast('✅ 匯出成功'); return;
+        }
+    } catch(e) {}
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fn; a.click(); 
+    UI.showToast('✅ CSV 已下載');
+  }
+};
+function _fmt(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+
+// ══════════════════════════════════════════════
+// 8. EventBus Bindings
+// ══════════════════════════════════════════════
+EventBus.on('METRICS_UPDATED', () => UI.syncMetricsDisplays());
+EventBus.on('SPM_BEAT', () => {
+    if(State.app.sessionType === 'FREE' && Observe.running) { Observe._onAutomaticStroke(performance.now()); }
+});
+
+// ══════════════════════════════════════════════
+// 9. APP INIT
+// ══════════════════════════════════════════════
+const App = {
+  async init() {
+    await Engine.db.init();
+    State.training.selectedWorkout=State.PRESETS[0];
+    DOM.setText('selectedWorkoutLabel', State.training.selectedWorkout.name);
+    DOM.setText('courseMetaLabel', `共 ${State.training.selectedWorkout.segments.length} 段落`);
+    Engine.resetTraining(); Observe.reset(); Engine.builder.render(); Hardware.initGPS();
+    setInterval(()=>{ const n=new Date(); const cb=DOM.get('clockBadge'); if(cb) cb.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0'); },1000);
+    window.addEventListener('beforeinstallprompt',e=>{
+      e.preventDefault(); window._installPrompt=e;
+      const b=document.createElement('div');
+      b.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:#0a1020;border-top:1px solid rgba(255,179,0,.3);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:9999;"><div style="flex:1;font-size:11px;color:#FFB300;font-weight:700;">📲 加入主畫面，離線也能用</div><button onclick="App.doInstall()" style="background:var(--red);color:#fff;border:none;border-radius:5px;padding:6px 12px;font-size:10px;font-weight:700;cursor:pointer;">安裝</button><button onclick="this.closest('div').parentElement.remove()" style="background:none;border:none;color:#5880a0;font-size:14px;cursor:pointer;">✕</button></div>`;
+      document.body.appendChild(b);
+    });
+  },
+  async doInstall() { if(!window._installPrompt) return; window._installPrompt.prompt(); await window._installPrompt.userChoice; window._installPrompt=null; },
+  switchTab(id, btn) { UI.showPage(id, btn); if(id==='observe') Timers.requestAnimationFrame(()=>Observe._drawLive()); }
+};
+
 (function(){
-  const isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
   const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
   const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-  if(isIOS&&isSafari&&!isStandalone){
-    const hint=document.getElementById('iosHint');
-    if(hint&&!localStorage.getItem('iosHintDismissed')){
-      hint.style.display='block';
-      hint.querySelector('button').onclick=()=>{localStorage.setItem('iosHintDismissed','1');hint.remove();};
-    }
-  }
+  if(isIOS&&isSafari&&!standalone){ const hint=DOM.get('iosHint'); if(hint&&!localStorage.getItem('iosHintDismissed')) hint.style.display='block'; }
 })();
+document.addEventListener('DOMContentLoaded',()=>App.init());
 </script>
 </body>
 </html>
