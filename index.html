@@ -234,23 +234,10 @@ canvas#obsChart{display:block;width:100%;flex:1;}
 .obs-legend{display:flex;gap:12px;padding:6px 12px 8px;}
 .obs-legend-item{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--muted2);}
 .obs-legend-dot{width:10px;height:3px;border-radius:2px;}
-.obs-tap-wrap{padding:7px 8px 0;}
-.obs-tap-btn{width:100%;padding:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.25);border-radius:8px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--cyan);cursor:default;pointer-events:none;user-select:none;-webkit-tap-highlight-color:transparent;}
-.obs-tap-info{text-align:center;font-size:8px;color:var(--muted2);margin-top:5px;letter-spacing:.5px;}
-.obs-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:8px 8px 0;}
-.obs-tile{background:linear-gradient(145deg,#091525,#0d1e32);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 8px 8px;position:relative;overflow:hidden;text-align:center;}
-.obs-tile::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ot,rgba(255,255,255,.1));}
-.obs-tile-spd{--ot:var(--cyan);}
-.obs-tile-bpm{--ot:var(--gold);}
-.obs-tile-dst{--ot:#60d8ff;}
-.obs-tile-str{--ot:var(--green);}
-.obs-t-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7a9ec0;margin-bottom:5px;}
-.obs-t-val{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;line-height:1;}
-.obs-tile-spd .obs-t-val{color:var(--cyan);text-shadow:0 0 16px rgba(0,229,255,.5);}
-.obs-tile-bpm .obs-t-val{color:var(--gold);text-shadow:0 0 16px rgba(255,179,0,.5);}
-.obs-tile-dst .obs-t-val{color:#60d8ff;text-shadow:0 0 14px rgba(96,216,255,.4);}
-.obs-tile-str .obs-t-val{color:var(--green);text-shadow:0 0 16px rgba(0,255,122,.5);}
-.obs-t-unit{font-size:7px;color:var(--muted2);letter-spacing:1px;margin-top:3px;}
+.obs-sensor-strip{display:flex;align-items:center;gap:8px;background:var(--bg2);border-radius:6px;border:1px solid rgba(0,229,255,.12);padding:7px 11px;min-height:32px;}
+.obs-sensor-icon{font-size:10px;color:var(--muted2);font-family:'Orbitron',monospace;flex-shrink:0;}
+.obs-sensor-text{font-size:11px;font-weight:700;color:var(--cyan);flex:1;letter-spacing:.3px;text-shadow:0 0 10px rgba(0,229,255,.4);}
+.obs-sensor-spm{font-family:'Orbitron',monospace;font-size:10px;color:var(--muted2);letter-spacing:.5px;}
 .obs-ctrl-row{display:flex;gap:7px;padding:7px 8px 0;}
 .obs-elapsed{text-align:center;font-family:'Orbitron',monospace;font-size:10px;color:rgba(255,255,255,.3);padding:4px 0 0;}
 .obs-done-banner{display:none;text-align:center;padding:8px;background:rgba(0,255,122,.06);border-radius:6px;border:1px solid rgba(0,255,122,.2);margin:6px 8px 0;font-size:10px;color:var(--green);font-weight:700;letter-spacing:.5px;}
@@ -407,44 +394,47 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
         <div class="status-bar">
           <div>
             <div class="sb-course">即時觀察模式</div>
-            <div class="sb-meta">速度 / 距離 / 槳頻 即時圖表</div>
+            <div class="sb-meta" id="obsSpeedSource">— READY</div>
           </div>
           <div class="sb-right">
             <div class="sb-time" id="obsElapsedTime">00:00</div>
           </div>
         </div>
         <div class="gauge-area">
-          <section class="obs-metrics" aria-label="即時數據面板">
-            <div class="obs-tile obs-tile-spd">
-              <div class="obs-t-lbl">船速</div>
-              <div class="obs-t-val" id="obsSpeed">0.0</div>
-              <div class="obs-t-unit">km/h</div>
-              <div class="obs-t-unit" id="obsSpeedSource" style="margin-top:3px;">— READY</div>
-            </div>
-            <div class="obs-tile obs-tile-bpm">
-              <div class="obs-t-lbl">槳頻</div>
-              <div class="obs-t-val" id="obsBpmDisp">--</div>
-              <div class="obs-t-unit">槳/分</div>
-            </div>
-            <div class="obs-tile obs-tile-dst">
-              <div class="obs-t-lbl">距離</div>
-              <div class="obs-t-val" id="obsDistDisp">0</div>
-              <div class="obs-t-unit" id="obsDistUnit">m</div>
-            </div>
-            <div class="obs-tile obs-tile-str">
-              <div class="obs-t-lbl">累積划槳</div>
-              <div class="obs-t-val" id="obsStrokes">0</div>
-              <div class="obs-t-unit">槳</div>
-            </div>
-          </section>
 
-          <section class="obs-tap-wrap" aria-label="自動槳頻偵測">
-            <div id="obsTapBtn" class="obs-tap-btn" aria-live="polite">
-              📡 自動槳頻偵測
+          <!-- 2×2 大數字面板，與儀表板相同 -->
+          <div class="quad-grid">
+            <div class="panel p-bpm">
+              <div class="p-label"><div class="p-dot"></div>當前槳頻</div>
+              <div class="p-val" id="obsBpmDisp">--</div>
+              <div class="p-unit">槳 / 分</div>
+              <div class="p-sub" id="obsTapInfo">感測器偵測中</div>
             </div>
-            <div class="obs-tap-info" id="obsTapInfo">使用手機感測器即時計算槳頻</div>
-          </section>
+            <div class="panel p-speed">
+              <div class="p-label"><div class="p-dot"></div>當前船速</div>
+              <div class="p-val" id="obsSpeed">0.0</div>
+              <div class="p-unit">km/h</div>
+            </div>
+            <div class="panel p-stroke">
+              <div class="p-label"><div class="p-dot"></div>累積划槳</div>
+              <div class="p-val" id="obsStrokes">0</div>
+              <div class="p-unit">槳</div>
+            </div>
+            <div class="panel p-dist">
+              <div class="p-label"><div class="p-dot"></div>移動距離</div>
+              <div class="p-val" id="obsDistDisp">0</div>
+              <div class="p-unit" id="obsDistUnit">m</div>
+            </div>
+          </div>
 
+          <!-- 感測器狀態 strip（取代原 tap-btn） -->
+          <div class="obs-sensor-strip" id="obsSensorStrip">
+            <div class="obs-sensor-icon">📡</div>
+            <div class="obs-sensor-text">自動槳頻偵測</div>
+            <div class="obs-sensor-spm" id="obsTapSpm">使用感測器</div>
+          </div>
+
+          <!-- 即時圖表 -->
           <section class="obs-chart-section" aria-label="即時走勢圖表">
             <div class="obs-chart-header">
               <div class="obs-chart-title">即時圖表</div>
@@ -468,13 +458,15 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 
           <div class="obs-done-banner" id="obsDoneBanner" role="status">✓ 觀察完成 — 滑動圖表查看詳情</div>
 
-          <div class="obs-ctrl-row">
-            <button class="btn-start" id="obsStartBtn" style="flex:1;">▶ 開始觀察</button>
+          <!-- 控制列，與儀表板 ctrl-row 相同格局 -->
+          <div class="ctrl-row">
+            <button class="btn-start" id="obsStartBtn">▶ 開始觀察</button>
             <button class="btn-reset" id="obsResetBtn">↺</button>
-            <button class="btn-end" id="obsEndBtn" style="display:none; flex:1;">🏁 結束</button>
+            <button class="btn-end" id="obsEndBtn" style="display:none;">🏁 結束</button>
             <button class="btn-reset" id="obsShareBtn" style="color:var(--cyan);border-color:rgba(0,229,255,.25);font-size:16px;">📤</button>
           </div>
           <div class="obs-elapsed" id="obsElapsedDisp">00:00</div>
+
         </div>
       </div>
 
@@ -545,8 +537,22 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      await navigator.serviceWorker.register('sw.js');
-      console.log('SW registered');
+      const swCode = [
+        "const CACHE='dragonpace-v1';",
+        "self.addEventListener('install',e=>{self.skipWaiting();});",
+        "self.addEventListener('activate',e=>{",
+        "  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));",
+        "  self.clients.claim();",
+        "});",
+        "self.addEventListener('fetch',e=>{",
+        "  if(e.request.method!=='GET') return;",
+        "  e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));",
+        "});"
+      ].join('\n');
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      await navigator.serviceWorker.register(swUrl);
+      console.log('SW registered (inline blob)');
     } catch (e) {
       console.warn('SW failed', e);
     }
@@ -670,6 +676,8 @@ const State = {
   }
 };
 
+const ARC_CIRC = 182; // 與 CSS .arc-fill-r stroke-dasharray 保持一致
+
 // ══════════════════════════════════════════════
 // 2. TIMERS (統一計時管理)
 // ══════════════════════════════════════════════
@@ -708,7 +716,7 @@ const Timers = {
     this.arcBeatStart = performance.now();
     const run = () => {
       const pct = Math.min((performance.now() - this.arcBeatStart) / this.arcBeatDur, 1);
-      DOM.setStyle('arcFill', 'strokeDashoffset', (2 * Math.PI * 29) * (1 - pct));
+      DOM.setStyle('arcFill', 'strokeDashoffset', ARC_CIRC * (1 - pct));
       if (pct < 1) this.arcRaf = this.requestAnimationFrame(run);
     };
     this.arcRaf = this.requestAnimationFrame(run);
@@ -720,7 +728,7 @@ const Timers = {
         const el = DOM.get('arcFill');
         if (el) { 
           el.style.transition = 'none'; 
-          el.style.strokeDashoffset = 2 * Math.PI * 29; 
+          el.style.strokeDashoffset = ARC_CIRC; 
           void el.offsetWidth; 
           el.style.transition = ''; 
         }
@@ -757,7 +765,8 @@ const DOM = {
       'historyList', 'segList', 'workoutName', 'builderTitle', 'btnCancelEdit', 'btnDelete', 
       'clockBadge', 'arcFill', 'page-observe', 'obsLegend', 'obsChart', 'historyChart', 
       'hmTitle', 'hmSpd', 'hmDist', 'historyModal', 'segCards', 'progBar', 'progLabels', 
-      'bb0', 'bb1', 'bb2', 'bb3', 'selectedWorkoutLabel', 'courseMetaLabel', 'segName'
+      'bb0', 'bb1', 'bb2', 'bb3', 'selectedWorkoutLabel', 'courseMetaLabel', 'segName',
+      'obsTapSpm', 'obsSensorStrip'
     ];
     for(let i=0; i<ids.length; i++) {
       const e = document.getElementById(ids[i]);
@@ -952,19 +961,15 @@ const Hardware = {
     State.update(ACTIONS.SET_DATA, { gpsSpeed: Math.max(0, pos.coords.speed!=null ? pos.coords.speed*3.6 : 0) });
     this.lastGpsTime = Date.now();
     
-    // 1. 先更新卡爾曼濾波速度，以利後續作為靜止雜訊的判斷依據
-    this.updateFusedSpeed(pos.coords.accuracy || 10);
-    
     const isActive = State.app.isRunning || State.app.isObserving;
-    // 2. 增加防飄移邏輯：只有過濾後的船速 > 0.8 km/h 才累加距離，徹底封殺靜止狀態的 GPS 座標原地跳動
-    if(isActive && this.lastGpsPos && State.data.simSpeed > 0.8) {
+    if(isActive && this.lastGpsPos) {
       const R=6371, dLat=(pos.coords.latitude-this.lastGpsPos.latitude)*Math.PI/180, dLon=(pos.coords.longitude-this.lastGpsPos.longitude)*Math.PI/180;
       const a=Math.sin(dLat/2)**2+Math.cos(this.lastGpsPos.latitude*Math.PI/180)*Math.cos(pos.coords.latitude*Math.PI/180)*Math.sin(dLon/2)**2;
       const d=2*R*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
       if(d<0.2) State.update(ACTIONS.ADD_DISTANCE, d);
     }
     if(isActive) this.lastGpsPos=pos.coords;
-
+    this.updateFusedSpeed(pos.coords.accuracy || 10);
     EventBus.emit('METRICS_UPDATED');
     State.update(ACTIONS.PUSH_LAP_SPEED, State.data.simSpeed);
   },
@@ -1033,6 +1038,7 @@ const Hardware = {
         this.motion.strokeTimes.push(now);
         
         State.update(ACTIONS.ADD_SENSOR_STROKE);
+        EventBus.emit('METRICS_UPDATED'); // 每槳立即刷新 UI（totalStrokes / obsStrokes）
         
         this.motion.strokeTimes = this.motion.strokeTimes.filter(t=>now-t<12000);
         if(this.motion.strokeTimes.length>=3) {
@@ -1148,7 +1154,15 @@ const UI = {
                 if(endBtn) endBtn.style.display='none';
                 if(doneBanner) doneBanner.style.display='block';
             } else if (state === 'READY') {
-                DOM.setText('obsSpeed', '0.0'); DOM.setText('obsBpmDisp', '--'); DOM.setText('obsDistDisp', '0'); DOM.setText('obsDistUnit', 'm'); DOM.setText('obsStrokes', '0'); DOM.setText('obsTapInfo', '使用手機感測器即時計算槳頻'); DOM.setText('obsElapsedDisp', '00:00'); DOM.setText('obsSpeedSource', '— READY');
+                DOM.setText('obsSpeed', '0.0');
+                DOM.setText('obsBpmDisp', '--');
+                DOM.setText('obsDistDisp', '0');
+                DOM.setText('obsDistUnit', 'm');
+                DOM.setText('obsStrokes', '0');
+                DOM.setText('obsTapInfo', '感測器偵測中');
+                DOM.setText('obsTapSpm', '使用感測器');
+                DOM.setText('obsElapsedDisp', '00:00');
+                DOM.setText('obsSpeedSource', '— READY');
                 DOM.setStyle('obsSpeedSource','color','#5880a0');
                 if(doneBanner) doneBanner.style.display='none';
                 if(startBtn){ startBtn.textContent='▶ 開始觀察'; startBtn.classList.remove('running'); }
@@ -1159,7 +1173,7 @@ const UI = {
 
     EventBus.on('BEAT_TICK', p => {
         window.requestAnimationFrame(() => {
-            DOM.setText('actualBpm', Math.round(State.data.currentSpm).toFixed(1));
+            DOM.setText('actualBpm', State.data.currentSpm.toFixed(1));
             const bpmEl=DOM.get('actualBpm'); if(bpmEl){ bpmEl.classList.remove('beat'); void bpmEl.offsetWidth; bpmEl.classList.add('beat'); }
             for(let i=0;i<4;i++) { const b=DOM.get('bb'+i); if(b) b.className='beat-bar'+(i===p.phase?(p.phase===0?' b-accent':' b-on'):''); }
             DOM.setText('beatPhase',['強拍 ●','●○','●○○','●○○○'][p.phase]);
@@ -1209,9 +1223,11 @@ const UI = {
     EventBus.on('SPM_BEAT', () => {
         if (State.app.sessionType === 'FREE' || Observe.running) {
             window.requestAnimationFrame(() => {
-                DOM.setText('obsBpmDisp', Math.round(State.data.currentSpm));
+                const spm = Math.round(State.data.currentSpm);
+                DOM.setText('obsBpmDisp', spm);
                 const bEl = DOM.get('obsBpmDisp'); if(bEl) { bEl.classList.remove('beat'); void bEl.offsetWidth; bEl.classList.add('beat'); }
-                DOM.setText('obsTapInfo', `自動偵測：${Math.round(State.data.currentSpm)} 槳/分`);
+                DOM.setText('obsTapInfo', `自動偵測：${spm} 槳/分`);
+                DOM.setText('obsTapSpm', `${spm} 槳/分`);
             });
         }
     });
@@ -1234,7 +1250,8 @@ const UI = {
       DOM.setText('distVal', distNumStr + distUnitStr); DOM.setText('obsDistDisp', distNumStr); DOM.setText('obsDistUnit', distUnitStr);
       DOM.setText('totalStrokes', State.data.totalStrokes); DOM.setText('obsStrokes', State.data.totalStrokes);
       const src = State.data.speedSource; const srcText = src === 'gps' ? 'GPS' : src === 'kalman' ? 'Kalman' : src === 'MANUAL' ? 'MANUAL' : 'READY'; const srcColor = src === 'gps' ? '#00FF7A' : src === 'kalman' ? '#FFB300' : '#5880a0';
-      DOM.setText('speedSource', '— ' + srcText); DOM.setStyle('speedSource', 'color', srcColor); DOM.setText('obsSpeedSource', '— ' + srcText); DOM.setStyle('obsSpeedSource', 'color', srcColor);
+      DOM.setText('speedSource', '— ' + srcText); DOM.setStyle('speedSource', 'color', srcColor);
+      DOM.setText('obsSpeedSource', '— ' + srcText); DOM.setStyle('obsSpeedSource', 'color', srcColor);
       DOM.setText('distSpeed', State.app.isRunning && State.data.simSpeed > 0.1 ? `${spdText} km/h` : '— GPS');
     });
   },
@@ -1309,7 +1326,7 @@ const UI = {
     const allWorkouts = [...State.PRESETS.filter(p=>!State.db.customWorkouts.some(c=>c.id===p.id)),...State.db.customWorkouts];
     allWorkouts.forEach(w=>{
       const div = document.createElement('div'); div.className=`workout-item${State.training.selectedWorkout?.id===w.id?' selected':''}`; div.dataset.id = w.id;
-      div.innerHTML=`<div class="wi-header"><div style="display:flex;align-items:center;gap:6px;"><span class="wi-name">${w.name}</span><span class="wi-tag">${w.tag||'自訂'}</span></div><div class="wi-edit" data-id="${w.id}">⚙️</div></div><div style="font-size:9px;color:var(--muted2);margin-top:2px;">共 ${w.segments.length} 段落</div><div class="wi-segs">${w.segments.map(s=>`<span class="wi-seg">${s.bpm}♩×${s.count}</span>`).join('')}</div>`;
+      div.innerHTML=`<div class="wi-header"><div style="display:flex;align-items:center;gap:6px;"><span class="wi-name">${_esc(w.name)}</span><span class="wi-tag">${_esc(w.tag||'自訂')}</span></div><div class="wi-edit" data-id="${_esc(w.id)}">⚙️</div></div><div style="font-size:9px;color:var(--muted2);margin-top:2px;">共 ${w.segments.length} 段落</div><div class="wi-segs">${w.segments.map(s=>`<span class="wi-seg">${Number(s.bpm)}♩×${Number(s.count)}</span>`).join('')}</div>`;
       frag.appendChild(div);
     });
     window.requestAnimationFrame(() => {
@@ -1556,8 +1573,8 @@ const Engine = {
       if(!State.app.editingWorkoutId) return;
       await Repository.deleteWorkout(State.app.editingWorkoutId);
       const filtered = State.db.customWorkouts.filter(x=>x.id!==State.app.editingWorkoutId);
+      const allWorkouts = [...State.PRESETS.filter(p=>!filtered.some(c=>c.id===p.id)),...filtered];
       State.update(ACTIONS.SET_DB, { customWorkouts: filtered }); EventBus.emit('TOAST', '✅ 已移除'); 
-      const allWorkouts = [...State.PRESETS.filter(p=>!State.db.customWorkouts.some(c=>c.id===p.id)),...State.db.customWorkouts];
       if(State.training.selectedWorkout?.id===State.app.editingWorkoutId) Engine.db.selectWorkout(allWorkouts[0].id);
       this.cancelEdit(); EventBus.emit('WORKOUTS_UPDATED');
     },
@@ -1604,6 +1621,7 @@ const Observe = {
   running: false, elapsed: 0, tab: 'speed', finished: false,
   async toggle() { 
     if (State.app.isRunning) { EventBus.emit('TOAST', '請先結束訓練模式'); return; }
+    if (this.finished) { EventBus.emit('TOAST', '請先重置後再開始'); return; }
     this.running ? this._pause() : await this._start(); 
   },
   async _start() {
@@ -1618,11 +1636,10 @@ const Observe = {
       this.elapsed=base+Math.round((Date.now()-wallStart)/1000);
       DOM.setText('obsElapsedDisp', _fmt(this.elapsed));
       Hardware.updateFusedSpeed(); EventBus.emit('METRICS_UPDATED');
-      // 3. 修正盲算距離：觀察模式定時器是每 1 秒 (1000ms)，所以距離累加應乘上 1 秒而不是 2 秒
-      if(Date.now() - Hardware.lastGpsTime > Hardware.gpsTimeout && State.data.simSpeed > 0) State.update(ACTIONS.ADD_DISTANCE, (State.data.simSpeed / 3600) * 1);
+      if(Date.now() - Hardware.lastGpsTime > Hardware.gpsTimeout && State.data.simSpeed > 0) State.update(ACTIONS.ADD_DISTANCE, (State.data.simSpeed / 3600) * 2);
       State.update(ACTIONS.PUSH_OBS, {t:this.elapsed, spm: parseFloat(State.data.currentSpm.toFixed(1)), spd: parseFloat(State.data.simSpeed.toFixed(2))});
       EventBus.emit('CHART_UPDATED');
-    },1000);
+    },2000);
     Hardware.vibratePattern([40,30,40]);
   },
   _pause() { 
@@ -1639,7 +1656,7 @@ const Observe = {
         avgSpd: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spd,0)/State.data.obsData.length) : 0,
         dist: State.data.totalDistKm, durationSec: this.elapsed, delta: 0
     });
-    const sessionData = { date:`${new Date().getMonth()+1}/${new Date().getDate()}`, name:'自由記錄', duration:DOM.get('elapsedTime').textContent, strokes:State.data.totalStrokes, dist:State.data.totalDistKm.toFixed(2), sets:1, timestamp:Date.now(), laps:[...State.data.laps], obsData:[...State.data.obsData] };
+    const sessionData = { date:`${new Date().getMonth()+1}/${new Date().getDate()}`, name:'自由記錄', duration:_fmt(this.elapsed), strokes:State.data.totalStrokes, dist:State.data.totalDistKm.toFixed(2), sets:1, timestamp:Date.now(), laps:[...State.data.laps], obsData:[...State.data.obsData] };
     Repository.saveSession(sessionData).then(id => {
       State.update(ACTIONS.UNSHIFT_HISTORY, {id, ...sessionData}); EventBus.emit('HISTORY_UPDATED');
     });
@@ -1660,6 +1677,7 @@ const Observe = {
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fn; a.click(); EventBus.emit('TOAST', '✅ CSV 已下載');
   }
 };
+function _esc(s){ const d=document.createElement('div'); d.textContent=String(s||''); return d.innerHTML; }
 function _fmt(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 
 // ══════════════════════════════════════════════
@@ -1770,7 +1788,7 @@ const App = {
       b.innerHTML=`<div style="display:flex;align-items:center;gap:10px;padding:9px 14px;background:#0a1020;border-top:1px solid rgba(255,179,0,.3);position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:9999;"><div style="flex:1;font-size:11px;color:#FFB300;font-weight:700;">📲 加入主畫面，離線也能用</div><button id="pwaInstallBtn" style="background:var(--red);color:#fff;border:none;border-radius:5px;padding:6px 12px;font-size:10px;font-weight:700;cursor:pointer;">安裝</button><button id="pwaCloseBtn" style="background:none;border:none;color:#5880a0;font-size:14px;cursor:pointer;">✕</button></div>`;
       document.body.appendChild(b);
       DOM.get('pwaInstallBtn').addEventListener('click', () => App.doInstall());
-      DOM.get('pwaCloseBtn').addEventListener('click', function() { this.closest('div').parentElement.remove(); });
+      DOM.get('pwaCloseBtn').addEventListener('click', () => { b.remove(); });
     });
   },
   async doInstall() { if(!window._installPrompt) return; window._installPrompt.prompt(); await window._installPrompt.userChoice; window._installPrompt=null; },
