@@ -1451,10 +1451,12 @@ const Engine = {
   },
   async startTraining() {
     if(!State.app.isRunning&&!State.app.isFinished&&State.session.elapsedSec===0){
-      State.update(ACTIONS.SET_APP, { sessionType: 'WORKOUT' });
       if(!State.training.selectedWorkout) { EventBus.emit('TOAST', '請先選擇課表'); return; }
     }
+    State.update(ACTIONS.SET_APP, { sessionType: 'WORKOUT' });
     Hardware.getCtx().resume(); State.update(ACTIONS.SET_APP, { isRunning: true }); await Hardware.requestWakeLock();
+    const motionOk = await Hardware.requestMotionPermission();
+    if (!motionOk) EventBus.emit('TOAST', '⚠️ 槳頻偵測需要「動態感測器」權限');
     if(Hardware.gpsGranted) Hardware.watchGPS(); else Hardware.initGPS();
     
     EventBus.emit('TRAIN_STATE_CHANGED', 'LIVE');
