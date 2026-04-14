@@ -906,9 +906,19 @@ const Hardware = {
     if(this._audioCtx.state==='suspended') this._audioCtx.resume();
     return this._audioCtx;
   },
+  // iOS 要求每次發聲前確保 AudioContext 是 running 狀態
+  resumeAudio() {
+    if(!this._audioCtx) return;
+    if(this._audioCtx.state==='suspended'||this._audioCtx.state==='interrupted') {
+      this._audioCtx.resume().catch(()=>{});
+    }
+  },
   toneWhistle(baseFreq, duration, vol) {
     try {
-      const c=this.getCtx(), t=c.currentTime, o1=c.createOscillator(), o2=c.createOscillator(), gn=c.createGain();
+      this.resumeAudio();
+      const c=this.getCtx();
+      if(c.state !== 'running') return; // 仍未 running 就放棄這一拍，避免 iOS 靜音
+      const t=c.currentTime, o1=c.createOscillator(), o2=c.createOscillator(), gn=c.createGain();
       o1.type='sawtooth'; o2.type='sawtooth';
       o1.connect(gn); o2.connect(gn); gn.connect(c.destination);
       o1.frequency.setValueAtTime(baseFreq,t); o2.frequency.setValueAtTime(baseFreq*1.03,t);
@@ -1118,9 +1128,12 @@ const Hardware = {
 
 ['touchstart','click'].forEach(ev=>document.addEventListener(ev,()=>{ try{ Hardware.getCtx(); }catch(e){} },{once:true,passive:true}));
 document.addEventListener('visibilitychange', async () => { 
-  if (document.visibilityState === 'visible' && (State.app.isRunning || State.app.isObserving)) { 
-    await Hardware.requestWakeLock(); 
-  } 
+  if (document.visibilityState === 'visible') {
+    Hardware.resumeAudio();
+    if (State.app.isRunning || State.app.isObserving) { 
+      await Hardware.requestWakeLock(); 
+    }
+  }
 });
 
 // ══════════════════════════════════════════════
@@ -1606,11 +1619,16 @@ const Engine = {
     State.app.isRunning ? this.pauseTraining() : await this.startTraining(); 
   },
   async startTraining() {
+    // ① 必須在使用者手勢的同步 call stack 內 resume AudioContext（iOS 限制）
+    Hardware.getCtx();
     if(!State.app.isRunning&&!State.app.isFinished&&State.session.elapsedSec===0){
       State.update(ACTIONS.SET_APP, { sessionType: 'WORKOUT' });
       if(!State.training.selectedWorkout) { EventBus.emit('TOAST', '請先選擇課表'); return; }
     }
-    Hardware.getCtx().resume(); State.update(ACTIONS.SET_APP, { isRunning: true }); await Hardware.requestWakeLock();
+    State.update(ACTIONS.SET_APP, { isRunning: true }); await Hardware.requestWakeLock();
+    // ② await 感測器權限（之前遺漏 await，導致 iOS 感測器未啟動）
+    const motionOk = await Hardware.requestMotionPermission();
+    if (!motionOk) EventBus.emit('TOAST', '⚠️ 槳頻偵測需要「動態感測器」權限');
     if(Hardware.gpsGranted) Hardware.watchGPS(); else Hardware.initGPS();
     
     EventBus.emit('TRAIN_STATE_CHANGED', 'LIVE');
