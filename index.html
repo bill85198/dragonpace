@@ -235,6 +235,17 @@ canvas#obsChart{display:block;width:100%;flex:1;}
 .obs-legend-item{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--muted2);}
 .obs-legend-dot{width:10px;height:3px;border-radius:2px;}
 .obs-sensor-strip{display:flex;align-items:center;gap:8px;background:var(--bg2);border-radius:6px;border:1px solid rgba(0,229,255,.12);padding:7px 11px;min-height:32px;}
+.bounce-strip{display:flex;align-items:center;gap:8px;background:var(--bg2);border-radius:6px;border:1px solid rgba(0,212,180,.14);padding:7px 12px;min-height:32px;}
+.bounce-icon{font-size:9px;font-family:'Orbitron',monospace;color:var(--teal);letter-spacing:1px;flex-shrink:0;}
+.bounce-label{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#5880a0;flex:1;}
+.bounce-val{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:var(--teal);text-shadow:0 0 16px rgba(0,212,176,.5);transition:color .3s;}
+.bounce-val.b-low{color:var(--green);}
+.bounce-val.b-med{color:var(--gold);}
+.bounce-val.b-hi{color:var(--red2);}
+.bounce-unit{font-size:7px;color:#5880a0;letter-spacing:1px;margin-left:2px;}
+.bounce-bar-wrap{width:56px;height:5px;background:#1a2e44;border-radius:3px;overflow:hidden;flex-shrink:0;}
+.bounce-bar-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .3s,background .3s;width:0%;}
+.bounce-qual{font-size:8px;font-weight:700;letter-spacing:.5px;flex-shrink:0;min-width:28px;text-align:right;}
 .obs-sensor-icon{font-size:10px;color:var(--muted2);font-family:'Orbitron',monospace;flex-shrink:0;}
 .obs-sensor-text{font-size:11px;font-weight:700;color:var(--cyan);flex:1;letter-spacing:.3px;text-shadow:0 0 10px rgba(0,229,255,.4);}
 .obs-sensor-spm{font-family:'Orbitron',monospace;font-size:10px;color:var(--muted2);letter-spacing:.5px;}
@@ -356,6 +367,15 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
             <div class="announce-icon">◈</div>
             <div class="announce-text">選擇課表後按開始</div>
           </div>
+          <!-- BOUNCE STRIP -->
+          <div class="bounce-strip" id="bounceStrip">
+            <div class="bounce-icon">BOUNCE</div>
+            <div class="bounce-label">垂直抖動</div>
+            <div class="bounce-val b-low" id="bounceVal">--</div>
+            <div class="bounce-unit">m/s²</div>
+            <div class="bounce-bar-wrap"><div class="bounce-bar-fill" id="bounceBar"></div></div>
+            <div class="bounce-qual" id="bounceQual" style="color:var(--muted2)">—</div>
+          </div>
           <div class="seg-flow">
             <div class="sf-head">
               <span class="sf-title" id="sfTitle">段落進度</span>
@@ -374,7 +394,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
             </div>
             <div id="lapBody">
               <div class="lap-table-hdr">
-                <div>LAP</div><div>目標</div><div>實際槳頻</div><div>均速</div><div>距離</div>
+                <div>LAP</div><div>目標</div><div>實際槳頻</div><div>均速</div><div>Bounce</div>
               </div>
               <div class="lap-scroll" id="lapList">
                 <div class="lap-empty"><div class="lap-empty-icon">◈</div>段落完成後自動記錄</div>
@@ -433,6 +453,15 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
             <div class="obs-sensor-text">自動槳頻偵測</div>
             <div class="obs-sensor-spm" id="obsTapSpm">使用感測器</div>
           </div>
+          <!-- OBSERVE BOUNCE STRIP -->
+          <div class="bounce-strip" id="obsBounceStrip">
+            <div class="bounce-icon">BOUNCE</div>
+            <div class="bounce-label">垂直抖動</div>
+            <div class="bounce-val b-low" id="obsBounceVal">--</div>
+            <div class="bounce-unit">m/s²</div>
+            <div class="bounce-bar-wrap"><div class="bounce-bar-fill" id="obsBounceBar"></div></div>
+            <div class="bounce-qual" id="obsBounceQual" style="color:var(--muted2)">—</div>
+          </div>
 
           <!-- 即時圖表 -->
           <section class="obs-chart-section" aria-label="即時走勢圖表">
@@ -442,6 +471,7 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
                 <button class="obs-tab active" id="tab-spd" data-obstr="speed">速度</button>
                 <button class="obs-tab" id="tab-bpm" data-obstr="bpm">槳頻</button>
                 <button class="obs-tab" id="tab-both" data-obstr="both">合併</button>
+                <button class="obs-tab" id="tab-bnc" data-obstr="bounce">抖動</button>
               </div>
             </div>
             <div class="obs-canvas-outer" id="obsCanvasOuter">
@@ -608,7 +638,8 @@ const State = {
   data: {
     totalStrokes:0, simSpeed:0, lastSpeed:0, totalDistKm:0, currentSpm:0,
     laps:[], obsData:[], lapSpeedSamples:[], lapSegStartTime:0, lapSegStartDist:0,
-    gpsSpeed:0, sensorSpeed:0, speedSource:'READY'
+    gpsSpeed:0, sensorSpeed:0, speedSource:'READY',
+    currentBounce:0, bounceHistory:[], lapBounceSamples:[]
   },
   training: { selectedWorkout:null, segIdx:0, strokeInSeg:0, builderSegs:[{bpm:40,count:30}] },
   db: { customWorkouts:[], history:[] },
@@ -659,6 +690,7 @@ const State = {
         this.data.totalDistKm = 0; this.data.simSpeed = 0; this.data.lastSpeed = 0;
         this.data.speedSource = 'READY'; this.data.obsData = []; 
         this.data.laps = []; this.data.lapSpeedSamples = [];
+        this.data.currentBounce = 0; this.data.bounceHistory = []; this.data.lapBounceSamples = [];
         this.training.segIdx = 0; this.training.strokeInSeg = 0;
         break;
         
@@ -766,7 +798,9 @@ const DOM = {
       'clockBadge', 'arcFill', 'page-observe', 'obsLegend', 'obsChart', 'historyChart', 
       'hmTitle', 'hmSpd', 'hmDist', 'historyModal', 'segCards', 'progBar', 'progLabels', 
       'bb0', 'bb1', 'bb2', 'bb3', 'selectedWorkoutLabel', 'courseMetaLabel', 'segName',
-      'obsTapSpm', 'obsSensorStrip'
+      'obsTapSpm', 'obsSensorStrip',
+      'bounceVal', 'bounceBar', 'bounceQual',
+      'obsBounceVal', 'obsBounceBar', 'obsBounceQual'
     ];
     for(let i=0; i<ids.length; i++) {
       const e = document.getElementById(ids[i]);
@@ -847,7 +881,8 @@ const Repository = {
 // ══════════════════════════════════════════════
 const Hardware = {
   _audioCtx: null, gpsWatchId: null, lastGpsPos: null, gpsGranted: false, lastGpsTime: 0, gpsTimeout: 4000,
-  motion: { strokeTimes:[], filteredY:0, lastY:0, lastPeakTime:0, isRising:false, gravity:{x:0,y:0,z:0}, lastProcessTime:0 },
+  motion: { strokeTimes:[], filteredY:0, lastY:0, lastPeakTime:0, isRising:false, gravity:{x:0,y:0,z:0}, lastProcessTime:0,
+    filteredZ:0, lastZ:0, isZRising:false, peakZ:0, strokePeakZ:0 },
   motionListenerAdded: false,
   kalman: {
     x:0, P:1, Q:0.085, R:0.55, lastUpdate:0,
@@ -1026,6 +1061,19 @@ const Hardware = {
     const ax=aig.x-this.motion.gravity.x, ay=aig.y-this.motion.gravity.y, az=aig.z-this.motion.gravity.z;
     const mag=Math.sqrt(ax*ax+ay*ay+az*az);
     
+    // ── Bounce 偵測：追蹤垂直分量 (az) 的每槳峰值 ──
+    // 用較小的 EWMA 保留尖峰，不像 mag 需要平滑
+    this.motion.filteredZ = this.motion.filteredZ + 0.4 * (Math.abs(az) - this.motion.filteredZ);
+    if(this.motion.filteredZ > this.motion.lastZ) {
+      this.motion.isZRising = true;
+      if(this.motion.filteredZ > this.motion.peakZ) this.motion.peakZ = this.motion.filteredZ;
+    } else if(this.motion.isZRising) {
+      this.motion.isZRising = false;
+      this.motion.strokePeakZ = this.motion.peakZ;
+      this.motion.peakZ = 0;
+    }
+    this.motion.lastZ = this.motion.filteredZ;
+    
     // 稍微放大 EWMA 權重 (0.2 -> 0.3) 以補償降頻至 20Hz 後的訊號反應速度
     this.motion.filteredY=this.motion.filteredY+0.3*(mag-this.motion.filteredY);
 
@@ -1036,6 +1084,20 @@ const Hardware = {
       if(now-this.motion.lastPeakTime>350) {
         this.motion.lastPeakTime=now;
         this.motion.strokeTimes.push(now);
+        
+        // 記錄本槳的垂直峰值作為 bounce 指標
+        const bouncePeak = parseFloat(this.motion.strokePeakZ.toFixed(2));
+        this.motion.strokePeakZ = 0;
+        if(bouncePeak > 0.1) {
+          // 移動平均：保留最近 8 槳
+          const bh = State.data.bounceHistory;
+          bh.push(bouncePeak);
+          if(bh.length > 8) bh.shift();
+          const avgBounce = parseFloat((bh.reduce((a,b)=>a+b,0)/bh.length).toFixed(2));
+          State.data.lapBounceSamples.push(bouncePeak);
+          State.update(ACTIONS.SET_DATA, { currentBounce: avgBounce });
+          EventBus.emit('BOUNCE_UPDATED');
+        }
         
         State.update(ACTIONS.ADD_SENSOR_STROKE);
         EventBus.emit('METRICS_UPDATED'); // 每槳立即刷新 UI（totalStrokes / obsStrokes）
@@ -1164,6 +1226,9 @@ const UI = {
                 DOM.setText('obsElapsedDisp', '00:00');
                 DOM.setText('obsSpeedSource', '— READY');
                 DOM.setStyle('obsSpeedSource','color','#5880a0');
+                const obEl=DOM.get('obsBounceVal'); if(obEl){obEl.textContent='--';obEl.className='bounce-val b-low';}
+                const obBar=DOM.get('obsBounceBar'); if(obBar){obBar.style.width='0%';}
+                const obQual=DOM.get('obsBounceQual'); if(obQual){obQual.textContent='—';obQual.style.color='var(--muted2)';}
                 if(doneBanner) doneBanner.style.display='none';
                 if(startBtn){ startBtn.textContent='▶ 開始觀察'; startBtn.classList.remove('running'); }
                 if(endBtn) endBtn.style.display='none';
@@ -1220,6 +1285,26 @@ const UI = {
             this.attachChartInteraction('obsChart',()=>((!Observe.finished&&State.data.obsData.length>120)?State.data.obsData.slice(-120):State.data.obsData),'obsXhair', undefined);
         }
     });
+    EventBus.on('BOUNCE_UPDATED', () => {
+        window.requestAnimationFrame(() => {
+            const b = State.data.currentBounce;
+            if(b <= 0) return;
+            const bStr = b.toFixed(2);
+            let cls='b-low', qual='優', qualColor='var(--green)', pct=Math.min(b/4*100,100);
+            if(b >= 3.0)      { cls='b-hi';  qual='高'; qualColor='var(--red2)'; }
+            else if(b >= 1.5) { cls='b-med'; qual='中'; qualColor='var(--gold)'; }
+            // 訓練頁
+            const bEl = DOM.get('bounceVal'); const barEl = DOM.get('bounceBar'); const qualEl = DOM.get('bounceQual');
+            if(bEl) { bEl.textContent = bStr; bEl.className = 'bounce-val ' + cls; }
+            if(barEl) { barEl.style.width = pct+'%'; barEl.style.background = qualColor; }
+            if(qualEl) { qualEl.textContent = qual; qualEl.style.color = qualColor; }
+            // 觀察頁
+            const obEl = DOM.get('obsBounceVal'); const obBar = DOM.get('obsBounceBar'); const obQual = DOM.get('obsBounceQual');
+            if(obEl) { obEl.textContent = bStr; obEl.className = 'bounce-val ' + cls; }
+            if(obBar) { obBar.style.width = pct+'%'; obBar.style.background = qualColor; }
+            if(obQual) { obQual.textContent = qual; obQual.style.color = qualColor; }
+        });
+    });
     EventBus.on('SPM_BEAT', () => {
         if (State.app.sessionType === 'FREE' || Observe.running) {
             window.requestAnimationFrame(() => {
@@ -1235,7 +1320,12 @@ const UI = {
         window.requestAnimationFrame(() => {
             document.querySelectorAll('.obs-tab').forEach(b=>b.classList.remove('active')); if(el) el.classList.add('active');
             const leg=DOM.get('obsLegend');
-            const m={ speed:'<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>', bpm: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div>', both: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div><div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>' };
+            const m={ 
+              speed:'<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>', 
+              bpm: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div>', 
+              both: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div><div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>',
+              bounce: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--teal)"></div>垂直抖動 (m/s²)</div>'
+            };
             if(leg) leg.innerHTML=m[tab]||m.speed;
         });
     });
@@ -1312,8 +1402,9 @@ const UI = {
       const vc=isFree?'lc-ok':(Math.abs(d)<=1?'lc-ok':Math.abs(d)<=3?'lc-warn':'lc-hi'), dc=Math.abs(d)<=1?'ld-ok':d>0?'ld-hi':'ld-lo';
       const ds=Math.abs(d)<0.5?'✓':d>0?`+${d.toFixed(1)}`:`${d.toFixed(1)}`; const dist=lap.dist>=1?`${lap.dist.toFixed(2)}km`:`${(lap.dist*1000).toFixed(0)}m`;
       const t=lap.durationSec, ts=t>=60?`${Math.floor(t/60)}'${String(Math.round(t%60)).padStart(2,'0')}"`:Math.round(t)+'"';
+      const bv=lap.avgBounce||0; const bcls=bv<=0?'lc-blue':bv<1.5?'lc-ok':bv<3?'lc-warn':'lc-hi'; const bStr=bv>0?bv.toFixed(2):'—';
       const row = document.createElement('div'); row.className=`lap-row${isLatest?' lap-latest':''}`;
-      row.innerHTML=`<div class="lap-idx"><div class="lap-idx-label">${lap.label}</div><div class="lap-idx-time">${ts}</div></div>${isFree?'<div class="lap-target"><div class="lap-target-val">—</div></div>':`<div class="lap-target"><div class="lap-target-val">${lap.targetBpm}</div><div class="lap-target-unit">槳/分</div></div>`}<div class="lap-cell"><div class="lap-cell-val ${vc}">${lap.actualBpm.toFixed(1)}</div><div class="lap-cell-unit">槳/分</div>${isFree?'':`<span class="lap-delta ${dc}">${ds}</span>`}</div><div class="lap-cell"><div class="lap-cell-val lc-blue">${lap.avgSpd.toFixed(1)}</div><div class="lap-cell-unit">km/h</div></div><div class="lap-cell"><div class="lap-cell-val lc-blue">${dist}</div></div>`;
+      row.innerHTML=`<div class="lap-idx"><div class="lap-idx-label">${lap.label}</div><div class="lap-idx-time">${ts}</div></div>${isFree?'<div class="lap-target"><div class="lap-target-val">—</div></div>':`<div class="lap-target"><div class="lap-target-val">${lap.targetBpm}</div><div class="lap-target-unit">槳/分</div></div>`}<div class="lap-cell"><div class="lap-cell-val ${vc}">${lap.actualBpm.toFixed(1)}</div><div class="lap-cell-unit">槳/分</div>${isFree?'':`<span class="lap-delta ${dc}">${ds}</span>`}</div><div class="lap-cell"><div class="lap-cell-val lc-blue">${lap.avgSpd.toFixed(1)}</div><div class="lap-cell-unit">km/h</div></div><div class="lap-cell"><div class="lap-cell-val ${bcls}">${bStr}</div><div class="lap-cell-unit">${bv>0?'m/s²':''}</div></div>`;
       frag.appendChild(row);
     });
     window.requestAnimationFrame(() => {
@@ -1372,51 +1463,114 @@ const UI = {
     ctx.clearRect(0,0,W,H);
     if(!data||data.length<2){ ctx.fillStyle='#5880a0'; ctx.font="13px 'Noto Sans TC',sans-serif"; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('數據收集中...',W/2,H/2); return; }
     const ML=42, MR=42, MT=18, MB=30; const PW=W-ML-MR, PH=H-MT-MB; if(PW<10||PH<10) return;
-    const maxSpm=Math.max(...data.map(d=>d.spm||0),60)*1.15, maxSpd=Math.max(...data.map(d=>d.spd||0),5)*1.15;
     const minT=data[0].t, maxT=data[data.length-1].t, rangeT=maxT-minT||1;
-    const toX=t=>ML+(t-minT)/rangeT*PW, toYSpm=v=>MT+PH*(1-(v||0)/maxSpm), toYSpd=v=>MT+PH*(1-(v||0)/maxSpd);
-    
-    ctx.strokeStyle='rgba(255,255,255,0.06)'; ctx.lineWidth=1;
-    for(let i=0;i<=4;i++){ const y=MT+PH*(i/4); ctx.beginPath(); ctx.moveTo(ML,y); ctx.lineTo(ML+PW,y); ctx.stroke(); }
-    if(tab==='both'||tab==='bpm') {
-        ctx.strokeStyle='rgba(255,179,0,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML,MT); ctx.lineTo(ML,MT+PH); ctx.stroke();
-        ctx.fillStyle='#FFB300'; ctx.font=`bold 8.5px 'Orbitron',monospace`; ctx.textAlign='right';
-        for(let i=0;i<=4;i++){ ctx.fillText(Math.round(maxSpm*(1-i/4)),ML-4,MT+PH*(i/4)+3); }
+    const toX=t=>ML+(t-minT)/rangeT*PW;
+
+    // ── 固定刻度輔助函式 ──
+    // 計算從 0 開始、步進 step、覆蓋 maxVal 的刻度上限
+    const fixedMax=(maxVal,step)=>Math.ceil(Math.max(maxVal,step)/step)*step;
+    // 繪製固定格線
+    const drawGrid=(maxV,step,toY)=>{
+      ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=0.8;
+      for(let v=0;v<=maxV;v+=step){ const y=toY(v); if(y<MT||y>MT+PH) continue; ctx.beginPath(); ctx.moveTo(ML,y); ctx.lineTo(ML+PW,y); ctx.stroke(); }
+    };
+
+    // ── 各指標範圍（固定步進） ──
+    const rawMaxSpd=Math.max(...data.map(d=>d.spd||0),2);
+    const rawMaxSpm=Math.max(...data.map(d=>d.spm||0),20);
+    const rawMaxBnc=Math.max(...data.map(d=>d.bnc||0),1);
+    const maxSpd=fixedMax(rawMaxSpd,1);   // 1 km/h 步進
+    const maxSpm=fixedMax(rawMaxSpm,5);   // 5 槳/分 步進
+    const maxBnc=fixedMax(rawMaxBnc,1);   // 1 m/s² 步進
+    const toYSpd=v=>MT+PH*(1-(v||0)/maxSpd);
+    const toYSpm=v=>MT+PH*(1-(v||0)/maxSpm);
+    const toYBnc=v=>MT+PH*(1-(v||0)/maxBnc);
+
+    // ── X 軸固定時間格線（每 30 秒） ──
+    const xStep=30; // 秒
+    ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=0.8;
+    for(let t=Math.ceil(minT/xStep)*xStep; t<=maxT; t+=xStep){
+      const x=toX(t); ctx.beginPath(); ctx.moveTo(x,MT); ctx.lineTo(x,MT+PH); ctx.stroke();
+    }
+
+    // ── Y 軸左側：SPM（金）或 Bounce（青） ──
+    if(tab==='bpm'){
+      drawGrid(maxSpm,5,toYSpm);
+      ctx.strokeStyle='rgba(255,179,0,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML,MT); ctx.lineTo(ML,MT+PH); ctx.stroke();
+      ctx.fillStyle='#FFB300'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.textAlign='right';
+      for(let v=0;v<=maxSpm;v+=5){ const y=toYSpm(v); if(y<MT-2||y>MT+PH+2) continue; ctx.fillText(v,ML-4,y+3); }
+      ctx.save(); ctx.translate(11,MT+PH/2); ctx.rotate(-Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(255,179,0,.7)'; ctx.textAlign='center'; ctx.fillText('槳/分',0,0); ctx.restore();
+    } else if(tab==='bounce'){
+      drawGrid(maxBnc,1,toYBnc);
+      ctx.strokeStyle='rgba(0,212,176,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML,MT); ctx.lineTo(ML,MT+PH); ctx.stroke();
+      ctx.fillStyle='#00d4b0'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.textAlign='right';
+      for(let v=0;v<=maxBnc;v+=1){ const y=toYBnc(v); if(y<MT-2||y>MT+PH+2) continue; ctx.fillText(v.toFixed(0),ML-4,y+3); }
+      ctx.save(); ctx.translate(11,MT+PH/2); ctx.rotate(-Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(0,212,176,.7)'; ctx.textAlign='center'; ctx.fillText('m/s²',0,0); ctx.restore();
+    } else {
+      // speed 或 both：左軸 SPM
+      if(tab==='both') drawGrid(maxSpm,5,toYSpm);
+      else drawGrid(maxSpd,1,toYSpd);
+      const leftColor=tab==='both'?'rgba(255,179,0,.55)':'rgba(0,229,255,.55)';
+      ctx.strokeStyle=leftColor; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML,MT); ctx.lineTo(ML,MT+PH); ctx.stroke();
+      if(tab==='both'){
+        ctx.fillStyle='#FFB300'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.textAlign='right';
+        for(let v=0;v<=maxSpm;v+=5){ const y=toYSpm(v); if(y<MT-2||y>MT+PH+2) continue; ctx.fillText(v,ML-4,y+3); }
         ctx.save(); ctx.translate(11,MT+PH/2); ctx.rotate(-Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(255,179,0,.7)'; ctx.textAlign='center'; ctx.fillText('槳/分',0,0); ctx.restore();
+      } else {
+        ctx.fillStyle='#00E5FF'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.textAlign='right';
+        for(let v=0;v<=maxSpd;v+=1){ const y=toYSpd(v); if(y<MT-2||y>MT+PH+2) continue; ctx.fillText(v.toFixed(0),ML-4,y+3); }
+        ctx.save(); ctx.translate(11,MT+PH/2); ctx.rotate(-Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(0,229,255,.7)'; ctx.textAlign='center'; ctx.fillText('km/h',0,0); ctx.restore();
+      }
     }
-    if(tab==='both'||tab==='speed') {
-        ctx.strokeStyle='rgba(0,229,255,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML+PW,MT); ctx.lineTo(ML+PW,MT+PH); ctx.stroke();
-        ctx.fillStyle='#00E5FF'; ctx.font=`bold 8.5px 'Orbitron',monospace`; ctx.textAlign='left';
-        for(let i=0;i<=4;i++){ ctx.fillText((maxSpd*(1-i/4)).toFixed(1),ML+PW+4,MT+PH*(i/4)+3); }
-        ctx.save(); ctx.translate(W-9,MT+PH/2); ctx.rotate(Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(0,229,255,.7)'; ctx.textAlign='center'; ctx.fillText('km/h',0,0); ctx.restore();
+
+    // ── Y 軸右側：speed（cyan）or SPM in both ──
+    if(tab==='speed'||tab==='both'){
+      const step=tab==='both'?1:1;
+      ctx.strokeStyle='rgba(0,229,255,.55)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(ML+PW,MT); ctx.lineTo(ML+PW,MT+PH); ctx.stroke();
+      ctx.fillStyle='#00E5FF'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.textAlign='left';
+      if(tab==='both') drawGrid(maxSpd,1,toYSpd);
+      for(let v=0;v<=maxSpd;v+=step){ const y=toYSpd(v); if(y<MT-2||y>MT+PH+2) continue; ctx.fillText(v.toFixed(0),ML+PW+4,y+3); }
+      ctx.save(); ctx.translate(W-9,MT+PH/2); ctx.rotate(Math.PI/2); ctx.font=`8px 'Noto Sans TC',sans-serif`; ctx.fillStyle='rgba(0,229,255,.7)'; ctx.textAlign='center'; ctx.fillText('km/h',0,0); ctx.restore();
     }
+
+    // ── X 軸底線 + 時間標籤（固定 30s 間格） ──
     ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(ML,MT+PH); ctx.lineTo(ML+PW,MT+PH); ctx.stroke();
     ctx.fillStyle='rgba(255,255,255,.55)'; ctx.font=`8px 'Orbitron',monospace`; ctx.textAlign='center';
-    const steps=Math.min(6,data.length);
-    for(let i=0;i<=steps;i++){ const t=Math.round(minT+rangeT*(i/steps)); const m=Math.floor(t/60), s=t%60; ctx.fillText(m?`${m}:${String(s).padStart(2,'0')}`:`${s}"`,ML+PW*(i/steps),MT+PH+14); }
+    // 最多顯示 8 個標籤，避免擁擠
+    const labelStep = Math.max(xStep, Math.ceil(rangeT/8/xStep)*xStep);
+    for(let t=Math.ceil(minT/labelStep)*labelStep; t<=maxT+1; t+=labelStep){
+      const x=toX(t); if(x<ML-2||x>ML+PW+2) continue;
+      const m=Math.floor(t/60), s=Math.round(t%60);
+      ctx.fillText(m?`${m}:${String(s).padStart(2,'0')}`:`${s}"`, x, MT+PH+14);
+    }
     ctx.fillStyle='rgba(255,255,255,.25)'; ctx.font=`7.5px 'Noto Sans TC',sans-serif`; ctx.textAlign='center'; ctx.fillText('時間',ML+PW/2,MT+PH+26);
 
+    // ── 繪製資料線 ──
     if(tab==='both'||tab==='bpm') { ctx.strokeStyle='#FFB300'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.shadowBlur=7; ctx.shadowColor='#FFB300'; ctx.beginPath(); data.forEach((d,i)=>{ const x=toX(d.t),y=toYSpm(d.spm); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }); ctx.stroke(); ctx.shadowBlur=0; }
     if(tab==='both'||tab==='speed') { ctx.strokeStyle='#00E5FF'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.shadowBlur=7; ctx.shadowColor='#00E5FF'; ctx.beginPath(); data.forEach((d,i)=>{ const x=toX(d.t),y=toYSpd(d.spd); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }); ctx.stroke(); ctx.shadowBlur=0; }
+    if(tab==='bounce') { ctx.strokeStyle='#00d4b0'; ctx.lineWidth=2.5; ctx.lineJoin='round'; ctx.shadowBlur=7; ctx.shadowColor='#00d4b0'; ctx.beginPath(); data.forEach((d,i)=>{ const x=toX(d.t),y=toYBnc(d.bnc||0); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); }); ctx.stroke(); ctx.shadowBlur=0; }
 
+    // ── Hover crosshair + tooltip ──
     if(hoverIdx>=0&&hoverIdx<data.length){
-      const d=data[hoverIdx] || {};
-      const safeT = d.t || 0, safeSpm = d.spm || 0, safeSpd = d.spd || 0;
-      const x=toX(safeT), ySpm=toYSpm(safeSpm), ySpd=toYSpd(safeSpd);
+      const d=data[hoverIdx]||{};
+      const safeT=d.t||0, safeSpm=d.spm||0, safeSpd=d.spd||0, safeBnc=d.bnc||0;
+      const x=toX(safeT);
       ctx.strokeStyle='rgba(255,255,255,.4)'; ctx.lineWidth=1; ctx.setLineDash([3,3]); ctx.beginPath(); ctx.moveTo(x,MT); ctx.lineTo(x,MT+PH); ctx.stroke(); ctx.setLineDash([]);
-      if(tab==='both'||tab==='bpm') { ctx.fillStyle='#FFB300'; ctx.beginPath(); ctx.arc(x,ySpm,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,ySpm,4.5,0,Math.PI*2); ctx.stroke(); }
-      if(tab==='both'||tab==='speed') { ctx.fillStyle='#00E5FF'; ctx.beginPath(); ctx.arc(x,ySpd,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,ySpd,4.5,0,Math.PI*2); ctx.stroke(); }
-      const boxW=110, boxH = tab==='both'?66:46; let bx=x+14; if(bx+boxW>W-4) bx=x-boxW-14;
-      let by=MT; if(tab==='both') by=Math.min(Math.max(MT,Math.min(ySpm,ySpd)-8),MT+PH-boxH); else if(tab==='bpm') by=Math.min(Math.max(MT,ySpm-8),MT+PH-boxH); else by=Math.min(Math.max(MT,ySpd-8),MT+PH-boxH);
-      if (isNaN(by)) by = MT;
+      if(tab==='both'||tab==='bpm')    { const y=toYSpm(safeSpm); ctx.fillStyle='#FFB300'; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.stroke(); }
+      if(tab==='both'||tab==='speed')  { const y=toYSpd(safeSpd); ctx.fillStyle='#00E5FF'; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.stroke(); }
+      if(tab==='bounce')               { const y=toYBnc(safeBnc); ctx.fillStyle='#00d4b0'; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.stroke(); }
+      const lineCount=(tab==='both'?2:1)+1;
+      const boxW=118, boxH=16+lineCount*20; let bx=x+14; if(bx+boxW>W-4) bx=x-boxW-14;
+      let by=MT; if(isNaN(by)) by=MT;
       ctx.fillStyle='rgba(4,10,22,.97)'; ctx.strokeStyle='rgba(0,229,255,.4)'; ctx.lineWidth=1.5; ctx.beginPath();
       if(ctx.roundRect) ctx.roundRect(bx,by,boxW,boxH,5); else ctx.rect(bx,by,boxW,boxH);
       ctx.fill(); ctx.stroke();
       const m=Math.floor(safeT/60), s=Math.floor(safeT%60); ctx.textAlign='left';
-      ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.fillText(`${m}:${String(s).padStart(2,'0')}`,bx+8,by+16);
-      let ny=35;
-      if(tab==='both'||tab==='bpm') { ctx.fillStyle='#FFB300'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`SPM ${safeSpm.toFixed(1)}`,bx+8,by+ny); ny+=20; }
-      if(tab==='both'||tab==='speed') { ctx.fillStyle='#00E5FF'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`SPD ${safeSpd.toFixed(1)}`,bx+8,by+ny); }
+      ctx.fillStyle='rgba(255,255,255,.45)'; ctx.font=`bold 8px 'Orbitron',monospace`; ctx.fillText(`${m}:${String(s).padStart(2,'0')}`,bx+8,by+14);
+      let ny=by+30;
+      if(tab==='both'||tab==='bpm')   { ctx.fillStyle='#FFB300'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`SPM ${safeSpm.toFixed(1)}`,bx+8,ny); ny+=20; }
+      if(tab==='both'||tab==='speed') { ctx.fillStyle='#00E5FF'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`SPD ${safeSpd.toFixed(1)}`,bx+8,ny); ny+=20; }
+      if(tab==='bounce')              { ctx.fillStyle='#00d4b0'; ctx.font=`bold 9.5px 'Orbitron',monospace`; ctx.fillText(`BNC ${safeBnc.toFixed(2)}`,bx+8,ny); }
     }
   },
   attachChartInteraction(canvasId, getDataFn, xhairId, fixedTab) {
@@ -1441,7 +1595,9 @@ const UI = {
 const Engine = {
   recordLap(segI) {
     const seg=State.training.selectedWorkout.segments[segI]; const dur=(performance.now()-State.data.lapSegStartTime)/1000; const actualBpm=dur>0?(seg.count/dur*60):0; const avgSpd=State.data.lapSpeedSamples.length?State.data.lapSpeedSamples.reduce((a,b)=>a+b)/State.data.lapSpeedSamples.length:0;
-    State.update(ACTIONS.PUSH_LAP, {label:`段落${segI+1}`,targetBpm:seg.bpm,actualBpm,avgSpd,dist:State.data.totalDistKm-State.data.lapSegStartDist,durationSec:dur,delta:actualBpm-seg.bpm});
+    const bs=State.data.lapBounceSamples; const avgBounce=bs.length?(bs.reduce((a,b)=>a+b,0)/bs.length):0;
+    State.data.lapBounceSamples=[];
+    State.update(ACTIONS.PUSH_LAP, {label:`段落${segI+1}`,targetBpm:seg.bpm,actualBpm,avgSpd,dist:State.data.totalDistKm-State.data.lapSegStartDist,durationSec:dur,delta:actualBpm-seg.bpm,avgBounce:parseFloat(avgBounce.toFixed(2))});
     EventBus.emit('LAP_RECORDED');
   },
   async toggleTraining() { 
@@ -1451,12 +1607,10 @@ const Engine = {
   },
   async startTraining() {
     if(!State.app.isRunning&&!State.app.isFinished&&State.session.elapsedSec===0){
+      State.update(ACTIONS.SET_APP, { sessionType: 'WORKOUT' });
       if(!State.training.selectedWorkout) { EventBus.emit('TOAST', '請先選擇課表'); return; }
     }
-    State.update(ACTIONS.SET_APP, { sessionType: 'WORKOUT' });
     Hardware.getCtx().resume(); State.update(ACTIONS.SET_APP, { isRunning: true }); await Hardware.requestWakeLock();
-    const motionOk = await Hardware.requestMotionPermission();
-    if (!motionOk) EventBus.emit('TOAST', '⚠️ 槳頻偵測需要「動態感測器」權限');
     if(Hardware.gpsGranted) Hardware.watchGPS(); else Hardware.initGPS();
     
     EventBus.emit('TRAIN_STATE_CHANGED', 'LIVE');
@@ -1465,7 +1619,7 @@ const Engine = {
       if(!State.app.isRunning) return;
       Hardware.updateFusedSpeed(); EventBus.emit('METRICS_UPDATED');
       if(Date.now()-Hardware.lastGpsTime>Hardware.gpsTimeout&&State.data.simSpeed>0) State.update(ACTIONS.ADD_DISTANCE, (State.data.simSpeed/3600)*2);
-      State.update(ACTIONS.PUSH_OBS, {t:State.session.elapsedSec, spm: State.data.currentSpm, spd:State.data.simSpeed});
+      State.update(ACTIONS.PUSH_OBS, {t:State.session.elapsedSec, spm: State.data.currentSpm, spd:State.data.simSpeed, bnc: parseFloat(State.data.currentBounce.toFixed(2))});
       EventBus.emit('CHART_UPDATED');
     },2000);
     this.launchMetro(); Hardware.vibratePattern([40,30,40]);
@@ -1487,6 +1641,7 @@ const Engine = {
   resetTraining() {
     State.update(ACTIONS.RESET_TRAINING); Hardware.kalman.reset(); Timers.stopClock(); Timers.clearAll(); Timers.resetArc();
     Hardware.lastGpsPos=null; Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0;
+    Hardware.motion.filteredZ=0; Hardware.motion.lastZ=0; Hardware.motion.peakZ=0; Hardware.motion.strokePeakZ=0; Hardware.motion.isZRising=false;
     EventBus.emit('TRAIN_STATE_CHANGED', 'READY');
     EventBus.emit('METRICS_UPDATED');
     EventBus.emit('WORKOUT_SELECTED');
@@ -1494,7 +1649,7 @@ const Engine = {
     EventBus.emit('CHART_UPDATED');
   },
   launchMetro() {
-    State.update(ACTIONS.SET_DATA, { lapSegStartTime: performance.now(), lapSegStartDist: State.data.totalDistKm, lapSpeedSamples: [] });
+    State.update(ACTIONS.SET_DATA, { lapSegStartTime: performance.now(), lapSegStartDist: State.data.totalDistKm, lapSpeedSamples: [], lapBounceSamples: [] });
     const seg=State.training.selectedWorkout.segments[State.training.segIdx];
     EventBus.emit('SEGMENT_CHANGED'); Timers.resetArc();
     Timers.setTimeout(()=>{ if(State.app.isRunning) this.onBeat(); },0);
@@ -1639,7 +1794,7 @@ const Observe = {
       DOM.setText('obsElapsedDisp', _fmt(this.elapsed));
       Hardware.updateFusedSpeed(); EventBus.emit('METRICS_UPDATED');
       if(Date.now() - Hardware.lastGpsTime > Hardware.gpsTimeout && State.data.simSpeed > 0) State.update(ACTIONS.ADD_DISTANCE, (State.data.simSpeed / 3600) * 2);
-      State.update(ACTIONS.PUSH_OBS, {t:this.elapsed, spm: parseFloat(State.data.currentSpm.toFixed(1)), spd: parseFloat(State.data.simSpeed.toFixed(2))});
+      State.update(ACTIONS.PUSH_OBS, {t:this.elapsed, spm: parseFloat(State.data.currentSpm.toFixed(1)), spd: parseFloat(State.data.simSpeed.toFixed(2)), bnc: parseFloat(State.data.currentBounce.toFixed(2))});
       EventBus.emit('CHART_UPDATED');
     },2000);
     Hardware.vibratePattern([40,30,40]);
@@ -1656,6 +1811,7 @@ const Observe = {
         label: '自由記錄', targetBpm: '--', 
         actualBpm: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spm,0)/State.data.obsData.length) : 0,
         avgSpd: State.data.obsData.length ? (State.data.obsData.reduce((a,b)=>a+b.spd,0)/State.data.obsData.length) : 0,
+        avgBounce: State.data.obsData.length ? parseFloat((State.data.obsData.reduce((a,b)=>a+(b.bnc||0),0)/State.data.obsData.length).toFixed(2)) : 0,
         dist: State.data.totalDistKm, durationSec: this.elapsed, delta: 0
     });
     const sessionData = { date:`${new Date().getMonth()+1}/${new Date().getDate()}`, name:'自由記錄', duration:_fmt(this.elapsed), strokes:State.data.totalStrokes, dist:State.data.totalDistKm.toFixed(2), sets:1, timestamp:Date.now(), laps:[...State.data.laps], obsData:[...State.data.obsData] };
@@ -1673,7 +1829,7 @@ const Observe = {
   setTab(tab, el) { this.tab=tab; EventBus.emit('OBSERVE_TAB_CHANGED', {tab, el}); EventBus.emit('CHART_UPDATED'); },
   async share() {
     const d = State.data.obsData; if(!d || !d.length){ EventBus.emit('TOAST', '無觀察數據可匯出'); return; }
-    let rows = ['時間(秒),實際BPM,均速km/h']; d.forEach(o => rows.push(`${o.t},${o.spm.toFixed(1)},${o.spd.toFixed(1)}`));
+    let rows = ['時間(秒),實際BPM,均速km/h,垂直抖動m/s²']; d.forEach(o => rows.push(`${o.t},${o.spm.toFixed(1)},${o.spd.toFixed(1)},${(o.bnc||0).toFixed(2)}`));
     const blob = new Blob(['\uFEFF' + rows.join('\n')], {type:'text/csv;charset=utf-8'}); const fn = `DragonPace_觀察_${new Date().toISOString().slice(0,10)}.csv`;
     try { const f = new File([blob], fn, {type:'text/csv'}); if(navigator.share && navigator.canShare && navigator.canShare({files:[f]})){ await navigator.share({title:'DragonPace 觀察數據', files:[f]}); EventBus.emit('TOAST', '✅ 匯出成功'); return; } } catch(e) {}
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fn; a.click(); EventBus.emit('TOAST', '✅ CSV 已下載');
@@ -1700,7 +1856,7 @@ const App = {
     DOM.get('resetBtn')?.addEventListener('click', () => Engine.resetTraining());
     DOM.get('endBtn')?.addEventListener('click', () => Engine.finishSession());
 
-    ['tab-spd', 'tab-bpm', 'tab-both'].forEach(id => {
+    ['tab-spd', 'tab-bpm', 'tab-both', 'tab-bnc'].forEach(id => {
       const el = DOM.get(id);
       if (el) el.addEventListener('click', function() { Observe.setTab(this.dataset.obstr, this); });
     });
