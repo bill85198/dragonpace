@@ -905,35 +905,35 @@ const Hardware = {
     if(!this._audioCtx) this._audioCtx = new(window.AudioContext||window.webkitAudioContext)();
     return this._audioCtx;
   },
-  // 核心修正：resume() 是非同步的，必須等它完成後才能確認 state=running
-  // 在 setInterval/setTimeout 環境中無法 await，改用 resume().then() + 預排延遲播放
+  // iOS unlock：在使用者手勢內播放一個無聲音符，讓 AudioContext 永久進入 running
+  unlockAudio() {
+    try {
+      const c = this.getCtx();
+      c.resume();
+      const buf = c.createBuffer(1,1,22050);
+      const src = c.createBufferSource();
+      src.buffer = buf;
+      src.connect(c.destination);
+      src.start(0);
+    } catch(e) {}
+  },
+  // 完全同步寫入：直接把音符塞進佇列，不等 resume。
+  // AudioContext running 後會自動從佇列取出播放。
   toneWhistle(baseFreq, duration, vol) {
     try {
       const c = this.getCtx();
-      const play = () => {
-        try {
-          const t = c.currentTime;
-          // 預排 0.05 秒後開始，給 AudioContext 從 suspended → running 的緩衝時間
-          const startAt = t + 0.05;
-          const o1 = c.createOscillator(), o2 = c.createOscillator(), gn = c.createGain();
-          o1.type = 'sawtooth'; o2.type = 'sawtooth';
-          o1.connect(gn); o2.connect(gn); gn.connect(c.destination);
-          o1.frequency.setValueAtTime(baseFreq, startAt);
-          o2.frequency.setValueAtTime(baseFreq * 1.03, startAt);
-          gn.gain.setValueAtTime(0, startAt);
-          gn.gain.linearRampToValueAtTime(vol, startAt + 0.01);
-          gn.gain.setValueAtTime(vol, Math.max(startAt + 0.01, startAt + duration - 0.025));
-          gn.gain.exponentialRampToValueAtTime(0.001, startAt + duration);
-          o1.start(startAt); o2.start(startAt);
-          o1.stop(startAt + duration); o2.stop(startAt + duration);
-        } catch(e) {}
-      };
-      if(c.state === 'running') {
-        play();
-      } else {
-        // suspended 或 interrupted：先 resume，等 Promise resolve 後才播
-        c.resume().then(play).catch(()=>{});
-      }
+      const t = c.currentTime;
+      const o1 = c.createOscillator(), o2 = c.createOscillator(), gn = c.createGain();
+      o1.type = 'sawtooth'; o2.type = 'sawtooth';
+      o1.connect(gn); o2.connect(gn); gn.connect(c.destination);
+      o1.frequency.setValueAtTime(baseFreq, t);
+      o2.frequency.setValueAtTime(baseFreq * 1.03, t);
+      gn.gain.setValueAtTime(0, t);
+      gn.gain.linearRampToValueAtTime(vol, t + 0.01);
+      gn.gain.setValueAtTime(vol, Math.max(t + 0.01, t + duration - 0.025));
+      gn.gain.exponentialRampToValueAtTime(0.001, t + duration);
+      o1.start(t); o2.start(t);
+      o1.stop(t + duration); o2.stop(t + duration);
     } catch(e) {}
   },
   accentTone() { this.toneWhistle(420, 0.12, 1.0); },
@@ -1137,10 +1137,11 @@ const Hardware = {
   }
 };
 
-['touchstart','click'].forEach(ev=>document.addEventListener(ev,()=>{ try{ Hardware.getCtx().resume(); }catch(e){} },{once:true,passive:true}));
+// 每次使用者觸碰都嘗試解鎖 AudioContext（iOS 需要）
+['touchstart','click'].forEach(ev=>document.addEventListener(ev,()=>{ Hardware.unlockAudio(); },{passive:true}));
 document.addEventListener('visibilitychange', async () => { 
   if (document.visibilityState === 'visible') {
-    if(Hardware._audioCtx) Hardware._audioCtx.resume().catch(()=>{});
+    if(Hardware._audioCtx) Hardware.unlockAudio();
     if (State.app.isRunning || State.app.isObserving) { 
       await Hardware.requestWakeLock(); 
     }
@@ -1630,8 +1631,8 @@ const Engine = {
     State.app.isRunning ? this.pauseTraining() : await this.startTraining(); 
   },
   async startTraining() {
-    // ① 必須在使用者手勢的同步 call stack 內 resume AudioContext（iOS 限制）
-    Hardware.getCtx().resume();
+    // ① 在使用者手勢的同步 call stack 內執行 iOS audio unlock
+    Hardware.unlockAudio();
     if(!State.app.isRunning&&!State.app.isFinished&&State.session.elapsedSec===0){
       State.update(ACTIONS.SET_APP, { sessionType: 'WORKOUT' });
       if(!State.training.selectedWorkout) { EventBus.emit('TOAST', '請先選擇課表'); return; }
