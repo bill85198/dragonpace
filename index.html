@@ -232,7 +232,8 @@ canvas#obsChart{display:block;width:100%;}
 .obs-legend-item{display:flex;align-items:center;gap:5px;font-size:8px;color:var(--muted2);}
 .obs-legend-dot{width:10px;height:3px;border-radius:2px;}
 .obs-tap-wrap{padding:7px 8px 0;}
-.obs-tap-btn{width:100%;padding:14px;background:rgba(0,229,255,.06);border:1px solid rgba(0,229,255,.25);border-radius:8px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--cyan);cursor:default;pointer-events:none;user-select:none;-webkit-tap-highlight-color:transparent;}
+.obs-tap-btn{width:100%;padding:14px;background:rgba(255,179,0,.06);border:1px solid rgba(255,179,0,.25);border-radius:8px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;letter-spacing:2px;user-select:none;-webkit-tap-highlight-color:transparent;transition:background .1s;}
+.obs-tap-btn:active{background:rgba(255,179,0,.22);transform:scale(.97);}
 .obs-tap-info{text-align:center;font-size:8px;color:var(--muted2);margin-top:5px;letter-spacing:.5px;}
 .obs-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;padding:8px 8px 0;}
 .obs-tile{background:linear-gradient(145deg,#091525,#0d1e32);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 8px 8px;position:relative;overflow:hidden;text-align:center;}
@@ -427,11 +428,11 @@ input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
             </div>
           </section>
 
-          <section class="obs-tap-wrap" aria-label="自動槳頻偵測">
-            <div id="obsTapBtn" class="obs-tap-btn" aria-live="polite">
-              📡 自動槳頻偵測
-            </div>
-            <div class="obs-tap-info" id="obsTapInfo">使用手機感測器即時計算槳頻</div>
+          <section class="obs-tap-wrap" aria-label="槳頻偵測">
+            <button id="obsTapBtn" class="obs-tap-btn" ontouchstart="Observe.tap(event)" onclick="Observe.tap(event)" aria-live="polite">
+              ✋&nbsp; TAP 每一槳
+            </button>
+            <div class="obs-tap-info" id="obsTapInfo">自動偵測中 — 亦可手動 TAP</div>
           </section>
 
           <section class="obs-chart-section" aria-label="即時走勢圖表">
@@ -658,7 +659,7 @@ const DOM = {
 // ══════════════════════════════════════════════
 const Hardware = {
   _audioCtx: null, gpsWatchId: null, lastGpsPos: null, gpsGranted: false, lastGpsTime: 0, gpsTimeout: 4000,
-  motion: { strokeTimes:[], filteredY:0, lastY:0, lastPeakTime:0, crossingCount:0, gravity:{x:0,y:0,z:0} },
+  motion: { strokeTimes:[], filteredY:0, lastY:0, lastPeakTime:0, isRising:false, gravity:{x:0,y:0,z:0} },
   motionListenerAdded: false,
   kalman: {
     x:0, P:1, Q:0.085, R:0.55, lastUpdate:0,
@@ -751,84 +752,54 @@ const Hardware = {
   },
   handleMotion(event) {
     if(!State.app.isRunning && !Observe.running) return;
-    // Use event.acceleration (gravity already removed by OS) if available,
-    // else fall back to manual high-pass on accelerationIncludingGravity
-    let ax, ay, az;
-    if(event.acceleration && event.acceleration.x != null) {
-      ax = event.acceleration.x;
-      ay = event.acceleration.y;
-      az = event.acceleration.z;
-    } else {
-      const aig = event.accelerationIncludingGravity; if(!aig) return;
-      const alpha = 0.85; // high-pass gravity removal (higher = more aggressive)
-      this.motion.gravity.x = alpha*this.motion.gravity.x + (1-alpha)*aig.x;
-      this.motion.gravity.y = alpha*this.motion.gravity.y + (1-alpha)*aig.y;
-      this.motion.gravity.z = alpha*this.motion.gravity.z + (1-alpha)*aig.z;
-      ax = aig.x - this.motion.gravity.x;
-      ay = aig.y - this.motion.gravity.y;
-      az = aig.z - this.motion.gravity.z;
-    }
+    const aig = event.accelerationIncludingGravity; if(!aig) return;
 
-    // ── ZERO-CROSSING PERIOD DETECTOR ────────────────────────────
-    // Dragon boat stroke = rhythmic forward/back sway (Y axis dominant)
-    // Use combined magnitude projected onto forward-back + vertical
-    // so it works regardless of exact phone orientation in pocket/hand
-    const raw = ay * 0.6 + az * 0.4;  // blend Y (fwd-back) and Z (vertical)
+    // High-pass filter: remove gravity (alpha=0.8 → time constant ~4 samples at 60Hz)
+    const alpha = 0.8;
+    this.motion.gravity.x = alpha*this.motion.gravity.x + (1-alpha)*aig.x;
+    this.motion.gravity.y = alpha*this.motion.gravity.y + (1-alpha)*aig.y;
+    this.motion.gravity.z = alpha*this.motion.gravity.z + (1-alpha)*aig.z;
+    const ax = aig.x - this.motion.gravity.x;
+    const ay = aig.y - this.motion.gravity.y;
+    const az = aig.z - this.motion.gravity.z;
+    const mag = Math.sqrt(ax*ax + ay*ay + az*az);
 
-    // Low-pass smooth the signal to remove high-freq noise
-    const LP = 0.35;
-    this.motion.filteredY = this.motion.filteredY + LP * (raw - this.motion.filteredY);
-    const sig = this.motion.filteredY;
+    // Low-pass smooth magnitude (factor 0.25 = responsive but not jumpy)
+    this.motion.filteredY = this.motion.filteredY + 0.25*(mag - this.motion.filteredY);
 
     const now = performance.now();
-    const prev = this.motion.lastY;
-    this.motion.lastY = sig;
 
-    // Detect positive zero-crossing (signal crosses from negative to positive)
-    // Each zero-crossing = half a paddle cycle
-    // Two crossings in succession = one complete stroke
-    if(prev < 0 && sig >= 0) {
-      const timeSinceLast = now - this.motion.lastPeakTime;
-
-      // ── ADAPTIVE THRESHOLD ──────────────────────────────────────
-      // Dragon boat SPM typically 38-80. That's period 750ms-1580ms per stroke.
-      // A half-cycle crossing should be ~375ms-790ms apart.
-      // Minimum gap of 300ms prevents noise triggers.
-      // Maximum gap of 2500ms (24 SPM) ignores non-stroke movement.
-      const MIN_HALF_PERIOD_MS = 300;   // max ~100 SPM (sprint)
-      const MAX_HALF_PERIOD_MS = 2500;  // min ~24 SPM (very slow)
-
-      if(timeSinceLast > MIN_HALF_PERIOD_MS && timeSinceLast < MAX_HALF_PERIOD_MS) {
+    // ── PEAK DETECTOR ──────────────────────────────────────────────
+    // Detect rising → falling transition = one stroke peak
+    // Threshold lowered from original 1.2 → 0.35 m/s²
+    // (dragon boat seated stroke amplitude is ~0.4-0.8 m/s²)
+    if(this.motion.filteredY > this.motion.lastY) {
+      this.motion.isRising = true;
+    } else if(this.motion.isRising && (this.motion.lastY - this.motion.filteredY) > 0.35) {
+      if(now - this.motion.lastPeakTime > 350) {   // min 350ms = max ~85 SPM
         this.motion.lastPeakTime = now;
-        // Each zero-crossing = half cycle. Record every OTHER one as a full stroke.
-        this.motion.crossingCount = (this.motion.crossingCount || 0) + 1;
+        this.motion.strokeTimes.push(now);
+        if(State.app.isRunning || Observe.running) State.data.totalStrokes++;
 
-        if(this.motion.crossingCount % 2 === 0) {
-          // Full stroke detected
-          this.motion.strokeTimes.push(now);
-          if(State.app.isRunning || Observe.running) State.data.totalStrokes++;
+        // Rolling 12-second window
+        this.motion.strokeTimes = this.motion.strokeTimes.filter(t => now - t < 12000);
 
-          // Rolling 15-second window for BPM calculation
-          this.motion.strokeTimes = this.motion.strokeTimes.filter(t => now - t < 15000);
-
-          if(this.motion.strokeTimes.length >= 2) {
-            const span = (this.motion.strokeTimes[this.motion.strokeTimes.length-1] - this.motion.strokeTimes[0]) / 1000;
-            const rawSpm = (this.motion.strokeTimes.length - 1) / span * 60;
-            // Sanity-clamp: dragon boat is always 20-120 SPM
-            if(rawSpm >= 20 && rawSpm <= 120) {
-              // Exponential smoothing on SPM to avoid jitter
-              if(State.data.currentSpm === 0) {
-                State.data.currentSpm = rawSpm;
-              } else {
-                State.data.currentSpm = State.data.currentSpm * 0.6 + rawSpm * 0.4;
-              }
-              EventBus.emit('SPM_BEAT');
-              this.updateFusedSpeed();
-            }
+        if(this.motion.strokeTimes.length >= 3) {
+          const elapsed = (this.motion.strokeTimes[this.motion.strokeTimes.length-1] - this.motion.strokeTimes[0]) / 1000;
+          const rawSpm = (this.motion.strokeTimes.length - 1) / elapsed * 60;
+          if(rawSpm >= 20 && rawSpm <= 120) {
+            // Exponential smoothing to reduce jitter
+            State.data.currentSpm = State.data.currentSpm > 0
+              ? State.data.currentSpm * 0.55 + rawSpm * 0.45
+              : rawSpm;
+            EventBus.emit('SPM_BEAT');
+            this.updateFusedSpeed();
           }
         }
       }
+      this.motion.isRising = false;
     }
+    this.motion.lastY = this.motion.filteredY;
   }
 };
 
@@ -1131,7 +1102,7 @@ const Engine = {
     Hardware.kalman.reset(); State.data.speedSource='READY';
     Timers.stopClock(); Timers.clearAll(); Timers.resetArc();
     State.training.segIdx=0; State.training.strokeInSeg=0; State.data.totalStrokes=0; State.session.elapsedSec=0; State.data.currentSpm=0; State.data.totalDistKm=0; State.data.simSpeed=0; State.data.lastSpeed=0;
-    Hardware.lastGpsPos=null; Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; Hardware.motion.crossingCount=0; State.data.obsData=[];
+    Hardware.lastGpsPos=null; Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; Hardware.motion.isRising=false; State.data.obsData=[];
     
     const startBtn = DOM.get('startBtn'); if(startBtn){ startBtn.textContent='▶ START'; startBtn.classList.remove('running'); }
     DOM.setStyle('endBtn', 'display', 'none');
@@ -1363,7 +1334,7 @@ const Observe = {
   _reset() {
     this._pause(); this.elapsed=0; this.finished=false;
     State.data.totalDistKm = 0; State.data.simSpeed = 0; State.data.currentSpm = 0; State.data.totalStrokes = 0; State.data.obsData = [];
-    Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; Hardware.motion.crossingCount=0;
+    Hardware.motion.strokeTimes=[]; Hardware.motion.lastY=0; Hardware.motion.filteredY=0; Hardware.motion.isRising=false;
     Hardware.kalman.reset(); State.data.speedSource = 'READY';
     
     DOM.setText('obsSpeed', '0.0'); DOM.setText('obsBpmDisp', '--'); DOM.setText('obsDistDisp', '0'); DOM.setText('obsDistUnit', 'm'); DOM.setText('obsStrokes', '0'); DOM.setText('obsTapInfo', '使用手機感測器即時計算槳頻'); DOM.setText('obsElapsedDisp', '00:00'); DOM.setText('obsSpeedSource', '— READY');
@@ -1386,6 +1357,32 @@ const Observe = {
     const leg=DOM.get('obsLegend');
     const m={ speed:'<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>', bpm: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div>', both: '<div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--gold)"></div>槳頻 (槳/分)</div><div class="obs-legend-item"><div class="obs-legend-dot" style="background:var(--cyan)"></div>速度 (km/h)</div>' };
     if(leg) leg.innerHTML=m[tab]||m.speed; this._drawLive();
+  },
+  // Manual tap fallback — each tap records a stroke time
+  _tapTimes: [],
+  tap(e) {
+    if(e) e.preventDefault();
+    if(!this.running) return;
+    const now = Date.now();
+    this._tapTimes.push(now);
+    this._tapTimes = this._tapTimes.filter(t => now - t <= 8000); // 8s rolling window
+    Hardware.vibrateShort(25);
+    const btn = DOM.get('obsTapBtn');
+    if(btn){ btn.style.background='rgba(255,179,0,.3)'; setTimeout(()=>btn.style.background='',120); }
+    if(this._tapTimes.length >= 2) {
+      const span = (this._tapTimes[this._tapTimes.length-1] - this._tapTimes[0]) / 1000;
+      const tapSpm = (this._tapTimes.length - 1) / span * 60;
+      if(tapSpm >= 20 && tapSpm <= 120) {
+        // Tap overrides sensor if significantly different, else blend
+        State.data.currentSpm = State.data.currentSpm > 0
+          ? State.data.currentSpm * 0.4 + tapSpm * 0.6
+          : tapSpm;
+        DOM.setText('obsBpmDisp', Math.round(State.data.currentSpm));
+        DOM.setText('obsTapInfo', `✋ 手動 ${Math.round(tapSpm)} 槳/分（${this._tapTimes.length} 槳）`);
+      }
+    } else {
+      DOM.setText('obsTapInfo', '繼續點擊計算槳頻...');
+    }
   },
   _drawLive() {
     const data=State.data.obsData; if(!data) return;
